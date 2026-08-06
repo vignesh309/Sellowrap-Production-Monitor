@@ -16,7 +16,7 @@ from services.telegram_notifier import start_scheduler
 from summary_worker import start_summary_worker
 
 # 🚨 Import the new Auto-Finalization worker!
-from auto_worker import run_auto_finalization
+from Backend.services.auto_worker import run_auto_finalization
 
 # Import our routers
 from routers import frontend, master, reports, auth, production_entry, fetchdata
