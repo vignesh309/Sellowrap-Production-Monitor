@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process OEE & TEEP Executive Dashboard</title>
+    <!-- Reusing your beautiful OEE theme -->
+    <link rel="stylesheet" href="/static/css/oee_summary.css">
+    <style>
+        .dashboard-header {
+            margin-top: 30px;
+            color: var(--accent-prod);
+            font-size: 16px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .teep-header { color: var(--status-green); }
+        .month-filters { display: flex; gap: 10px; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Company Logo" style="height: 50px; width: auto; max-width: 150px; border-radius: 4px; object-fit: contain;" onerror="this.style.display='none'">
+            <h2>PROCESS OEE & TEEP DASHBOARD</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'" title="Return to Hub">Return to Hub</button>
+            <button class="logout-btn" onclick="logout()">Log Out</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            
+            <!-- MONTHLY / YEARLY FILTERS -->
+            <div class="search-container">
+                <div class="date-box month-filters">
+                    <label>Year:</label>
+                    <select id="yearFilter" style="background: transparent; border: none; color: white; outline: none; font-weight: bold;">
+                        <option value="2025">2025</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                    
+                    <span style="color: var(--border-color);">|</span>
+                    
+                    <label>From:</label>
+                    <select id="fromMonthFilter" style="background: transparent; border: none; color: white; outline: none; font-weight: bold;">
+                        <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+                        <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+                        <option value="7" selected>Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+                        <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+                    </select>
+
+                    <span style="color: var(--border-color);">|</span>
+
+                    <label>To:</label>
+                    <select id="toMonthFilter" style="background: transparent; border: none; color: white; outline: none; font-weight: bold;">
+                        <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+                        <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+                        <option value="7" selected>Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+                        <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+                    </select>
+                </div>
+
+                <select id="processFilter" class="filter-select">
+                    <option value="">All Processes</option>
+                    <option value="THERMOWELDING">Thermowelding</option>
+                </select>
+
+                <select id="machineFilter" class="filter-select">
+                    <option value="">All Machines</option>
+                    <option value="TW-03">TW-03</option>
+                    <option value="TW-21">TW-21</option>
+                    <option value="TW-22">TW-22</option>
+                    <option value="TW-23">TW-23</option>
+                    <option value="TW-24">TW-24</option>
+                </select>
+
+                <button class="btn-primary" onclick="loadDashboard()">Generate Dashboard</button>
+            </div>
+
+            <!-- TABLE 1: EQUIPMENT OEE -->
+            <h3 class="dashboard-header">Table 1: Equipment OEE (Floor Performance)</h3>
+            <div class="table-wrapper" style="max-height: 300px; margin-bottom: 40px;">
+                <table id="oeeTable">
+                    <thead>
+                        <tr>
+                            <th class="txt-left">Process Name</th>
+                            <th>Total Batches</th>
+                            <th>Planned Time (Mins)</th>
+                            <th>Operating Time (Mins)</th>
+                            <th>Availability</th>
+                            <th>Performance</th>
+                            <th>Quality</th>
+                            <th class="highlight-oee">OEE %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="oeeTableBody">
+                        <tr><td colspan="8" style="color: var(--text-muted); font-style: italic;">Select filters and generate data.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TABLE 2: TEEP ASSET UTILIZATION -->
+            <h3 class="dashboard-header teep-header">Table 2: TEEP (Asset Utilization)</h3>
+            <div class="table-wrapper" style="max-height: 300px;">
+                <table id="teepTable">
+                    <thead>
+                        <tr>
+                            <th class="txt-left">Process Name</th>
+                            <th>Total Batches</th>
+                            <th>Max Asset Time (Mins)</th>
+                            <th>Operating Time (Mins)</th>
+                            <th>Asset Availability</th>
+                            <th>Performance</th>
+                            <th>Quality</th>
+                            <th style="color: var(--status-green); font-weight: bold; font-size: 13px;">TEEP %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teepTableBody">
+                        <tr><td colspan="8" style="color: var(--text-muted); font-style: italic;">Select filters and generate data.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/static/js/oeeteep_dashboard.js"></script>
+</body>
+</html>

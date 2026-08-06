@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Data: Machine Explorer</title>
+    <link rel="stylesheet" href="/static/css/machine_master.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>Master Data Management</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">V</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+
+            <div class="explore-header"
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 class="section-title" style="margin: 0; border: none;">Machine Master</h2>
+
+                <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+                    <label style="margin: 0;">Search Machine:</label>
+                    <input list="machine_list" id="search_machine_code" placeholder="-- Search Machine Code --"
+                        style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+
+                    <datalist id="machine_list"></datalist>
+                    <button class="btn-primary" onclick="searchMachine()" style="margin: 0;">Load Data</button>
+                </div>
+            </div>
+
+            <div class="crud-toolbar">
+                <button id="btn_new" class="btn-action btn-new" onclick="startNewMachine()">➕ NEW</button>
+                <button id="btn_edit" class="btn-action btn-edit" onclick="enableEditMode()">✏️ EDIT</button>
+                <button id="btn_save" class="btn-action btn-save" onclick="saveMachine()" disabled>💾 SAVE</button>
+                <button id="btn_delete" class="btn-action btn-delete" onclick="deleteMachine()">🗑️ DELETE</button>
+            </div>
+
+            <h3 class="sub-title">1. Machine Specifications</h3>
+            <div class="form-grid">
+                <div>
+                    <label>Machine Code</label>
+                    <input type="text" id="machine_code" placeholder="e.g. IMM-21" disabled>
+                </div>
+                <div>
+                    <label>Machine Name</label>
+                    <input type="text" id="machine_name" placeholder="e.g. Molding Machine 21" disabled>
+                </div>
+                
+                <div>
+                    <label>Machine Process</label>
+                    <input list="process_list" id="machine_process" placeholder="e.g. Moulding" disabled autocomplete="off">
+                    <datalist id="process_list">
+                        <option value="MOUDLING"></option>
+                        <option value="FILM ROLL MAKING"></option>
+                        <option value="FRAMING"></option>
+                        <option value="BLANKING"></option>
+                        <option value="MANUAL PASTING"></option>
+                        <option value="ASSEMBLY"></option>
+                        <option value="PRESS CUT"></option>
+                        <option value="SYSCO CUT"></option>
+                        <option value="BANDSAW CUTTING"></option>
+                        <option value="DEFLASHING"></option>
+                        <option value="PACKING"></option>
+                        <option value="FINAL INSPN"></option>
+                        <option value="THERMOFORMING"></option>
+                        <option value="PRINTING"></option>
+                        <option value="THERMOWELDING"></option>
+                        <option value="BUTYL PASTING"></option>
+                        <option value="PALLETIZATION"></option>
+                        <option value="REGRINDING"></option>
+                    </datalist>
+                </div>
+
+                <div>
+                    <label>Status (Is Active)</label>
+                    <select id="is_active" disabled>
+                        <option value="true">Active (Yes)</option>
+                        <option value="false">Inactive (No)</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/static/js/machine_master.js"></script>
+
+</body>
+</html>

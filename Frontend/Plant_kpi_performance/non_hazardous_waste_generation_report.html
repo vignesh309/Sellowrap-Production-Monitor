@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-Hazardous Waste Generation | Sellowrap</title>
+    <link rel="stylesheet" href="/static/css/non_hazardous_waste_generation_report.css">
+    <script src="static/js/js libraries/chart.js"></script>
+</head>
+<body>
+
+    <!-- ENTERPRISE NAVBAR -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="../img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>ESG KPI TREND: NON-HAZARDOUS WASTE</h2>
+        </div>
+        
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub.html'" title="Return to Hub">
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">A</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Admin</span>
+                    <span id="role-display" class="user-role">System</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+        
+        <!-- Header Info Bar -->
+        <div class="header-info glass-panel">
+            <div class="info-group">
+                <span class="info-label">Financial Year</span>
+                <span class="info-value">2025-2026</span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Department</span>
+                <span class="info-value">ALL</span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Unit of Measurement (UOM)</span>
+                <span class="info-value">Kgs</span>
+            </div>
+            <div class="action-group">
+                <button id="btn-edit" class="btn-primary" onclick="toggleEditMode()">✏️ Edit Data</button>
+            </div>
+        </div>
+
+        <div class="esg-container">
+            <!-- LEFT PANEL: GRAPHICAL TREND -->
+            <div class="chart-section glass-panel">
+                <h3>Trend Analysis</h3>
+                <div class="chart-wrapper">
+                    <canvas id="esgChart"></canvas>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: EXCEL REPLICA TABLE -->
+            <div class="table-section glass-panel">
+                <h3>Monthly Tracking</h3>
+                <table class="excel-table">
+                    <thead>
+                        <tr class="summary-row">
+                            <th colspan="2" style="text-align: left;">2024-2025 Actual:</th>
+                            <th class="highlight-val">15994.5</th>
+                        </tr>
+                        <tr class="summary-row">
+                            <th colspan="2" style="text-align: left;">Target 25-26:</th>
+                            <th class="highlight-val">13826.4</th>
+                        </tr>
+                        <tr class="column-headers">
+                            <th>Month</th>
+                            <th>Actual</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/non_hazardous_waste_generation_report.js"></script>
+</body>
+</html>

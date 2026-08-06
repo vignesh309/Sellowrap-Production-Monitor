@@ -1,0 +1,632 @@
+/* ==================================================
+   GLOBAL THEME & VARIABLES
+================================================== */
+:root {
+  --bg-main: #14172b;
+  --bg-panel: #1e223c;
+  --bg-input: #262a47;
+  --border-color: rgba(81, 128, 230, 0.2);
+  --text-main: #ffffff;
+  --text-muted: #c1deff;
+
+  /* Brand & Status Colors */
+  --accent-cyan: #00e5ff;
+  --accent-blue: #0072ff;
+  --status-green: #00f076;
+  --status-red: #ff2a7a;
+  --status-yellow: #ffb142;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* ==================================================
+   ENTERPRISE NAVBAR (Inherited Sellowrap Style)
+================================================== */
+.navbar {
+  background-color: var(--bg-panel);
+  border-bottom: 1px solid #5180e6;
+  padding: 10px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.brand img {
+  height: 50px;
+  border-radius: 4px;
+}
+.brand h2 {
+  margin: 0;
+  color: var(--status-yellow);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.nav-utils {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* User Identity */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 20px;
+  border-right: 1px solid rgba(81, 128, 230, 0.4);
+}
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-cyan) 0%,
+    var(--accent-blue) 100%
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 229, 255, 0.3);
+}
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.user-name {
+  font-weight: bold;
+  font-size: 15px;
+  color: #fff;
+}
+.user-role {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Nav Buttons */
+.hub-btn {
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s;
+  margin-right: 10px;
+}
+.hub-btn:hover {
+  background: var(--accent-cyan);
+  color: #000;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+}
+.hub-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.logout-btn {
+  background: transparent;
+  border: none;
+  color: var(--status-red);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+.logout-btn:hover {
+  background: rgba(255, 42, 122, 0.1);
+  color: #ff5494;
+}
+.logout-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* ==================================================
+   LAYOUT & GLASS PANELS
+================================================== */
+.main-container {
+  display: flex;
+  gap: 30px;
+  padding: 30px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+  align-items: flex-start; /* Prevents stretching */
+}
+
+.form-section {
+  flex: 0 0 350px;
+}
+.table-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.glass-panel {
+  background: rgba(30, 34, 60, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  padding: 25px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+}
+.section-header h3 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.badge {
+  background: rgba(255, 177, 66, 0.1);
+  color: var(--status-yellow);
+  border: 1px solid var(--status-yellow);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* ==================================================
+   FORM STYLES
+================================================== */
+.input-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.input-group label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.input-group input,
+.input-group select {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: white;
+  padding: 12px 15px;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+  color-scheme: dark;
+}
+.input-group input:focus,
+.input-group select:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+}
+
+.toggle-group {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Toggle Switch CSS */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+  margin-left: 15px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-input);
+  transition: 0.4s;
+  border: 1px solid var(--border-color);
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--text-muted);
+  transition: 0.4s;
+}
+input:checked + .slider {
+  background-color: rgba(0, 240, 118, 0.2);
+  border-color: var(--status-green);
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+  background-color: var(--status-green);
+}
+.slider.round {
+  border-radius: 24px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Form Buttons */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 14px;
+  border: none;
+}
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--accent-blue) 0%,
+    var(--accent-cyan) 100%
+  );
+  color: #14172b;
+}
+.btn-primary:hover {
+  box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4);
+  transform: translateY(-2px);
+}
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* ==================================================
+   TABLE STYLES
+================================================== */
+.search-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  outline: none;
+  width: 250px;
+}
+.search-input:focus {
+  border-color: var(--accent-cyan);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  max-height: 600px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+th,
+td {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(81, 128, 230, 0.1);
+  font-size: 14px;
+}
+th {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+tr:hover td {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.highlight {
+  font-weight: bold;
+  color: var(--accent-cyan);
+}
+
+/* Badges */
+.role-badge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.role-operator {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.role-supervisor {
+  background: rgba(255, 177, 66, 0.1);
+  color: var(--status-yellow);
+  border: 1px solid rgba(255, 177, 66, 0.3);
+}
+.role-admin {
+  background: rgba(255, 42, 122, 0.1);
+  color: var(--status-red);
+  border: 1px solid rgba(255, 42, 122, 0.3);
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  font-size: 12px;
+}
+.status-indicator::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.status-indicator.active {
+  color: var(--status-green);
+}
+.status-indicator.active::before {
+  background-color: var(--status-green);
+  box-shadow: 0 0 5px var(--status-green);
+}
+.status-indicator.inactive {
+  color: var(--text-muted);
+}
+.status-indicator.inactive::before {
+  background-color: var(--text-muted);
+}
+
+.btn-edit {
+  background: transparent;
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+.btn-edit:hover {
+  background: var(--accent-cyan);
+  color: #000;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: #5180e6;
+  border-radius: 4px;
+}
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+@media (max-width: 1100px) {
+  .main-container {
+    flex-direction: column;
+  }
+  .form-section {
+    flex: none;
+    width: 100%;
+  }
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .search-input {
+    width: 100%;
+  }
+}
+/* ==================================================
+   OTP AUTHORIZATION UI
+================================================== */
+.password-reset-section {
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 12px 15px;
+    transition: 0.3s;
+}
+
+.password-reset-section:focus-within {
+    border-color: var(--accent-cyan);
+}
+
+.toggle-link {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.hidden-checkbox {
+    display: none;
+}
+
+.toggle-text {
+    color: var(--accent-cyan);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: 0.2s;
+}
+
+.toggle-text:hover {
+    color: #fff;
+}
+
+/* OTP Container Layout */
+.otp-container {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(81, 128, 230, 0.1);
+    /* Note: We will handle hiding/showing this via JavaScript later */
+}
+
+.otp-helper {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+}
+
+.otp-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-input);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+}
+
+.otp-row:hover {
+    border-color: rgba(81, 128, 230, 0.3);
+}
+
+.auth-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--text-main);
+}
+
+.btn-otp {
+    background: transparent;
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    text-transform: uppercase;
+}
+
+.btn-otp:hover {
+    background: var(--accent-cyan);
+    color: #000;
+    box-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+}
+
+/* Align the input and verify button side-by-side */
+.otp-input-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.otp-input {
+    flex: 1; /* Makes the input stretch to fill available space */
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 4px;
+    outline: none;
+    font-weight: bold;
+}
+
+.otp-input:focus {
+    border-color: var(--status-yellow);
+    box-shadow: 0 0 8px rgba(255, 177, 66, 0.2);
+}
+
+/* New Verify Button Styles */
+.btn-verify {
+    background: rgba(0, 240, 118, 0.1); /* Subtle green tint */
+    border: 1px solid var(--status-green);
+    color: var(--status-green);
+    padding: 0 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.btn-verify:hover {
+    background: var(--status-green);
+    color: #000;
+    box-shadow: 0 0 10px rgba(0, 240, 118, 0.4);
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Traceability Ledger - Jayashree ERP</title>
+    <link rel="stylesheet" href="/static/css/batch_ledger.css">
+</head>
+<body>
+
+<!-- UPDATED ENTERPRISE NAVBAR -->
+<div class="navbar">
+    <div class="brand">
+        <img src="/static/img/Company_logo.png" alt="Logo">
+        <h2>Batch Traceability Ledger</h2>
+    </div>
+    
+    <div class="nav-utils">
+        <!-- Return to Hub Button Integrated Here -->
+        <button class="hub-btn" onclick="window.location.href='/hub'" style="margin-right: 20px;">Return to Hub</button>
+
+        <div class="user-profile">
+            <div class="avatar" id="user-avatar">?</div>
+            <div class="user-info">
+                <span id="user-display" class="user-name">Loading...</span>
+                <span id="role-display" class="user-role">Role</span>
+            </div>
+        </div>
+        
+        <button class="logout-btn" onclick="logout()" title="Secure Logout">
+            <svg viewBox="0 0 24 24">
+                <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path>
+            </svg>
+            Log Out
+        </button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="search-container" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="searchInput" placeholder="Search Batch ID..." style="flex: 1; min-width: 200px;">
+            
+            <select id="machineFilter" style="padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: white; font-size: 14px; outline: none;">
+                <option value="">All Machines</option>
+            </select>
+
+            <div style="display: flex; gap: 10px; align-items: center; background: var(--bg-input); padding: 0 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <label style="margin: 0; color: var(--text-muted); font-size: 12px;">From:</label>
+                <input type="date" id="startDate" style="border: none; padding: 10px 5px;">
+                <label style="margin: 0; color: var(--text-muted); font-size: 12px;">To:</label>
+                <input type="date" id="endDate" style="border: none; padding: 10px 5px;">
+            </div>
+
+            <button class="btn-primary" onclick="handleSearch()">Search</button>
+            <button class="btn-primary" onclick="clearFilters()" style="background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color);">Clear</button>
+        </div>
+
+        <div id="ledgerContainer" class="ledger-container"></div>
+    </div>
+</div>
+
+<script src="/static/js/batch_ledger.js"></script>
+
+<!-- NAVBAR SCRIPT -->
+<script>
+    const role = localStorage.getItem("userRole");
+    const username = localStorage.getItem("userName");
+
+    if(!role || !username) {
+        window.location.href = "/";
+    }
+
+    document.getElementById("user-display").innerText = username;
+    document.getElementById("role-display").innerText = role;
+    document.getElementById("user-avatar").innerText = username.charAt(0).toUpperCase();
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "/";
+    }
+</script>
+</body>
+</html>

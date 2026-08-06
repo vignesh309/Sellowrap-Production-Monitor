@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Production Monitor</title>
+<style>
+    /* CHANGED: min-height instead of height, added padding, changed box-sizing */
+    body { 
+        background-color: #14172b; 
+        color: white; 
+        font-family: 'Segoe UI', sans-serif; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        min-height: 100vh; 
+        margin: 0; 
+        padding: 20px; 
+        box-sizing: border-box; 
+    }
+    
+    /* CHANGED: width to 100% and added max-width */
+    .login-box { 
+        background: #1e223c; 
+        padding: 30px; 
+        border-radius: 16px; 
+        border: 1px solid #5180e6; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        width: 100%; 
+        max-width: 310px; 
+        text-align: center; 
+        box-sizing: border-box; 
+    }
+    
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px; 
+        margin-bottom: 20px;
+    }
+    
+    img { 
+        height: 60px; 
+        max-width: 130px; 
+        border-radius: 8px; 
+        object-fit: contain; 
+    }
+    
+    h2 { color: #00e5ff; margin-top: 0; margin-bottom: 25px; font-size: 22px; }
+    
+    input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #5180e6; background: #262a47; color: white; box-sizing: border-box; font-size: 14px; outline: none; }
+    input:focus { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.2); }
+    
+    button { width: 100%; padding: 12px; background: linear-gradient(135deg, #00e5ff 0%, #0072ff 100%); border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s; }
+    button:hover { box-shadow: 0 4px 15px rgba(0,229,255,0.4); transform: translateY(-2px); }
+    
+    #error-msg { color: #ff2a7a; margin-top: 15px; font-weight: bold; min-height: 20px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="login-box">
+    <div class="logo-container">
+        <img src="/static/img/Company_logo.png" alt="Company Logo">        
+    </div>
+    
+    <h2>Production Monitor</h2>
+    
+    <input type="text" id="username" placeholder="Username" autocomplete="off" onkeydown="if(event.key === 'Enter') attemptLogin()">
+    <input type="password" id="password" placeholder="Password" onkeydown="if(event.key === 'Enter') attemptLogin()">
+    
+    <button onclick="attemptLogin()">Secure Login</button>
+    <div id="error-msg"></div>
+</div>
+
+<script>
+async function attemptLogin() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value;
+    const msg = document.getElementById("error-msg");
+
+    if(!user || !pass) return msg.innerText = "Please enter credentials.";
+    msg.innerText = "Authenticating...";
+
+    try {
+        const res = await fetch(`${window.location.origin}/api/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: user, password: pass })
+        });
+        
+        const data = await res.json();
+        
+        // Updated to capture the new backend payload structure
+        if(res.ok && data.status === "success") {
+            const displayName = data.full_name || user;
+            localStorage.setItem("userName", displayName);
+            localStorage.setItem("userFullName", displayName);
+            localStorage.setItem("userRole", data.role);
+            window.location.href = "/hub"; 
+        } else {
+            msg.innerText = data.detail || "Invalid credentials.";
+        }
+    } catch(err) {
+        msg.innerText = "Connection Error.";
+    }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+/* =========================================
+   VARIABLES & GLOBAL STYLES
+   ========================================= */
+:root {
+    --bg-main: #14172b;
+    --bg-panel: #1e223c;
+    --bg-input: #262a47;
+    --border-color: #5180e6;
+    --text-main: #ffffff;
+    --text-muted: #c1deff;
+    --accent-cyan: #00e5ff;
+    --status-green: #00f076;
+    --status-red: #ff2a7a;
+    --status-yellow: #ffcf00;
+}
+
+body { 
+    font-family: 'Segoe UI', Tahoma, sans-serif; 
+    background-color: var(--bg-main); 
+    color: var(--text-main); 
+    margin: 0; 
+    padding: 0; 
+}
+
+/* =========================================
+   ENTERPRISE NAVBAR (Imported from Hub)
+   ========================================= */
+.navbar {
+    background-color: var(--bg-panel);
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.brand { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+}
+
+.brand img { 
+    height: 45px; 
+    border-radius: 4px; 
+}
+
+.brand h2 { 
+    margin: 0; 
+    color: var(--accent-cyan); 
+    font-size: 20px; 
+    font-weight: 600; 
+    letter-spacing: 0.5px; 
+}
+
+.nav-utils { 
+    display: flex; 
+    align-items: center; 
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-right: 20px;
+    margin-right: 20px;
+    border-right: 1px solid rgba(81, 128, 230, 0.4);
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #00e5ff 0%, #0072ff 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 229, 255, 0.3);
+}
+
+.user-info { 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+}
+
+.user-name { 
+    font-weight: bold; 
+    font-size: 14px; 
+    color: #fff; 
+}
+
+.user-role { 
+    font-size: 10px; 
+    color: #c1deff; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    margin-top: 2px; 
+}
+
+.logout-btn {
+    background: transparent;
+    border: none;
+    color: #ff2a7a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover { 
+    background: rgba(255, 42, 122, 0.1); 
+    color: #ff5494; 
+}
+
+.logout-btn svg { 
+    width: 20px; 
+    height: 20px; 
+    fill: currentColor; 
+}
+
+.hub-btn { 
+    background: rgba(0, 229, 255, 0.1); 
+    border: 1px solid var(--accent-cyan); 
+    color: var(--accent-cyan); 
+    padding: 8px 15px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: 0.3s; 
+    font-size: 13px;
+}
+
+.hub-btn:hover { 
+    background: var(--accent-cyan); 
+    color: #000; 
+}
+
+/* =========================================
+   LEDGER MAIN LAYOUT & CARDS
+   ========================================= */
+.container { 
+    max-width: 95%; 
+    margin: 40px auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+}
+
+.card { 
+    background: var(--bg-panel); 
+    padding: 25px; 
+    border-radius: 12px; 
+    border: 1px solid var(--border-color); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+}
+
+/* =========================================
+   SEARCH BAR
+   ========================================= */
+.search-container { 
+    display: flex; 
+    gap: 15px; 
+    margin-bottom: 20px; 
+}
+
+.search-container input { 
+    flex: 1; 
+    padding: 12px 20px; 
+    border-radius: 8px; 
+    border: 1px solid var(--border-color); 
+    background-color: var(--bg-input); 
+    color: white; 
+    font-size: 16px; 
+    outline: none; 
+}
+
+.search-container input:focus { 
+    border-color: var(--status-green); 
+}
+
+.btn-primary { 
+    padding: 12px 25px; 
+    background: var(--accent-cyan); 
+    color: #000; 
+    border: none; 
+    border-radius: 8px; 
+    font-weight: bold; 
+    font-size: 14px; 
+    cursor: pointer; 
+    transition: 0.3s; 
+}
+
+.btn-primary:hover { 
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); 
+}
+
+/* =========================================
+   TABLES
+   ========================================= */
+.table-wrapper { 
+    overflow-x: auto; 
+    border-radius: 8px; 
+    border: 1px solid var(--border-color); 
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    font-size: 13px; 
+    text-align: left; 
+}
+
+th, td { 
+    border-bottom: 1px solid rgba(81, 128, 230, 0.2); 
+    padding: 12px 15px; 
+    white-space: nowrap; 
+}
+
+th { 
+    background-color: var(--bg-input); 
+    color: var(--text-muted); 
+    font-weight: bold; 
+    text-transform: uppercase; 
+}
+
+tr:hover { 
+    background: rgba(0, 229, 255, 0.05); 
+}
+
+.badge-os { 
+    background: rgba(255, 207, 0, 0.1); 
+    color: var(--status-yellow); 
+    border: 1px solid var(--status-yellow); 
+    padding: 3px 8px; 
+    border-radius: 12px; 
+    font-size: 11px; 
+    font-weight: bold; 
+}
+
+/* =========================================
+   LEDGER UI CLASSES
+   ========================================= */
+.ledger-container { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+}
+
+.batch-card { 
+    background: var(--bg-main); 
+    border: 1px solid var(--border-color); 
+    border-radius: 8px; 
+    overflow: hidden; 
+}
+
+.batch-header { 
+    background: rgba(0, 229, 255, 0.05); 
+    padding: 15px 20px; 
+    border-bottom: 1px solid var(--border-color);
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.batch-title { 
+    display: block; 
+    font-size: 16px; 
+    font-weight: bold; 
+    color: var(--status-green); 
+    margin-bottom: 5px; 
+}
+
+.batch-subtitle { 
+    font-size: 12px; 
+    color: var(--text-muted); 
+}
+
+.batch-stages { 
+    padding: 10px; 
+}
+
+.stage-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    font-size: 13px; 
+}
+
+.stage-table th, .stage-table td { 
+    padding: 8px 15px; 
+    border-bottom: 1px dashed rgba(81, 128, 230, 0.2); 
+    text-align: left; 
+}
+
+.stage-table th { 
+    background: transparent; 
+    color: var(--text-muted); 
+    font-size: 11px; 
+}
+
+.stage-table tr:last-child td { 
+    border-bottom: none; 
+}
+
+/* =========================================
+   INPUT OVERRIDES
+   ========================================= */
+/* Remove background from date inputs */
+input[type="date"] {
+    background-color: transparent;
+    color: white;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}

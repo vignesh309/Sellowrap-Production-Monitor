@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partwise Production Report - ERP</title>
+    <link rel="stylesheet" href="/static/css/partwise_report.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>Partwise Production Report</h2>
+        </div>
+
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'" title="Return to Hub">
+                <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="logout()" title="Secure Logout">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>From Date</label>
+            <input type="date" id="from_date">
+        </div>
+
+        <div class="filter-group">
+            <label>To Date</label>
+            <input type="date" id="to_date">
+        </div>
+        <div class="filter-group">
+            <label>Shift</label>
+            <select id="shift_filter">
+                <option value="ALL">-- All Shifts --</option>
+                <option value="A">Shift A</option>
+                <option value="B">Shift B</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Machine (Optional)</label>
+            <select id="machine_filter">
+                <option value="ALL">-- All Machines --</option>
+            </select>
+        </div>
+        <button class="btn-generate" onclick="fetchReportData(true)">Generate Report</button>
+
+        <button class="btn-export" onclick="exportToExcel()">
+            <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;">
+                <path
+                    d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-3v3h-2v-3H8v-2h3v-3h2v3h3v2zm-3-7V3.5L18.5 9H13z" />
+            </svg>
+            Download Excel
+        </button>
+    </div>
+
+    <div class="table-container">
+        <table class="report-table" id="dataTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Shift</th>
+                    <th>Machine</th>
+                    <th>Mould/Die</th>
+                    <th>Part No</th>
+                    <th>No. of Cavities</th>
+                    <th>Supervisor</th>
+                    <th>Operator</th>
+                    <th>Target Shots/Quantity</th>
+                    <th class="col-shift-a">08-09</th>
+                    <th class="col-shift-a">09-10</th>
+                    <th class="col-shift-a">10-11</th>
+                    <th class="col-shift-a">11-12</th>
+                    <th class="col-shift-a">12-13</th>
+                    <th class="col-shift-a">13-14</th>
+                    <th class="col-shift-a">14-15</th>
+                    <th class="col-shift-a">15-16</th>
+                    <th class="col-shift-a">16-17</th>
+                    <th class="col-shift-a">17-18</th>
+                    <th class="col-shift-a">18-19</th>
+                    <th class="col-shift-a">19-20</th>
+
+                    <th class="col-shift-b">20-21</th>
+                    <th class="col-shift-b">21-22</th>
+                    <th class="col-shift-b">22-23</th>
+                    <th class="col-shift-b">23-24</th>
+                    <th class="col-shift-b">00-01</th>
+                    <th class="col-shift-b">01-02</th>
+                    <th class="col-shift-b">02-03</th>
+                    <th class="col-shift-b">03-04</th>
+                    <th class="col-shift-b">04-05</th>
+                    <th class="col-shift-b">05-06</th>
+                    <th class="col-shift-b">06-07</th>
+                    <th class="col-shift-b">07-08</th>
+
+                    <th>Total Actual Shots</th>
+                    <th>Ok Qty</th>
+                    <th>Rej Qty</th>
+                    <th>Total Qty</th>
+                    <th>Major Shortfall</th>
+                    <th>Major NG</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody id="report_body">
+                <tr>
+                    <td colspan="39" id="loading_cell"
+                        style="color: var(--text-muted); padding: 30px; text-align: center;">
+                        Select a date and click Generate Report
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin: 0 40px 30px 40px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 1px solid var(--border-color);">
+        <span id="page-info" style="color: var(--text-muted); font-weight: bold; font-size: 13px;">Showing 0 rows</span>
+        
+        <div style="display: flex; gap: 10px;">
+            <button id="btn-prev" onclick="changePage(-1)" disabled style="background: var(--bg-input); border: 1px solid var(--border-color); color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                ◀ Previous
+            </button>
+            <span id="page-number" style="color: var(--accent-cyan); font-weight: bold; padding: 8px 15px; background: rgba(0, 229, 255, 0.1); border-radius: 6px;">Page 1</span>
+            <button id="btn-next" onclick="changePage(1)" disabled style="background: var(--bg-input); border: 1px solid var(--border-color); color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                Next ▶
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/partwise_report.js"></script>
+</body>
+
+</html>

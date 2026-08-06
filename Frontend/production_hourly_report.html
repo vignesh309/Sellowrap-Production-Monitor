@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Hourly Report - Sellowrap ERP</title>
+    <link rel="stylesheet" href="/static/css/production_hourly_report.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>PRODUCTION HOURLY REPORT</h2>
+        </div>
+
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'" title="Return to Hub">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="logout()" title="Secure Logout">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+
+            <div class="search-container"
+                style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 25px;">
+                <div
+                    style="display: flex; gap: 10px; align-items: center; background: var(--bg-input); padding: 0 15px; border-radius: 8px; border: 1px solid var(--border-solid); height: 42px;">
+                    <label
+                        style="margin: 0; color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase;">From:</label>
+                    <input type="date" id="startDate"
+                        style="border: none; background: transparent; color: white; outline: none; font-weight: bold; color-scheme: dark;">
+
+                    <span style="color: var(--border-solid);">|</span>
+
+                    <label
+                        style="margin: 0; color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase;">To:</label>
+                    <input type="date" id="endDate"
+                        style="border: none; background: transparent; color: white; outline: none; font-weight: bold; color-scheme: dark;">
+                </div>
+
+                <select id="machineFilter"
+                    style="padding: 0 15px; height: 42px; border-radius: 8px; border: 1px solid var(--border-solid); background-color: var(--bg-input); color: white; font-weight: bold; outline: none;">
+                    <option value="">All Machines</option>
+                </select>
+
+                <select id="shiftFilter"
+                    style="padding: 0 15px; height: 42px; border-radius: 8px; border: 1px solid var(--border-solid); background-color: var(--bg-input); color: white; font-weight: bold; outline: none;">
+                    <option value="">All Shifts</option>
+                    <option value="A">Shift A</option>
+                    <option value="B">Shift B</option>
+                </select>
+
+                <button class="btn-primary" onclick="loadReport()">Search / Refresh</button>
+                <button class="btn-success" onclick="exportToExcel()">
+                    <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;">
+                        <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM17 20H7v-2h10v2zm0-4H7v-2h10v2zm-3-4H7v-2h7v2z">
+                        </path>
+                    </svg>
+                    Export to Excel
+                </button>
+            </div>
+
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div
+                        style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                        Total Hours Logged</div>
+                    <div class="summary-value" id="tot-hours">0</div>
+                </div>
+                <div class="summary-card">
+                    <div
+                        style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                        Total OK Parts</div>
+                    <div class="summary-value" id="tot-ok" style="color: var(--status-green);">0</div>
+                </div>
+                <div class="summary-card">
+                    <div
+                        style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                        Total NG Parts</div>
+                    <div class="summary-value" id="tot-ng" style="color: var(--status-red);">0</div>
+                </div>
+                <div class="summary-card">
+                    <div
+                        style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                        Overall Efficiency</div>
+                    <div class="summary-value" id="avg-eff" style="color: var(--status-yellow);">0%</div>
+                </div>
+            </div>
+
+            <div class="table-wrapper table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Shift</th>
+                            <th>Time</th>
+                            <th>Machine</th>
+                            <th>Process</th>
+                            <th>RM Lot No</th>
+                            <th>Part No</th>
+                            <th>Operator</th>
+                            <th>Batch No</th>
+                            <th>Target</th>
+                            <th>Actual</th>
+                            <th>OK</th>
+                            <th>NG</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/production_hourly_report.js"></script>
+
+</body>
+
+</html>

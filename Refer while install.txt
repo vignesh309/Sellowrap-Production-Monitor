@@ -1,0 +1,140 @@
+This is the code to run in the JP's computer or server to completetly change the name of part_master table to
+rm_master in order to make our new code work.
+
+-- 1. Rename the table itself
+ALTER TABLE IF EXISTS public.part_master RENAME TO rm_master;
+
+-- 2. Rename the Primary Key
+ALTER INDEX IF EXISTS part_master_pkey RENAME TO rm_master_pkey;
+
+-- 3. Rename the Unique Constraint on part_no
+ALTER TABLE IF EXISTS public.rm_master RENAME CONSTRAINT part_master_part_no_key TO rm_master_part_no_key;
+
+-- 4. Rename the custom Index you created
+ALTER INDEX IF EXISTS ix_part_master_id RENAME TO ix_rm_master_id;
+
+-- 5. Rename the Auto-Increment Sequence for the ID
+ALTER SEQUENCE IF EXISTS part_master_id_seq RENAME TO rm_master_id_seq;
+
+Current Folder Structure
+Sellowrap Production Monitor Version 2
+|--Backend
+|  |--.env
+|  |--cf_log.txt
+|  |--cloudflared.exe
+|  |--config.py
+|  |--database.py
+|  |--main.py
+|  |--mqtt_listener.py
+|  |--schemas.py
+|  |--Start_mqtt.bat
+|  |--Start_Server.bat
+|  |--summary_worker.py
+|  |--utils.py
+|  |--routers
+|  |  |--__init__.py
+|  |  |--auth.py
+|  |  |--fetchdata.py
+|  |  |--frontend.py
+|  |  |--master.py
+|  |  |--production_entry.py
+|  |  |--reports.py
+|  |--services
+|  |  |--telegram_notifier.py
+|  |--__pycache__
+|
+|--Frontend
+|  |--batch_ledger.html
+|  |--css
+|  |  |--batch_ledger.css
+|  |  |--detailed_rejections_report.css
+|  |  |--detailed_shortfalls_report.css
+|  |  |--employee_master.css
+|  |  |--iot_report.css
+|  |  |--iot_summary.css
+|  |  |--machine_master.css
+|  |  |--oee_summary.css
+|  |  |--part_master.css
+|  |  |--partwise_report.css
+|  |  |--production_hourly_report.css
+|  |  |--production_hourly_status.css
+|  |  |--productionstatus.css
+|  |  |--shift_summary.css
+|  |  |--stage1.css
+|  |--detailed_rejections_report.html
+|  |--detailed_shortfalls_report.html
+|  |--employee_master.html
+|  |--hub.html
+|  |--img
+|  |--iot_report.html
+|  |--iot_summary.html
+|  |--js
+|  |  |--batch_ledger.js
+|  |  |--detailed_rejections_report.js
+|  |  |--detailed_shortfalls_report.js
+|  |  |--employee_master.js
+|  |  |--iot_report.js
+|  |  |--iot_summary.js
+|  |  |--loss_analysis.js
+|  |  |--machine_master.js
+|  |  |--oee_summary.js
+|  |  |--part_master.js
+|  |  |--partwise_report.js
+|  |  |--production_hourly_report.js
+|  |  |--production_hourly_status.js
+|  |  |--productionstatus.js
+|  |  |--shift_summary.js
+|  |  |--stage1.js
+|  |  |--js libraries
+|  |     |--chart.js
+|  |     |--xlsx.full.min.js
+|  |--login.html
+|  |--loss_analysis.html
+|  |--machine_master.html
+|  |--oeeteep_dashboard.html
+|  |--oee_summary.html
+|  |--part_master.html
+|  |--partwise_report.html
+|  |--Plant_kpi_performance
+|  |  |--non_hazardous_waste_generation_report.html
+|  |--production_entry_stage_1.html
+|  |--production_hourly_report.html
+|  |--production_hourly_status.html
+|  |--productionstatus.html
+|  |--shift_summary.html
+|  |--teep_summary.html
+|
+|--Refer while install.txt
+
+Checklist for deploying in ADS System
+
+1. Copy paste the entire project files with Frontend and Backend.
+2. Change the Logo in the img folder of Frontend.
+3. Change the .env files according to the database name and password
+4. In the .env file paste the correct telegram bot token and chat ID
+5. In the telegram_notifier.py file need to update the cloudflare id message
+6. After installation of the postgresql and pgadmin need to add a line in the pg_hba.conf
+file which will be normally in the location "C:\Program Files\PostgreSQL\18\data\pg_hba.conf".
+This line should be added below the field where "# IPv4 local connections:" is present.
+host    all             all             0.0.0.0/0               scram-sha-256
+7. In the postgresql.conf file make sure this line is present "listen_addresses = '*'"
+under the #-Connection Settings - field so that any device can communicate with database.
+8. Download mosquito broker service from the internet and install it.
+9. After installation of mosquito broker get to the location "C:\Program Files\Mosquitto" 
+and open the mosquitto.conf file inside that paste the lines just below this "#include_dir"
+line. 
+listener 1883 0.0.0.0
+allow_anonymous true
+persistence true
+persistence_file mosquitto.db
+so that mosquito will listen in port 1883 for machine trigger counts.
+
+pip install paho-mqtt uvicorn fastapi psycopg2-binary python-dotenv apscheduler requests
+PyTelegramBotAPI Pillow qrcode[pil]
+
+
+Testing scenarios
+
+unpluging the lan cable and giving two to three triggers then shutting down raspberry pi then after
+that powering on pi device after some seconds no data is coming from pi device to the mqtt_listener 
+service, so i have a doubt turning off the raspberry pi is deleting data in machine.db

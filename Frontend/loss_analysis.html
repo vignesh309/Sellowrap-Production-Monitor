@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loss Analysis Dashboard - Jayashree ERP</title>
+<link rel="stylesheet" href="/static/css/batch_ledger.css">
+<script src="/static/js/js libraries/chart.js"></script>
+<style>
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+    .chart-container { 
+        background: var(--bg-panel); 
+        border: 1px solid var(--border-color); 
+        border-radius: 12px; 
+        padding: 20px; 
+        height: 400px;
+        position: relative;
+    }
+    .chart-title { color: var(--text-muted); font-size: 14px; margin-bottom: 15px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+    
+    @media (max-width: 1000px) { .dashboard-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="brand">
+        <h2>📊 Production Loss Analysis</h2>
+    </div>
+    <button class="hub-btn" onclick="window.location.href='/production-reports-hub'">Return to Hub</button>
+</div>
+
+<div class="container">
+    <div class="card">
+        
+        <div class="search-container" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 30px;">
+            <div style="display: flex; gap: 10px; align-items: center; background: var(--bg-input); padding: 0 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <label style="margin: 0; color: var(--text-muted); font-size: 12px;">Range:</label>
+                <input type="date" id="startDate" style="border: none; padding: 10px 5px;">
+                <input type="date" id="endDate" style="border: none; padding: 10px 5px;">
+            </div>
+
+            <select id="machineFilter" style="padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: white; outline: none;">
+                <option value="">All Machines</option>
+             </select>
+
+            <button class="btn-primary" onclick="refreshDashboard()">Update Analysis</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="chart-container">
+                <div class="chart-title">Quality Loss: Top Rejection Reasons</div>
+                <canvas id="rejectionChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Availability Loss: Top Shortfall Reasons</div>
+                <canvas id="shortfallChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="/static/js/loss_analysis.js"></script>
+</body>
+</html>

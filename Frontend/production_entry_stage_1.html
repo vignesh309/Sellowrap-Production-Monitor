@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stage 1: Hourly Production Entry</title>
+    <link rel="stylesheet" href="/static/css/stage1.css" />
+  </head>
+
+  <body>
+    <div class="navbar">
+      <div class="brand">
+        <img
+          src="/static/img/Company_logo.png"
+          alt="Logo"
+          onerror="this.style.display = 'none'"
+        />
+        <h2>Stage 1: Hourly Production</h2>
+      </div>
+      <div class="nav-utils">
+        <button
+          class="hub-btn"
+          onclick="window.location.href = '/hub'"
+          title="Return to Hub"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+          </svg>
+          Return to Hub
+        </button>
+        <div class="user-profile">
+          <div class="avatar" id="user-avatar">A</div>
+          <div class="user-info">
+            <span id="user-display" class="user-name">Admin01</span>
+            <span id="role-display" class="user-role">ADMIN</span>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="logout()" title="Secure Logout">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"
+            ></path>
+          </svg>
+          Log Out
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="card">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px dashed rgba(81, 128, 230, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+          "
+        >
+          <h2 class="section-title" style="margin: 0; border: none; padding: 0">
+            Stage 1: Hourly Production Entry
+          </h2>
+
+          <div style="display: flex; gap: 15px; align-items: center">
+            <div style="margin-top: 16px">
+              <button
+                id="btn_part_change"
+                onclick="triggerPartChange()"
+                style="
+                  padding: 0 15px;
+                  font-size: 13px;
+                  font-weight: bold;
+                  height: 36px;
+                  background: rgba(255, 177, 66, 0.1);
+                  border: 1px solid var(--status-yellow);
+                  color: var(--status-yellow);
+                  border-radius: 6px;
+                  cursor: pointer;
+                  transition: 0.3s;
+                  display: flex;
+                  align-items: center;
+                  gap: 5px;
+                "
+                onmouseover="
+                  this.style.background = 'var(--status-yellow)';
+                  this.style.color = 'black';
+                "
+                onmouseout="
+                  this.style.background = 'rgba(255, 177, 66, 0.1)';
+                  this.style.color = 'var(--status-yellow)';
+                "
+              >
+                🔄 Part Change
+              </button>
+            </div>
+
+            <div>
+              <label
+                style="
+                  margin: 0 0 5px 0;
+                  font-size: 11px;
+                  display: block;
+                  color: var(--text-muted);
+                  text-transform: uppercase;
+                "
+                >Production Date</label
+              >
+              <input
+                type="date"
+                id="global_date"
+                onchange="checkActiveMachineState()"
+                style="
+                  padding: 6px 10px;
+                  font-size: 13px;
+                  height: 36px;
+                  background: var(--bg-input);
+                  border: 1px solid var(--border-color);
+                  color: white;
+                  border-radius: 6px;
+                "
+              />
+            </div>
+
+            <div>
+              <label
+                style="
+                  margin: 0 0 5px 0;
+                  font-size: 11px;
+                  display: block;
+                  color: var(--text-muted);
+                  text-transform: uppercase;
+                "
+                >Shift</label
+              >
+              <select
+                id="global_shift"
+                onchange="checkActiveMachineState()"
+                style="
+                  padding: 6px 10px;
+                  font-size: 13px;
+                  height: 36px;
+                  background: var(--bg-input);
+                  border: 1px solid var(--border-color);
+                  color: white;
+                  border-radius: 6px;
+                "
+              >
+                <option value="A">Shift A (07:00 - 19:00)</option>
+                <option value="B">Shift B (19:00 - 07:00)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="sub-title">1. Setup & Operator Details</h3>
+        <div class="form-grid">
+          <div>
+            <label>Machine</label>
+            <input
+              list="machine_options"
+              id="machine"
+              class="form-control"
+              placeholder="Search Machine..."
+              autocomplete="off"
+            />
+            <datalist id="machine_options"></datalist>
+          </div>
+          <div>
+            <label>Planned Part</label>
+            <input
+              list="part_options"
+              id="part_number"
+              class="form-control"
+              placeholder="Search Part..."
+              required
+              autocomplete="off"
+              onchange="filterMoldsByPart()"
+            />
+            <datalist id="part_options"></datalist>
+          </div>
+          <div>
+            <label>Mould (Cavity)</label>
+            <select id="mould_code" required onchange="fetchMoldTargets()">
+              <option value="" disabled selected>Select Mould</option>
+            </select>
+          </div>
+          <div>
+            <label>Batch Number</label>
+            <input type="text" id="batchNo" required />
+          </div>
+          <div>
+            <label>Operator Name</label>
+            <input
+              list="operator_options"
+              type="text"
+              id="operator"
+              class="form-control"
+              placeholder="Search Operator..."
+              required
+              autocomplete="off"
+            />
+            <datalist id="operator_options"></datalist>
+          </div>
+          <div>
+            <label>Supervisor Name</label>
+            <input
+              list="supervisor_options"
+              type="text"
+              id="supervisor"
+              class="form-control"
+              placeholder="Search Supervisor..."
+              required
+              autocomplete="off"
+            />
+            <datalist id="supervisor_options"></datalist>
+          </div>
+        </div>
+
+        <h3 class="sub-title" style="margin-top: 20px">
+          2. Machine Parameters
+        </h3>
+        <div
+          class="form-grid"
+          style="
+            margin-top: 15px;
+            background: rgba(0, 229, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            margin-bottom: 20px;
+          "
+        >
+          <div>
+            <label
+              >Act. Temp (°C) [Target:
+              <span id="tgt_temp" class="target-val">-</span>]</label
+            >
+            <input type="number" id="global_temp" placeholder="Enter Actual" />
+          </div>
+          <div>
+            <label
+              >Act. Pressure [Target:
+              <span id="tgt_pressure" class="target-val">-</span>]</label
+            >
+            <input
+              type="number"
+              id="global_pressure"
+              placeholder="Enter Actual"
+            />
+          </div>
+          <div>
+            <label
+              >Act. Setting [Target:
+              <span id="tgt_setting" class="target-val">-</span>]</label
+            >
+            <input
+              type="number"
+              id="global_setting"
+              placeholder="Enter Actual"
+            />
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+            background: var(--bg-input);
+            padding: 15px;
+            border-radius: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+          "
+        >
+          <div>
+            Total Batch Yield:
+            <span
+              id="prodQty"
+              class="badge"
+              style="
+                color: var(--accent-cyan);
+                border-color: var(--accent-cyan);
+              "
+              >0</span
+            >
+            pcs
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px">
+            <label style="margin: 0; font-size: 13px"
+              >Hourly Target (Shots):</label
+            >
+            <input
+              type="number"
+              id="hourlyTargetShots"
+              value="0"
+              oninput="updateAllHourBlocks()"
+              style="
+                width: 80px;
+                padding: 6px;
+                text-align: center;
+                font-weight: bold;
+                color: var(--status-yellow);
+              "
+            />
+          </div>
+        </div>
+        <!-- REPLACED 3. HOURLY BREAKDOWN TITLE -->
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+          "
+        >
+          <h3 class="sub-title" style="margin: 0; border: none; padding: 0;">
+            3. Hourly Breakdown
+          </h3>
+          
+          <label class="custom-checkbox-container" style="display: inline-flex; width: auto; padding: 0; align-items: center; cursor: pointer;">
+            <input type="checkbox" id="global_no_plan_check" onchange="toggleGlobalNoPlan()" />
+            <span class="checkmark"></span>
+            <span class="checkbox-text" style="font-size: 13px; font-weight: bold; color: var(--status-yellow); letter-spacing: 0.5px;">
+              Mark All as No Plan
+            </span>
+          </label>
+        </div>
+
+        <div class="hourly-tabs-container" id="hourly-tabs"></div>
+
+        <div id="hourly-grid"></div>
+        <div id="hourly-grid"></div>
+
+        <div class="grand-totals">
+          <div>
+            <span class="total-label">Total Shots</span>
+            <span id="grand-shots" style="color: var(--status-yellow)">0</span>
+          </div>
+          <div>
+            <span class="total-label">Total OK Parts</span>
+            <span id="grand-ok" style="color: var(--status-green)">0</span>
+          </div>
+          <div>
+            <span class="total-label">Total NG Parts</span>
+            <span id="grand-ng" style="color: var(--status-red)">0</span>
+          </div>
+          <div>
+            <span class="total-label">Total Produced Quantity</span>
+            <span id="grand-actual" style="color: var(--accent-cyan)">0</span>
+          </div>
+        </div>
+
+        <div class="finalization-panel" style="margin-top: 30px">
+          <div class="finalization-row">
+            <div class="batch-remarks-panel">
+              <label for="batch_remarks">Batch / Shift Remarks</label>
+              <textarea
+                id="batch_remarks"
+                rows="1"
+                placeholder="Enter any notes, machine issues, or shift details here before finalizing..."
+                class="batch-remarks-input"
+              ></textarea>
+            </div>
+
+            <label class="override-outline-box">
+              <input type="checkbox" id="part_change_override" />
+              <span class="custom-checkmark"></span>
+              <span class="override-text">Part Change Finalization</span>
+            </label>
+          </div>
+
+          <button
+            id="btn_finalize"
+            class="btn-primary"
+            onclick="finalizeBatch()"
+            style="
+              width: 100%;
+              margin-top: 0;
+              padding: 15px;
+              font-size: 16px;
+              letter-spacing: 1px;
+              text-transform: uppercase;
+            "
+          >
+            Finalize Batch
+          </button>
+        </div>
+        <p
+          id="binOutput"
+          style="
+            text-align: center;
+            color: var(--status-green);
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 15px;
+          "
+        ></p>
+      </div>
+    </div>
+
+    <script src="/static/js/stage1.js"></script>
+  </body>
+</html>

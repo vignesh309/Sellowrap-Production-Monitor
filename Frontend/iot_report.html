@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IoT Report | Sellowrap</title>
+    <link rel="stylesheet" href="/static/css/detailed_rejections_report.css"> 
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>IoT Report & Discrepancy Export</h2>
+        </div>
+        
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()" title="Secure Logout">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>From Date</label>
+            <input type="date" id="startDate">
+        </div>
+        <div class="filter-group">
+            <label>To Date</label>
+            <input type="date" id="endDate">
+        </div>
+        <div class="filter-group">
+            <label>Machine</label>
+            <select id="machineFilter">
+                <option value="ALL">All Machines</option>
+            </select>
+        </div>
+        
+        <button class="btn-generate" onclick="fetchHistoricalData()">Generate Preview</button>
+        <button class="btn-export" onclick="exportToExcel()">
+            <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-3v3h-2v-3H8v-2h3v-3h2v3h3v2zm-3-7V3.5L18.5 9H13z" />
+            </svg>
+            Download Excel
+        </button>
+    </div>
+
+    <div class="table-container">
+        <table class="report-table" id="dataTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Machine</th>
+                    <th>Hour</th>
+                    <th style="color: var(--accent-cyan);">IoT Count (Sensor)</th>
+                    <th style="color: var(--status-yellow);">Manual Log (Operator)</th>
+                    <th>Variance (Missing)</th>
+                    <th>Status</th>
+                    <th>Runtime (Min)</th>
+                    <th>Idle (Min)</th>
+                    <th>Avg Cycle (s)</th>
+                    <th>Operator Logged</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 30px;">Select filters and generate report</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/iot_report.js"></script>
+</body>
+</html>

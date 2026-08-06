@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>IoT Command Center | Sellowrap</title>
+    <link rel="stylesheet" href="/static/css/iot_summary.css" />
+    <script src="/static/js/js libraries/chart.js"></script>
+    <style>
+      /* Basic styling for the new report sections so they match your glass-panel theme */
+      .report-section {
+        margin-bottom: 25px;
+        padding: 20px;
+      }
+      .report-section h3 {
+        margin-top: 0;
+        color: var(--accent-cyan);
+        border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+
+      /* Heatmap Grid Styles */
+      .heatmap-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow-x: auto;
+      }
+      .heatmap-row {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+      .heatmap-label {
+        width: 80px;
+        font-weight: bold;
+        color: var(--text-muted);
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+      .heatmap-cell {
+        flex: 1;
+        height: 35px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 11px;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 0.8);
+        transition: transform 0.2s;
+        cursor: pointer;
+      }
+      .heatmap-cell:hover {
+        filter: brightness(
+          1.2
+        ); /* Makes the color slightly brighter instead of making it bigger */
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6); /* Adds an inner border that won't shift the layout */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="brand">
+        <img
+          src="/static/img/Company_logo.png"
+          alt="Logo"
+          onerror="this.style.display = 'none'"
+        />
+        <h2>SELLOWRAP PRODUCTION MONITOR</h2>
+      </div>
+
+      <div class="nav-utils">
+        <button
+          class="hub-btn"
+          onclick="window.location.href = '/hub'"
+          title="Return to Hub"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+          </svg>
+          Return to Hub
+        </button>
+        <div class="user-profile">
+          <div class="avatar" id="user-avatar">?</div>
+          <div class="user-info">
+            <span id="user-display" class="user-name">Loading...</span>
+            <span id="role-display" class="user-role">Role</span>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="logout()" title="Secure Logout">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"
+            ></path>
+          </svg>
+          Log Out
+        </button>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="filters glass-panel">
+        <div class="filter-group">
+          <label>Date:</label>
+          <input type="date" id="filterDate" />
+        </div>
+        <div class="filter-group">
+          <label>Machine:</label>
+          <select id="filterMachine">
+            <option value="">All Machines</option>
+          </select>
+        </div>
+        <button class="btn-action" onclick="loadIoTSummary()">
+          Generate Dashboard
+        </button>
+      </div>
+
+      <div class="summary-cards">
+        <div class="card glass-panel">
+          <h4>Total Sensor Counts</h4>
+          <div class="val" id="sum-parts" style="color: var(--accent-cyan)">
+            0
+          </div>
+        </div>
+        <div class="card glass-panel">
+          <h4>Total Runtime (Hrs)</h4>
+          <div class="val" id="sum-runtime" style="color: var(--status-green)">
+            0.00
+          </div>
+        </div>
+        <div class="card glass-panel">
+          <h4>Total Idle (Hrs)</h4>
+          <div class="val" id="sum-idle" style="color: var(--status-red)">
+            0.00
+          </div>
+        </div>
+        <div class="card glass-panel">
+          <h4>Hardware Availability</h4>
+          <div class="val" id="sum-avail" style="color: var(--status-yellow)">
+            0%
+          </div>
+        </div>
+      </div>
+
+      <div class="report-section glass-panel">
+        <h3>Machine Performance & Speed Stability</h3>
+        <div style="position: relative; height: 250px; width: 100%">
+          <canvas id="speedChart"></canvas>
+        </div>
+      </div>
+
+      <div class="report-section glass-panel">
+        <h3>Shift Availability Heatmap</h3>
+        <div id="heatmapContainer" class="heatmap-grid">
+          <div
+            style="text-align: center; color: var(--text-muted); padding: 20px"
+          >
+            Generate report to view heatmap
+          </div>
+        </div>
+      </div>
+
+      <div class="report-section glass-panel table-wrapper">
+        <h3>The Honesty Check: IoT Count vs Manual Logs</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Machine</th>
+              <th>Hour Block</th>
+              <th style="color: var(--accent-cyan)">IoT Count (Actual)</th>
+              <th style="color: var(--status-yellow)">Manual Logged Qty</th>
+              <th style="color: var(--status-red)">Missing / Unreported</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="discrepancyTableBody">
+            <tr>
+              <td colspan="6" style="text-align: center; color: gray">
+                Select criteria to load discrepancy data
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="report-section glass-panel table-wrapper">
+        <h3>Raw Hourly IoT Data</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Machine</th>
+              <th>Hour Blk</th>
+              <th>Start Time</th>
+              <th>Stop Time</th>
+              <th>IoT Count</th>
+              <th>Avg Cycle (s)</th>
+              <th>Min Cycle (s)</th>
+              <th>Max Cycle (s)</th>
+              <th>Run (Min)</th>
+              <th>Idle (Min)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="iotTableBody">
+            <tr>
+              <td colspan="11" style="text-align: center; color: gray">
+                Select criteria to load raw data
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="/static/js/iot_summary.js"></script>
+  </body>
+</html>

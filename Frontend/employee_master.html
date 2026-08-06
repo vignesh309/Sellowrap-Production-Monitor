@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Master | Sellowrap</title>
+    <link rel="stylesheet" href="/static/css/employee_master.css">
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>SELLOWRAP SYSTEM ADMIN</h2>
+        </div>
+        
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'" title="Return to Hub">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()" title="Secure Logout">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        
+        <div class="form-section glass-panel">
+            <div class="section-header">
+                <h3>Add / Edit Employee</h3>
+                <span class="badge">Admin Access</span>
+            </div>
+
+            <form id="employeeForm">
+                <input type="hidden" id="emp_id"> <div class="input-group">
+                    <label for="emp_code">Employee Code</label>
+                    <input type="text" id="emp_code" placeholder="e.g. EMP-003" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" placeholder="Enter full name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="job_role">Job Role</label>
+                    <select id="job_role" required>
+                        <option value="" disabled selected>Select Role...</option>
+                        <option value="Operator">Operator</option>
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="username">System Username</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password_hash">Password</label>
+                    <input type="password" id="password_hash" placeholder="Enter password" disabled required>
+                </div>
+
+                <!-- ==========================================
+                     OTP AUTHORIZATION PANEL
+                ========================================== -->
+                <div class="password-reset-section">
+                    <label class="toggle-link">
+                        <input type="checkbox" id="toggle-otp-section" class="hidden-checkbox">
+                        <span class="toggle-text">🔄 Request Password Change Authorization</span>
+                    </label>
+                    
+                    <div class="otp-container">
+                        <p class="otp-helper">Send authorization code via Telegram:</p>
+                        
+                        <div class="otp-row">
+                            <span class="auth-name">System Admin</span>
+                            <button type="button" class="btn-otp">Get OTP</button>
+                        </div>
+                        
+                        <div class="otp-input-group">
+                            <input type="text" id="otp_code" placeholder="ENTER 6-DIGIT OTP" class="otp-input" maxlength="6">
+                            <button type="button" id="btn-verify-otp" class="btn-verify">Verify</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group toggle-group">
+                    <label>Account Status</label>
+                    <label class="switch">
+                        <input type="checkbox" id="is_active" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span id="status-text" style="color: var(--status-green); font-weight: bold; margin-left: 10px;">Active</span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="resetForm()">Clear</button>
+                    <button type="submit" class="btn-primary">Save Employee</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-section glass-panel">
+            <div class="section-header" style="justify-content: space-between;">
+                <h3>Employee Directory</h3>
+                <input type="text" id="searchBox" class="search-input" placeholder="Search employees..." onkeyup="filterTable()">
+            </div>
+
+            <div class="table-wrapper">
+                <table id="employeeTable">
+                    <thead>
+                        <tr>
+                            <th>Emp Code</th>
+                            <th>Full Name</th>
+                            <th>Role</th>
+                            <th>Username</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <tr>
+                            <td class="highlight">EMP-001</td>
+                            <td>John Doe</td>
+                            <td><span class="role-badge role-operator">Operator</span></td>
+                            <td>johnd</td>
+                            <td><span class="status-indicator active">Active</span></td>
+                            <td><button class="btn-edit" onclick="editRow(this)">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">SUP-101</td>
+                            <td>Mike Bossman</td>
+                            <td><span class="role-badge role-supervisor">Supervisor</span></td>
+                            <td>mikeb</td>
+                            <td><span class="status-indicator active">Active</span></td>
+                            <td><button class="btn-edit" onclick="editRow(this)">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td class="highlight">admin01</td>
+                            <td>Administrator</td>
+                            <td><span class="role-badge role-admin">Admin</span></td>
+                            <td>admin01</td>
+                            <td><span class="status-indicator inactive">Inactive</span></td>
+                            <td><button class="btn-edit" onclick="editRow(this)">Edit</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/employee_master.js"></script>
+</body>
+</html>

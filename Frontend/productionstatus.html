@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Floor Status</title>
+    <link rel="stylesheet" href="/static/css/productionstatus.css">
+</head>
+
+<body>
+
+    <div class="navbar" id="top-navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo">
+            <h2>Factory View</h2>
+        </div>
+
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'" title="Return to Hub"
+                style="display: flex; align-items: center; gap: 8px;">
+                <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="logout()" title="Secure Logout">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="filter-bar" id="filter-bar"
+        style="background: var(--bg-panel); padding: 15px 40px; display: flex; gap: 25px; align-items: center; border-bottom: 1px solid var(--border-color);">
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label
+                style="color: var(--accent-cyan); font-weight: bold; font-size: 12px; text-transform: uppercase;">Machine:</label>
+            <select id="machine_select" onchange="fetchLiveStatus()"
+                style="background: var(--bg-input); border: 1px solid var(--border-color); color: white; padding: 8px 12px; border-radius: 6px; outline: none; cursor: pointer; width: 200px;">
+                <option value="ALL">-- All Machines --</option>
+            </select>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label
+                style="color: var(--accent-cyan); font-weight: bold; font-size: 12px; text-transform: uppercase;">Date:</label>
+            <input type="date" id="live_date" onchange="fetchLiveStatus()"
+                style="background: var(--bg-input); border: 1px solid var(--border-color); color: white; padding: 7px 12px; border-radius: 6px; outline: none; cursor: pointer; color-scheme: dark;">
+        </div>
+
+        <button onclick="enableFullscreen()"
+            style="margin-left: auto; background: rgba(0, 229, 255, 0.1); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s;"
+            onmouseover="this.style.background='var(--accent-cyan)'; this.style.color='black';"
+            onmouseout="this.style.background='rgba(0, 229, 255, 0.1)'; this.style.color='var(--accent-cyan)';">
+            📺 Fullscreen TV Mode
+        </button>
+    </div>
+
+    <div class="machine-grid">
+    </div>
+    <script src="/static/js/productionstatus.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,255 @@
+/* =========================================
+       GLOBAL THEME & LAYOUT
+       ========================================= */
+    :root {
+        --bg-main: #14172b;
+        --bg-panel: #1e223c;
+        --bg-input: #262a47;
+        --border-color: #5180e6;
+        --text-main: #ffffff;
+        --text-muted: #c1deff;
+        --accent-cyan: #00e5ff;
+        --status-green: #00f076;
+        --status-yellow: #ffcf00;
+        --status-red: #ff2a7a;
+    }
+
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        background-color: var(--bg-main); 
+        color: var(--text-main); 
+        margin: 0; 
+        padding: 0; 
+    }
+
+    /* --- ENTERPRISE NAVBAR --- */
+    .navbar {
+        background-color: var(--bg-panel);
+        border-bottom: 1px solid var(--border-color);
+        padding: 10px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .brand { display: flex; align-items: center; gap: 15px; }
+    .brand img { height: 50px; border-radius: 4px; }
+    .brand h2 { margin: 0; color: var(--accent-cyan); font-size: 20px; font-weight: 600;}
+
+    .nav-utils { display: flex; align-items: center; }
+    .hub-btn {
+        background: rgba(0, 229, 255, 0.1); border: 1px solid var(--accent-cyan);
+        color: var(--accent-cyan); cursor: pointer; padding: 8px 15px; border-radius: 6px;
+        font-weight: bold; margin-right: 20px; transition: 0.3s;
+    }
+    .hub-btn:hover { background: var(--accent-cyan); color: #000; }
+
+    /* --- USER IDENTITY SECTION --- */
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-right: 20px;
+        margin-right: 20px;
+        border-right: 1px solid rgba(81, 128, 230, 0.4);
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 5px;
+        background: linear-gradient(135deg, var(--accent-cyan) 0%, #0072ff 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+        color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 229, 255, 0.3);
+    }
+
+    .user-info { display: flex; flex-direction: column; justify-content: center; }
+    .user-name { font-weight: bold; font-size: 15px; color: #fff; }
+    .user-role { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;}
+
+    /* --- LOGOUT ICON --- */
+    .logout-btn {
+        background: transparent;
+        border: none;
+        color: var(--status-red);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: 0.3s;
+    }
+    .logout-btn:hover { background: rgba(255, 42, 122, 0.1); color: #ff5494; }
+    .logout-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+
+    /* --- MACHINE GRID LAYOUT (HORIZONTAL SCROLLING) --- */
+    .machine-grid {
+        display: flex;
+        flex-wrap: nowrap;          /* Forces cards into a single row */
+        overflow-x: auto;           /* Enables horizontal scrolling */
+        gap: 25px;
+        padding: 40px;
+        max-width: 100%;            /* Allows it to stretch across the whole monitor */
+        margin: 0 auto;
+        scroll-behavior: smooth;    /* Makes scrolling fluid */
+    }
+
+    /* 🎨 BONUS: Custom Enterprise Scrollbar for the Grid */
+    .machine-grid::-webkit-scrollbar {
+        height: 12px;
+    }
+    .machine-grid::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        margin: 0 40px; 
+    }
+    .machine-grid::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 10px;
+    }
+    .machine-grid::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-cyan);
+    }
+
+    /* --- Base Card (Tablet & Mobile) --- */
+    /* Keeps the horizontal scroll behavior exactly as it was */
+    .machine-card {
+        flex: 0 0 auto;             
+        width: 850px;               /* The width you liked for scrolling */
+        max-width: 90vw;            /* Safety check so it doesn't break tiny phone screens */
+        background: var(--bg-panel);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 20px;
+        box-sizing: border-box;     /* Crucial: ensures padding doesn't mess up our math */
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* --- LAPTOP & DESKTOP SCREENS --- */
+    /* Triggers only on screens wider than 1024px */
+    @media (min-width: 1024px) {
+        .machine-card {
+            /* Fits EXACTLY 2 machines perfectly on the screen */
+            /* 50% of the container minus half of the 25px grid gap */
+            width: calc(50% - 12.5px); 
+        }
+    }
+
+    /* --- TOP SECTION: INFO & GAUGE --- */
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mc-info {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        font-size: 15px;
+        flex: 1;
+    }
+
+    .info-row { display: flex; gap: 10px; }
+    .lbl { color: var(--text-muted); width: 120px; }
+    .val { font-weight: bold; color: var(--text-main); }
+    .val-cyan { color: var(--accent-cyan); font-weight: bold; }
+
+    /* --- GAUGE SECTION --- */
+    .mc-gauge {
+        position: relative;
+        width: 250px;
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .gauge-value {
+        position: absolute;
+        bottom: -15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .g-lbl { font-size: 12px; color: var(--accent-cyan); font-weight: bold; letter-spacing: 1px;}
+    .g-num { font-size: 40px; font-weight: bold; color: var(--text-main); line-height: 1; }
+
+    /* --- BOTTOM SECTION: STACKED TABLES --- */
+.card-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between the 4 tables */
+    width: 100%;
+    margin-top: 15px;
+}
+
+.table-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.table-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--accent-cyan);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(0, 229, 255, 0.05);
+    padding: 6px 10px;
+    border-radius: 4px;
+    border-left: 3px solid var(--accent-cyan);
+}
+
+.hourly-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    text-align: center;
+}
+
+.hourly-table th, .hourly-table td {
+    border: 1px solid rgba(81, 128, 230, 0.4);
+    padding: 5px 2px;
+}
+
+.hourly-table th { background-color: var(--bg-input); color: var(--text-muted); }
+.hourly-table td { color: var(--text-main); }
+.row-title { font-weight: bold; background-color: rgba(255,255,255,0.05); text-align: left; padding-left: 8px !important; color: var(--accent-cyan) !important;}
+
+/* --- 📺 LARGE TV MONITORS (1920px and above) --- */
+    @media (min-width: 1920px) {
+        /* 1. Make the core info text much larger */
+        .mc-info { font-size: 22px; gap: 18px; }
+        .lbl { width: 170px; }
+        
+        /* 2. Scale up the Gauge seamlessly using CSS transforms */
+        .mc-gauge { 
+            transform: scale(1.5); 
+            transform-origin: top center; 
+            margin-bottom: 50px; 
+        }
+
+        /* 3. Make the hourly tables readable from a distance */
+        .hourly-table { font-size: 15px; }
+        .hourly-table th, .hourly-table td { padding: 12px 6px; }
+        .table-title { font-size: 16px; padding: 10px; }
+
+        /* 4. Increase padding so the cards don't feel crowded */
+        .machine-card { padding: 40px; gap: 35px; }
+    }

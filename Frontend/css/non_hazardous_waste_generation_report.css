@@ -1,0 +1,72 @@
+:root {
+    --bg-main: #14172b;
+    --bg-panel: #1e223c;
+    --bg-input: #262a47;
+    --border-color: rgba(81, 128, 230, 0.2);
+    --text-main: #ffffff;
+    --text-muted: #c1deff;
+    --accent-cyan: #00e5ff;
+    --accent-blue: #0072ff;
+    --status-green: #00f076;
+    --status-red: #ff2a7a;
+    --status-yellow: #ffb142;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* NAVBAR */
+.navbar {
+    background-color: var(--bg-panel); border-bottom: 1px solid #5180e6;
+    padding: 10px 40px; display: flex; justify-content: space-between;
+    align-items: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: sticky; top: 0; z-index: 1000;
+}
+.brand { display: flex; align-items: center; gap: 15px; }
+.brand img { height: 50px; border-radius: 4px; }
+.brand h2 { margin: 0; color: var(--status-yellow); font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
+.nav-utils { display: flex; align-items: center; gap: 15px; }
+.user-profile { display: flex; align-items: center; gap: 12px; padding-left: 20px; border-left: 1px solid rgba(81, 128, 230, 0.4); }
+.avatar { width: 40px; height: 40px; border-radius: 5px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+.user-info { display: flex; flex-direction: column; justify-content: center; }
+.user-name { font-weight: bold; font-size: 14px; }
+.user-role { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+.hub-btn { background: rgba(0, 229, 255, 0.08); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+.hub-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+
+/* LAYOUT */
+.main-container { padding: 30px 40px; max-width: 1600px; margin: 0 auto; }
+.glass-panel { background: rgba(30, 34, 60, 0.6); backdrop-filter: blur(12px); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); padding: 20px; margin-bottom: 20px; }
+
+.header-info { display: flex; justify-content: space-between; align-items: center; }
+.info-group { display: flex; flex-direction: column; }
+.info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.info-value { font-size: 18px; font-weight: bold; color: var(--accent-cyan); }
+
+.esg-container { display: flex; gap: 20px; align-items: stretch; }
+.chart-section { flex: 2; display: flex; flex-direction: column; }
+.chart-wrapper { position: relative; height: 450px; width: 100%; flex-grow: 1; }
+.table-section { flex: 1; min-width: 350px; }
+h3 { margin-top: 0; color: var(--text-muted); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+
+/* TABLE STYLING */
+.excel-table { width: 100%; border-collapse: collapse; text-align: right; font-size: 14px; }
+.excel-table th, .excel-table td { padding: 12px; border: 1px solid var(--border-color); }
+.summary-row th { background: rgba(0,0,0,0.3); color: var(--text-muted); font-weight: normal; }
+.highlight-val { color: var(--status-yellow); font-weight: bold; font-size: 16px; }
+.column-headers th { background: var(--bg-input); color: var(--accent-cyan); text-align: center; }
+.excel-table td:first-child { text-align: left; font-weight: bold; color: var(--text-muted); }
+
+/* INPUT STYLES FOR EDIT MODE */
+.data-input { width: 80px; background: var(--bg-main); border: 1px solid var(--accent-cyan); color: white; padding: 5px; border-radius: 4px; text-align: right; outline: none; }
+.data-input:focus { box-shadow: 0 0 5px var(--accent-cyan); }
+.val-exceeded { color: var(--status-red); font-weight: bold; }
+
+.btn-primary { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #14172b; padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.btn-primary:hover { box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4); transform: translateY(-2px); }
+.btn-save { background: linear-gradient(135deg, var(--status-green), #00c853); color: #000; }

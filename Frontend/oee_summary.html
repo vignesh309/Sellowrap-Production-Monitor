@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OEE Summary Dashboard - ERP</title>
+    <link rel="stylesheet" href="/static/css/oee_summary.css" />
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="brand">
+        <img
+          src="/static/img/Company_logo.png"
+          alt="Company Logo"
+          style="height: 50px; width: auto; border-radius: 4px"
+          onerror="this.style.display = 'none'"
+        />
+        <h2>OEE SUMMARY DASHBOARD</h2>
+      </div>
+
+      <div class="nav-utils">
+        <button
+          class="hub-btn"
+          onclick="window.location.href = '/hub'"
+          title="Return to Hub"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+          </svg>
+          Return to Hub
+        </button>
+
+        <div class="user-profile">
+          <div class="avatar" id="user-avatar">?</div>
+          <div class="user-info">
+            <span id="user-display" class="user-name">Loading...</span>
+            <span id="role-display" class="user-role">Role</span>
+          </div>
+        </div>
+
+        <button class="logout-btn" onclick="logout()" title="Secure Logout">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"
+            ></path>
+          </svg>
+          Log Out
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="card">
+        <div class="search-container">
+          <div class="date-box">
+            <label>From:</label>
+            <input type="date" id="startDate" />
+            <span style="color: var(--border-color)">|</span>
+            <label>To:</label>
+            <input type="date" id="endDate" />
+          </div>
+
+          <select id="shiftFilter" class="filter-select">
+            <option value="">All Shifts</option>
+            <option value="A">Shift A</option>
+            <option value="B">Shift B</option>
+          </select>
+
+          <select id="machineFilter" class="filter-select">
+            <option value="">All Machines</option>
+            <option value="DEF-01">DEF-01</option>
+            <option value="IMM-250">IMM-250</option>
+            <option value="IMM-400">IMM-400</option>
+            <option value="TW-01">TW-01</option>
+            <option value="TW-10">TW-10</option>
+          </select>
+
+          <button class="btn-primary" onclick="loadOEEReport()">
+            Generate OEE Report
+          </button>
+
+          <button class="btn-success" onclick="exportToExcel()">
+            <svg
+              viewBox="0 0 24 24"
+              style="width: 18px; height: 18px; fill: currentColor"
+            >
+              <path
+                d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-3v3h-2v-3H8v-2h3v-3h2v3h3v2zm-3-7V3.5L18.5 9H13z"
+              />
+            </svg>
+            Download Excel
+          </button>
+        </div>
+        <!-- Add this right below your search-container -->
+        <div class="kpi-ribbon">
+          <div class="kpi-card top-kpi">
+            <div class="kpi-title">🏆 Top Machine (OEE)</div>
+            <div class="kpi-value" id="top-machine-val">--</div>
+          </div>
+          <div class="kpi-card bottom-kpi">
+            <div class="kpi-title">⚠️ Lowest Machine (OEE)</div>
+            <div class="kpi-value" id="bottom-machine-val">--</div>
+          </div>
+          <div class="kpi-card top-kpi">
+            <div class="kpi-title">🥇 Top Operator (Perf)</div>
+            <div class="kpi-value" id="top-operator-val">--</div>
+          </div>
+          <div class="kpi-card bottom-kpi">
+            <div class="kpi-title">⚠️ Lowest Operator (Perf)</div>
+            <div class="kpi-value" id="bottom-operator-val">--</div>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="dataTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Shift</th>
+                <th class="txt-left">Customer</th>
+                <th class="txt-left">Part No</th>
+                <th class="txt-left">Part Name</th>
+                <th>Machine Code</th>
+                <th class="txt-left">Process</th>
+                <th>Target Qty</th>
+                <th>Total Qty</th>
+                <th>OK Qty</th>
+                <th>NG Qty</th>
+                <th class="txt-left">Major NG Reason</th>
+                <th class="txt-left">Major Shortfall Reason</th>
+                <th>Planned Time(min)</th>
+                <th>Actual Time(min)</th>
+                <th>Unplanned DT(min)</th> <!-- 🚨 NEW COLUMN -->
+                <th>Std Cycle Time</th>
+                <th>Availability</th>
+                <th>Performance</th>
+                <th>Quality</th>
+                <th class="highlight-oee">OEE</th>
+                <th class="txt-left">Operator</th>
+                <th class="txt-left">Supervisor</th>
+                <th>Op Performance</th>
+                <th class="txt-left">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="oeeTableBody">
+              <tr>
+                <td
+                  colspan="25"
+                  style="color: var(--text-muted); font-style: italic"
+                >
+                  Select filters and click Generate to load data.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/oee_summary.js"></script>
+  </body>
+</html>
