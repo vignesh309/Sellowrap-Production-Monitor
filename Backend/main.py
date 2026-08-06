@@ -28,7 +28,6 @@ from routers import frontend, master, reports, auth, production_entry, fetchdata
 async def lifespan(app: FastAPI):
     # 1. Start the 4-Hour Telegram Alert Scheduler (Imported from services)
     start_scheduler()
-    
     # 2. Start Summary Worker
     worker_thread = threading.Thread(target=start_summary_worker)
     worker_thread.daemon = True  # Ensures it shuts down when the server closes
