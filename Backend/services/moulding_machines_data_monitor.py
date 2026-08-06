@@ -37,7 +37,7 @@ ENCODING = "shift_jis"
 CONNECT_TIMEOUT = 10
 SOCKET_TIMEOUT = 1
 XON_INTERVAL = 60.0
-STATUS_INTERVAL = 300.0  # Changed to 5 minutes (300 seconds)
+STATUS_INTERVAL = 900.0  # Changed to 15 minutes (900 seconds)
 
 XON = b'\x11'
 CR = b'\r'
