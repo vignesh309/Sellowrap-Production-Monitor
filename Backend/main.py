@@ -12,7 +12,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 # 🚨 Import our relocated functions!
-from utils import start_cloudflare_tunnel
 from services.telegram_notifier import start_scheduler
 from summary_worker import start_summary_worker
 
@@ -27,20 +26,15 @@ from routers import frontend, master, reports, auth, production_entry, fetchdata
 # =========================
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 1. Start Cloudflare tunnel (Imported from utils.py)
-    cf_thread = threading.Thread(target=start_cloudflare_tunnel)
-    cf_thread.daemon = True
-    cf_thread.start()
-
-    # 2. Start the 4-Hour Telegram Alert Scheduler (Imported from services)
+    # 1. Start the 4-Hour Telegram Alert Scheduler (Imported from services)
     start_scheduler()
     
-    # 3. Start Summary Worker
+    # 2. Start Summary Worker
     worker_thread = threading.Thread(target=start_summary_worker)
     worker_thread.daemon = True  # Ensures it shuts down when the server closes
     worker_thread.start()
 
-    # 4. Start APScheduler for Auto-Finalization
+    # 3. Start APScheduler for Auto-Finalization
     scheduler = BackgroundScheduler()
     
     # 07:05 AM -> Finalize Shift A from yesterday
@@ -66,7 +60,7 @@ async def lifespan(app: FastAPI):
 
     yield  # The FastAPI server runs while yielding here
 
-    # 5. Clean Shutdown
+    # 4. Clean Shutdown
     scheduler.shutdown()
     print("Background Task Scheduler Stopped cleanly.")
 

@@ -18,93 +18,93 @@ ALTER SEQUENCE IF EXISTS part_master_id_seq RENAME TO rm_master_id_seq;
 
 Current Folder Structure
 Sellowrap Production Monitor Version 2
-|--Backend
-|  |--.env
-|  |--cf_log.txt
-|  |--cloudflared.exe
-|  |--config.py
-|  |--database.py
-|  |--main.py
-|  |--mqtt_listener.py
-|  |--schemas.py
-|  |--Start_mqtt.bat
-|  |--Start_Server.bat
-|  |--summary_worker.py
-|  |--utils.py
-|  |--routers
-|  |  |--__init__.py
-|  |  |--auth.py
-|  |  |--fetchdata.py
-|  |  |--frontend.py
-|  |  |--master.py
-|  |  |--production_entry.py
-|  |  |--reports.py
-|  |--services
-|  |  |--telegram_notifier.py
-|  |--__pycache__
-|
-|--Frontend
-|  |--batch_ledger.html
-|  |--css
-|  |  |--batch_ledger.css
-|  |  |--detailed_rejections_report.css
-|  |  |--detailed_shortfalls_report.css
-|  |  |--employee_master.css
-|  |  |--iot_report.css
-|  |  |--iot_summary.css
-|  |  |--machine_master.css
-|  |  |--oee_summary.css
-|  |  |--part_master.css
-|  |  |--partwise_report.css
-|  |  |--production_hourly_report.css
-|  |  |--production_hourly_status.css
-|  |  |--productionstatus.css
-|  |  |--shift_summary.css
-|  |  |--stage1.css
-|  |--detailed_rejections_report.html
-|  |--detailed_shortfalls_report.html
-|  |--employee_master.html
-|  |--hub.html
-|  |--img
-|  |--iot_report.html
-|  |--iot_summary.html
-|  |--js
-|  |  |--batch_ledger.js
-|  |  |--detailed_rejections_report.js
-|  |  |--detailed_shortfalls_report.js
-|  |  |--employee_master.js
-|  |  |--iot_report.js
-|  |  |--iot_summary.js
-|  |  |--loss_analysis.js
-|  |  |--machine_master.js
-|  |  |--oee_summary.js
-|  |  |--part_master.js
-|  |  |--partwise_report.js
-|  |  |--production_hourly_report.js
-|  |  |--production_hourly_status.js
-|  |  |--productionstatus.js
-|  |  |--shift_summary.js
-|  |  |--stage1.js
-|  |  |--js libraries
-|  |     |--chart.js
-|  |     |--xlsx.full.min.js
-|  |--login.html
-|  |--loss_analysis.html
-|  |--machine_master.html
-|  |--oeeteep_dashboard.html
-|  |--oee_summary.html
-|  |--part_master.html
-|  |--partwise_report.html
-|  |--Plant_kpi_performance
-|  |  |--non_hazardous_waste_generation_report.html
-|  |--production_entry_stage_1.html
-|  |--production_hourly_report.html
-|  |--production_hourly_status.html
-|  |--productionstatus.html
-|  |--shift_summary.html
-|  |--teep_summary.html
-|
-|--Refer while install.txt
+├── Backend
+│   ├── .env
+│   ├── cf_log.txt
+│   ├── cloudflared.exe
+│   ├── config.py
+│   ├── database.py
+│   ├── main.py
+│   ├── mqtt_listener.py
+│   ├── schemas.py
+│   ├── Start_mqtt.bat
+│   ├── Start_Server.bat
+│   ├── summary_worker.py
+│   ├── utils.py
+│   ├── routers
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── fetchdata.py
+│   │   ├── frontend.py
+│   │   ├── master.py
+│   │   ├── production_entry.py
+│   │   └── reports.py
+│   ├── services
+│   │   └── telegram_notifier.py
+│   └── __pycache__
+│
+├── Frontend
+│   ├── batch_ledger.html
+│   ├── detailed_rejections_report.html
+│   ├── detailed_shortfalls_report.html
+│   ├── employee_master.html
+│   ├── hub.html
+│   ├── iot_report.html
+│   ├── iot_summary.html
+│   ├── login.html
+│   ├── loss_analysis.html
+│   ├── machine_master.html
+│   ├── oeeteep_dashboard.html
+│   ├── oee_summary.html
+│   ├── part_master.html
+│   ├── partwise_report.html
+│   ├── production_entry_stage_1.html
+│   ├── production_hourly_report.html
+│   ├── production_hourly_status.html
+│   ├── productionstatus.html
+│   ├── shift_summary.html
+│   ├── teep_summary.html
+│   ├── css
+│   │   ├── batch_ledger.css
+│   │   ├── detailed_rejections_report.css
+│   │   ├── detailed_shortfalls_report.css
+│   │   ├── employee_master.css
+│   │   ├── iot_report.css
+│   │   ├── iot_summary.css
+│   │   ├── machine_master.css
+│   │   ├── oee_summary.css
+│   │   ├── part_master.css
+│   │   ├── partwise_report.css
+│   │   ├── production_hourly_report.css
+│   │   ├── production_hourly_status.css
+│   │   ├── productionstatus.css
+│   │   ├── shift_summary.css
+│   │   └── stage1.css
+│   ├── img
+│   ├── js
+│   │   ├── batch_ledger.js
+│   │   ├── detailed_rejections_report.js
+│   │   ├── detailed_shortfalls_report.js
+│   │   ├── employee_master.js
+│   │   ├── iot_report.js
+│   │   ├── iot_summary.js
+│   │   ├── loss_analysis.js
+│   │   ├── machine_master.js
+│   │   ├── oee_summary.js
+│   │   ├── part_master.js
+│   │   ├── partwise_report.js
+│   │   ├── production_hourly_report.js
+│   │   ├── production_hourly_status.js
+│   │   ├── productionstatus.js
+│   │   ├── shift_summary.js
+│   │   ├── stage1.js
+│   │   └── js libraries
+│   │       ├── chart.js
+│   │       └── xlsx.full.min.js
+│   └── Plant_kpi_performance
+│       └── non_hazardous_waste_generation_report.html
+│
+└── Refer while install.txt
 
 Checklist for deploying in ADS System
 
