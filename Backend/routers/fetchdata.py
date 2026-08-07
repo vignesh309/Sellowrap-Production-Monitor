@@ -167,17 +167,37 @@ def get_live_moulding_data(machine_code: str, date: str = None):
         if mold_row:
             response_data["mold_name"] = mold_row[0]
             
-        # 5. Fetch IoT Counts for the specific date
+        # 5. 🚨 SMART QUERY: Calculate exact hourly shots directly from the PLC monitor table
         if date:
-            cur.execute("""
-                SELECT hour_no, part_count FROM machine_hourly_summary 
-                WHERE machine_code = %s AND summary_date = %s
-            """, (machine_code, date))
+            cur.execute(f"""
+                WITH FirstShots AS (
+                    -- Get the very first shot count recorded at the start of each hour
+                    SELECT DISTINCT ON (EXTRACT(HOUR FROM monitor_timestamp))
+                        EXTRACT(HOUR FROM monitor_timestamp) AS hr,
+                        shot_count
+                    FROM moulding_machines_monitor1_{suffix}
+                    WHERE machine_id = %s AND DATE(monitor_timestamp) = %s
+                    ORDER BY EXTRACT(HOUR FROM monitor_timestamp), monitor_timestamp ASC
+                )
+                SELECT 
+                    hr,
+                    -- Subtract current hour's first shot from the next hour's first shot
+                    -- If it is the current running hour, subtract from the absolute MAX shot count right now
+                    COALESCE(
+                        LEAD(shot_count) OVER (ORDER BY hr), 
+                        (SELECT MAX(shot_count) FROM moulding_machines_monitor1_{suffix} 
+                         WHERE machine_id = %s AND DATE(monitor_timestamp) = %s AND EXTRACT(HOUR FROM monitor_timestamp) = FirstShots.hr)
+                    ) - shot_count AS hourly_shots
+                FROM FirstShots;
+            """, (machine_code, date, machine_code, date))
+            
             for row in cur.fetchall():
-                response_data["iot_counts"][row[0]] = row[1]
+                hour_no = int(row[0])
+                shots = int(row[1])
+                response_data["iot_counts"][hour_no] = shots
 
     except psycopg2.errors.UndefinedTable:
-        # If it's the 1st of a new month and the table hasn't been created yet, safely ignore
+        # Safely ignore if the table doesn't exist yet for a new month
         conn.rollback()
     except Exception as e:
         conn.rollback()

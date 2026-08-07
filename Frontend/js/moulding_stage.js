@@ -5,6 +5,7 @@ let rejectionCodes = ["Flash", "Short Shot", "Burn Mark", "Sink Mark", "Warping"
 let shortfallCodes = [];
 let currentBatchLogs = {};
 let machineList = [];
+let lastCheckedPlcString = ""; // Prevents spamming alerts every 60s
 
 // --- HOURLY TRACKING STATE ---
 const shiftAHours = [
@@ -117,9 +118,45 @@ async function syncMouldingTelemetry() {
                 }
             }
 
-            // 4. Update Mold from PLC
+            // 4. Update Mold from PLC & Run Smart Auto-Fill
             const moldEl = document.getElementById("live_mold_name");
-            if (moldEl) moldEl.innerText = data.mold_name || "--";
+            const plcMoldString = data.mold_name || "";
+            if (moldEl) moldEl.innerText = plcMoldString;
+
+            // 🚨 NEW: Auto-Populate Part & Mould Logic
+            if (plcMoldString && plcMoldString !== "--" && plcMoldString !== lastCheckedPlcString) {
+                lastCheckedPlcString = plcMoldString; // Remember it so we don't spam alerts
+                
+                // Regex looks for "Mould Name (Part Number)" format
+                const match = plcMoldString.match(/^(.*?)\s*\(([^)]+)\)$/);
+                
+                if (match) {
+                    const extractedMould = match[1].trim();
+                    const extractedPart = match[2].trim();
+                    
+                    const partInput = document.getElementById("part_number");
+                    
+                    // Only auto-fill if the operator hasn't already entered a part manually
+                    if (!partInput.value) {
+                        const partExists = partMaster.hasOwnProperty(extractedPart);
+                        const mouldExists = mouldMaster.hasOwnProperty(extractedMould);
+                        
+                        if (partExists && mouldExists) {
+                            // 1. Auto-Select Part
+                            partInput.value = extractedPart;
+                            filterMoldsByPart(); // Builds the mould dropdown synchronously
+                            
+                            // 2. Auto-Select Mould
+                            document.getElementById("mould_code").value = extractedMould;
+                            fetchMoldTargets(); // Fetches targets based on selections
+                            
+                        } else {
+                            // Show warning if the database is missing this setup
+                            alert(`⚠️ UNREGISTERED MOULD SETUP DETECTED:\n\nThe PLC is running:\nPart: ${extractedPart}\nMould: ${extractedMould}\n\nOne or both are missing from your Master database. Please create them in the Part Master page first to use auto-fill.`);
+                        }
+                    }
+                }
+            }
 
             // 5. Inject Shots into hourly blocks
             if (data.iot_counts) {
@@ -137,7 +174,7 @@ setInterval(syncMouldingTelemetry, 15000);
 // --- INITIALIZE DATA ON PAGE LOAD ---
 async function fetchMasterData() {
     try {
-        const response = await fetch('/init_stage1');
+        const response = await fetch('/api/init_moulding_stage');
         if (!response.ok) throw new Error("Failed to fetch master data");
         const data = await response.json();
 
@@ -157,6 +194,7 @@ async function fetchMasterData() {
 
         document.getElementById("machine").addEventListener("change", checkActiveMachineState);
         document.getElementById("machine").addEventListener("change", handleMachineSelection);
+        document.getElementById("machine").addEventListener("change", syncMouldingTelemetry);
         document.getElementById("global_date").addEventListener("change", checkActiveMachineState);
         document.getElementById("global_shift").addEventListener("change", checkActiveMachineState);
         document.getElementById("part_number").addEventListener("change", filterMoldsByPart);
@@ -200,10 +238,17 @@ function handleMachineSelection() {
     const selectedMachine = machineList.find(m => m.code === selectedCode);
     const processName = selectedMachine ? selectedMachine.process : "";
 
+    // 🚨 SMART FILTER: Case-insensitive process matching
     let validParts = [];
     if (processName) {
+        const cleanProcessName = processName.toUpperCase();
+        
         validParts = Object.keys(partMaster).filter(partNo => {
-            return partMaster[partNo].valid_processes && partMaster[partNo].valid_processes.includes(processName);
+            const partProcesses = partMaster[partNo].valid_processes || [];
+            // Convert all part processes to uppercase for a safe comparison
+            const cleanPartProcesses = partProcesses.map(p => p.toUpperCase());
+            
+            return cleanPartProcesses.includes(cleanProcessName);
         });
     } else {
         validParts = Object.keys(partMaster);
@@ -1052,6 +1097,7 @@ function wipeScreenForNewMachine() {
 
     if (document.getElementById("batch_remarks")) document.getElementById("batch_remarks").value = "";
     if (document.getElementById("part_change_override")) document.getElementById("part_change_override").checked = false;
+    lastCheckedPlcString = "";
 }
 
 function updateAllHourBlocks() {

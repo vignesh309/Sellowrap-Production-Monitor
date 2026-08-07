@@ -118,6 +118,116 @@ def init_stage1():
         cur.close()
         conn.close()
 
+@router.get("/api/init_moulding_stage")
+def init_moulding_stage():
+    """
+    Dedicated initialization for the Moulding Stage. 
+    Strictly filters machines and shortfalls to MOULDING processes.
+    """
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        payload = {
+            "machines": [],
+            "parts": {},
+            "moulds": {},
+            "operators": [],
+            "supervisors": [],
+            "rejections": [],
+            "shortfalls": []
+        }
+        
+        # 1. Fetch Parts and Target Data
+        cur.execute("""
+            SELECT part_no, process_name, target_temp, target_pressure, target_setting, hourly_target, mold_no 
+            FROM part_routing 
+        """)
+        for row in cur.fetchall():
+            part_no = row[0]
+            proc_name = str(row[1] or "").upper().strip()
+            mold_no = str(row[6] or "-").strip()
+            if not mold_no: mold_no = "-"
+            
+            if part_no not in payload["parts"]:
+                payload["parts"][part_no] = {"valid_processes": [], "targets": {}}
+            
+            if proc_name not in payload["parts"][part_no]["valid_processes"]:
+                payload["parts"][part_no]["valid_processes"].append(proc_name)
+                
+            if proc_name not in payload["parts"][part_no]["targets"]:
+                payload["parts"][part_no]["targets"][proc_name] = {}
+                
+            payload["parts"][part_no]["targets"][proc_name][mold_no] = {
+                "tgtTemp": float(row[2] if row[2] is not None else 0), 
+                "tgtPressure": float(row[3] if row[3] is not None else 0), 
+                "tgtSetting": float(row[4] if row[4] is not None else 0),
+                "tgtHourly": int(row[5] if row[5] is not None else 0)  
+            }
+
+        # 2. Fetch Moulds
+        cur.execute("""
+            SELECT mold_no, cavity, active_cavities, hourly_target, part_no 
+            FROM part_routing 
+            WHERE UPPER(process_name) IN ('MOULDING', 'PRESS CUT', 'THERMOWELDING') 
+              AND mold_no IS NOT NULL 
+              AND mold_no != '-'
+        """)
+        for row in cur.fetchall():
+            mold_no = row[0]
+            if mold_no not in payload["moulds"]:
+                 payload["moulds"][mold_no] = {
+                     "cavities": float(row[1] if row[1] is not None else 1.0), 
+                     "active_cavities": float(row[2] if row[2] is not None else 1.0), 
+                     "hourlyShots": int(row[3] if row[3] is not None else 0), 
+                     "linked_parts": []
+                 }
+            if row[4] not in payload["moulds"][mold_no]["linked_parts"]:
+                payload["moulds"][mold_no]["linked_parts"].append(row[4])
+
+        # 3. 🚨 FILTER: Fetch ONLY Moulding Machines
+        cur.execute("""
+            SELECT machine_code, machine_process 
+            FROM machine_master 
+            WHERE is_active = true 
+              AND UPPER(machine_process) = 'MOULDING'
+            ORDER BY machine_code ASC
+        """)
+        payload["machines"] = [
+            {"code": row[0], "process": str(row[1] or "").upper().strip()} 
+            for row in cur.fetchall()
+        ]
+
+        # 4. Fetch Employees
+        cur.execute("SELECT emp_code, full_name, job_role FROM employee_master WHERE is_active=true ORDER BY full_name ASC")
+        for row in cur.fetchall():
+            emp_string = f"{row[0]} - {row[1]}"
+            job_role = str(row[2] or "").lower()
+            if job_role == "operator":
+                payload["operators"].append(emp_string)
+            elif job_role == "supervisor":
+                payload["supervisors"].append(emp_string)
+
+        # 5. 🚨 FILTER: Fetch Rejections and strictly Moulding Shortfalls
+        cur.execute("SELECT reason_name FROM rejection_reason_master WHERE is_active=true ORDER BY reason_name ASC")
+        payload["rejections"] = [row[0] for row in cur.fetchall()]
+        
+        cur.execute("""
+            SELECT reason_name 
+            FROM shortfall_reason_master 
+            WHERE is_active = true 
+              AND 'MOULDING' = ANY(valid_processes)
+            ORDER BY reason_name ASC
+        """)
+        payload["shortfalls"] = [row[0] for row in cur.fetchall()]
+
+        return payload
+
+    except Exception as e:
+        print(f"CRITICAL ERROR IN INIT_MOULDING_STAGE: {str(e)}") 
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
 
 @router.get("/api/get_batch_logs")
 def get_batch_logs(date: str, shift: str, machine_code: str):

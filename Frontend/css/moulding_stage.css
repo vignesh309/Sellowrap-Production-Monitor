@@ -1233,3 +1233,29 @@ button.btn-primary:hover {
 .total-red { color: var(--status-red); }
 .total-cyan { color: var(--accent-cyan); }
 .success-msg { text-align: center; color: var(--status-green); font-weight: bold; margin-top: 15px; font-size: 15px; }
+
+/* =========================================
+   HOURLY BREAKDOWN ROW FIX
+   ========================================= */
+.hourly-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* This creates the full-width underline */
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.hourly-header-row h3.sub-title {
+  border-bottom: none; /* Removes the short, cut-off underline from the text */
+  margin: 0;
+  padding: 0;
+  white-space: nowrap; /* Forces the title to stay on a single line */
+}
+
+.hourly-header-row .custom-checkbox-container {
+  width: auto; /* Stops the checkbox from taking 100% width and squishing the title */
+  padding: 0;
+  margin: 0;
+}
