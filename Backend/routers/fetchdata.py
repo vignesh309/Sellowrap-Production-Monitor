@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
-from datetime import date
+from datetime import date, datetime
+
+import psycopg2
 from database import get_conn
 
 router = APIRouter()
@@ -108,3 +110,80 @@ def live_factory_status(date: str):
     finally:
         cur.close()
         conn.close()
+
+@router.get("/api/get_live_moulding_data")
+def get_live_moulding_data(machine_code: str, date: str = None):
+    conn = get_conn()
+    cur = conn.cursor()
+    
+    # Determine the current month's table suffix (e.g., aug_2026)
+    suffix = datetime.now().strftime("%b_%Y").lower()
+    
+    # Default response structure
+    response_data = {
+        "mode_status": "UNKNOWN",
+        "cycle_time": None,
+        "alarm_status": "NONE",
+        "alarm_message": "",
+        "mold_name": "--",
+        "iot_counts": {}
+    }
+    
+    try:
+        # 1. Fetch Machine Mode
+        cur.execute(f"""
+            SELECT mode_status FROM moulding_machines_mode_{suffix}
+            WHERE machine_id = %s ORDER BY mode_timestamp DESC LIMIT 1
+        """, (machine_code,))
+        mode_row = cur.fetchone()
+        if mode_row:
+            response_data["mode_status"] = mode_row[0]
+
+        # 2. Fetch Cycle Time
+        cur.execute(f"""
+            SELECT cycle_time FROM moulding_machines_monitor1_{suffix}
+            WHERE machine_id = %s ORDER BY monitor_timestamp DESC LIMIT 1
+        """, (machine_code,))
+        cycle_row = cur.fetchone()
+        if cycle_row:
+            response_data["cycle_time"] = cycle_row[0]
+
+        # 3. Fetch Alarms
+        cur.execute(f"""
+            SELECT alarm_status, alarm_message FROM moulding_machines_alarms_{suffix}
+            WHERE machine_id = %s ORDER BY alarm_timestamp DESC LIMIT 1
+        """, (machine_code,))
+        alarm_row = cur.fetchone()
+        if alarm_row:
+            response_data["alarm_status"] = alarm_row[0]
+            response_data["alarm_message"] = alarm_row[1]
+
+        # 4. Fetch Mold Name
+        cur.execute(f"""
+            SELECT mold_name FROM moulding_machines_status_{suffix}
+            WHERE machine_id = %s ORDER BY status_timestamp DESC LIMIT 1
+        """, (machine_code,))
+        mold_row = cur.fetchone()
+        if mold_row:
+            response_data["mold_name"] = mold_row[0]
+            
+        # 5. Fetch IoT Counts for the specific date
+        if date:
+            cur.execute("""
+                SELECT hour_no, part_count FROM machine_hourly_summary 
+                WHERE machine_code = %s AND summary_date = %s
+            """, (machine_code, date))
+            for row in cur.fetchall():
+                response_data["iot_counts"][row[0]] = row[1]
+
+    except psycopg2.errors.UndefinedTable:
+        # If it's the 1st of a new month and the table hasn't been created yet, safely ignore
+        conn.rollback()
+    except Exception as e:
+        conn.rollback()
+        print(f"Error fetching live moulding data: {e}")
+    finally:
+        cur.close()
+        conn.close()
+        
+    return response_data

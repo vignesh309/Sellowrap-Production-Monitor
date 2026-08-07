@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moulding Stage: Hourly Production</title>
+    <link rel="stylesheet" href="/static/css/moulding_stage.css" />
+  </head>
+
+  <body>
+    <!-- EXACT SAME NAVBAR -->
+    <div class="navbar">
+      <div class="brand">
+        <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display = 'none'" />
+        <h2>Stage 1: Moulding Production</h2>
+      </div>
+      <div class="nav-utils">
+        <button class="hub-btn" onclick="window.location.href = '/hub'" title="Return to Hub">
+          <svg viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+          </svg>
+          Return to Hub
+        </button>
+        <div class="user-profile">
+          <div class="avatar" id="user-avatar">A</div>
+          <div class="user-info">
+            <span id="user-display" class="user-name">Admin01</span>
+            <span id="role-display" class="user-role">ADMIN</span>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="logout()" title="Secure Logout">
+          <svg viewBox="0 0 24 24">
+            <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path>
+          </svg>
+          Log Out
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="card">
+        
+        <!-- HEADER & DATE/SHIFT CONFIG -->
+        <div class="header-actions">
+          <h2 class="section-title">Injection Moulding Entry</h2>
+          <div class="header-controls">
+            <button id="btn_part_change" onclick="triggerPartChange()" class="btn-part-change">
+              🔄 Part Change
+            </button>
+            <div>
+              <label class="compact-label">Production Date</label>
+              <input type="date" id="global_date" onchange="checkActiveMachineState()" class="compact-input" />
+            </div>
+            <div>
+              <label class="compact-label">Shift</label>
+              <select id="global_shift" onchange="checkActiveMachineState()" class="compact-input">
+                <option value="A">Shift A (07:00 - 19:00)</option>
+                <option value="B">Shift B (19:00 - 07:00)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW: LIVE PLC TELEMETRY PANEL -->
+        <div class="live-telemetry-panel">
+            <div class="telemetry-box">
+                <span class="telemetry-label">Machine State</span>
+                <div class="telemetry-value state-indicator" id="live_mode">
+                    <span class="pulse-dot"></span> <span id="live_mode_text">DISCONNECTED</span>
+                </div>
+            </div>
+            <div class="telemetry-box">
+                <span class="telemetry-label">Last Cycle Time</span>
+                <span class="telemetry-value" id="live_cycle_time">-- s</span>
+            </div>
+            <div class="telemetry-box">
+                <span class="telemetry-label">Active Alarm</span>
+                <span class="telemetry-value alarm-text" id="live_alarm">NONE</span>
+            </div>
+            <div class="telemetry-box">
+                <span class="telemetry-label">PLC Mold Code</span>
+                <span class="telemetry-value" id="live_mold_name">--</span>
+            </div>
+        </div>
+
+        <h3 class="sub-title">1. Setup & Operator Details</h3>
+        <div class="form-grid">
+          <div>
+            <label>Moulding Machine</label>
+            <input list="machine_options" id="machine" class="form-control" placeholder="Search Machine..." autocomplete="off" />
+            <datalist id="machine_options"></datalist>
+          </div>
+          <div>
+            <label>Planned Part</label>
+            <input list="part_options" id="part_number" class="form-control" placeholder="Search Part..." autocomplete="off" onchange="filterMoldsByPart()" />
+            <datalist id="part_options"></datalist>
+          </div>
+          <div>
+            <label>Mould (Cavity)</label>
+            <select id="mould_code" required onchange="fetchMoldTargets()">
+              <option value="" disabled selected>Select Mould</option>
+            </select>
+          </div>
+          <div>
+            <label>Batch Number</label>
+            <input type="text" id="batchNo" required />
+          </div>
+          <div>
+            <label>Operator Name</label>
+            <input list="operator_options" id="operator" class="form-control" placeholder="Search Operator..." autocomplete="off" />
+            <datalist id="operator_options"></datalist>
+          </div>
+        </div>
+
+        <!-- HOURLY TARGETS -->
+        <div class="target-ribbon">
+          <div>Total Batch Yield: <span id="prodQty" class="badge">0</span> pcs</div>
+          <div class="target-input-group">
+            <label>Hourly Target (Shots):</label>
+            <input type="number" id="hourlyTargetShots" value="0" oninput="updateAllHourBlocks()" />
+          </div>
+        </div>
+
+        <!-- HOURLY BREAKDOWN -->
+        <div class="hourly-header-row">
+          <h3 class="sub-title">2. Hourly Breakdown</h3>
+          <label class="custom-checkbox-container">
+            <input type="checkbox" id="global_no_plan_check" onchange="toggleGlobalNoPlan()" />
+            <span class="checkmark"></span>
+            <span class="checkbox-text">Mark All as No Plan</span>
+          </label>
+        </div>
+
+        <div class="hourly-tabs-container" id="hourly-tabs"></div>
+        <div id="hourly-grid"></div>
+
+        <!-- TOTALS & FINALIZATION -->
+        <div class="grand-totals">
+          <div><span class="total-label">Total Shots</span><span id="grand-shots" class="total-yellow">0</span></div>
+          <div><span class="total-label">Total OK Parts</span><span id="grand-ok" class="total-green">0</span></div>
+          <div><span class="total-label">Total NG Parts</span><span id="grand-ng" class="total-red">0</span></div>
+          <div><span class="total-label">Total Produced</span><span id="grand-actual" class="total-cyan">0</span></div>
+        </div>
+
+        <div class="finalization-panel">
+          <div class="finalization-row">
+            <div class="batch-remarks-panel">
+              <label>Batch / Shift Remarks</label>
+              <textarea id="batch_remarks" placeholder="Enter processing notes, temp changes, etc..." class="batch-remarks-input"></textarea>
+            </div>
+            <label class="override-outline-box">
+              <input type="checkbox" id="part_change_override" />
+              <span class="custom-checkmark"></span>
+              <span class="override-text">Part Change Finalization</span>
+            </label>
+          </div>
+          <button id="btn_finalize" class="btn-primary" onclick="finalizeBatch()">Finalize Batch</button>
+        </div>
+        <p id="binOutput" class="success-msg"></p>
+      </div>
+    </div>
+    <script src="/static/js/moulding_stage.js"></script>
+  </body>
+</html>

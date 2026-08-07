@@ -43,6 +43,10 @@ def production_status_page():
 def production_entry_stage_1_page():
     return FileResponse(get_html_path("production_entry_stage_1.html"))
 
+@router.get("/moulding-stage", response_class=HTMLResponse)
+def moulding_stage_page():
+    return FileResponse(get_html_path("moulding_stage.html"))
+
 
 @router.get("/production-entry-stage-2", response_class=HTMLResponse)
 def production_entry_stage_2_page():
