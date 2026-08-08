@@ -136,24 +136,24 @@ async function syncMouldingTelemetry() {
                     
                     const partInput = document.getElementById("part_number");
                     
-                    // Only auto-fill if the operator hasn't already entered a part manually
-                    if (!partInput.value) {
-                        const partExists = partMaster.hasOwnProperty(extractedPart);
-                        const mouldExists = mouldMaster.hasOwnProperty(extractedMould);
+                    const partExists = partMaster.hasOwnProperty(extractedPart);
+                    const mouldExists = mouldMaster.hasOwnProperty(extractedMould);
+                    
+                    if (partExists && mouldExists) {
+                        // 🚨 REMOVED the "is empty" check. 
+                        // Now, if the PLC reports a NEW valid setup, it ALWAYS updates the UI!
                         
-                        if (partExists && mouldExists) {
-                            // 1. Auto-Select Part
-                            partInput.value = extractedPart;
-                            filterMoldsByPart(); // Builds the mould dropdown synchronously
-                            
-                            // 2. Auto-Select Mould
-                            document.getElementById("mould_code").value = extractedMould;
-                            fetchMoldTargets(); // Fetches targets based on selections
-                            
-                        } else {
-                            // Show warning if the database is missing this setup
-                            alert(`⚠️ UNREGISTERED MOULD SETUP DETECTED:\n\nThe PLC is running:\nPart: ${extractedPart}\nMould: ${extractedMould}\n\nOne or both are missing from your Master database. Please create them in the Part Master page first to use auto-fill.`);
-                        }
+                        // 1. Auto-Select Part
+                        partInput.value = extractedPart;
+                        filterMoldsByPart(); // Builds the mould dropdown synchronously
+                        
+                        // 2. Auto-Select Mould
+                        document.getElementById("mould_code").value = extractedMould;
+                        fetchMoldTargets(); // Fetches targets based on selections
+                        
+                    } else {
+                        // Show warning if the database is missing this setup
+                        alert(`⚠️ UNREGISTERED MOULD SETUP DETECTED:\n\nThe PLC is running:\nPart: ${extractedPart}\nMould: ${extractedMould}\n\nOne or both are missing from your Master database. Please create them in the Part Master page first to use auto-fill.`);
                     }
                 }
             }
