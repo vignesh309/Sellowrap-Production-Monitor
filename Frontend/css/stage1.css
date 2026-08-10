@@ -1014,15 +1014,26 @@ button.btn-primary:hover {
     gap: 15px;
   }
 
+/* ADD THIS NEW CODE INSTEAD */
   .card > div:first-child > div:last-child {
     display: flex !important;
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;       /* Changes layout from vertical to horizontal */
+    flex-wrap: wrap;           /* Allows wrapping to two lines on tiny screens */
+    align-items: flex-end;     /* Keeps the button aligned with the inputs */
+    gap: 10px;
+    width: 100%;
+  }
+
+  /* Ensures the 3 items (Button, Date, Shift) share the row equally */
+  .card > div:first-child > div:last-child > div {
+    flex: 1 1 auto;
+    min-width: 105px; /* Prevents fields from getting too squished */
   }
 
   #btn_part_change {
     width: 100%;
     justify-content: center;
+    padding: 0 10px !important;
   }
 
   /* Standardize mobile inputs for Fat-Finger touch */
