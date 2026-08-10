@@ -1259,3 +1259,48 @@ button.btn-primary:hover {
   padding: 0;
   margin: 0;
 }
+/* =========================================
+   PROCESS SELECTOR BUTTONS
+   ========================================= */
+.process-selector {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap; /* Allows wrapping on very small screens */
+}
+
+.process-btn {
+  flex: 1 1 auto;
+  min-width: 120px;
+  padding: 12px 20px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Hover Effect for Unselected Buttons */
+.process-btn:hover {
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+/* Highlight Effect for the Current Page */
+.process-btn.active {
+  background: rgba(0, 229, 255, 0.15);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}

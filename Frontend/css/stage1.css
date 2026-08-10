@@ -1117,3 +1117,68 @@ button.btn-primary:hover {
     width: 100%;
   }
 }
+
+/* =========================================
+   PROCESS SELECTOR BUTTONS
+   ========================================= */
+.process-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  overflow-x: auto; /* Enables horizontal scrolling */
+  flex-wrap: nowrap; /* Forces them into one line */
+  padding-bottom: 12px;
+  -webkit-overflow-scrolling: touch;
+  
+  /* MODERN SCROLLBAR (Forces Chrome/Edge to use dark theme) */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) rgba(0, 0, 0, 0.2);
+}
+
+/* WEBKIT FALLBACKS */
+.process-selector::-webkit-scrollbar {
+  height: 6px;
+}
+
+.process-selector::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2); 
+  border-radius: 4px;
+}
+
+.process-selector::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.process-selector::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}
+
+.process-btn {
+  flex: 0 0 auto; 
+  min-width: 130px;
+  padding: 10px 15px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s;
+  text-align: center;
+}
+
+.process-btn:hover {
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--accent-cyan);
+}
+
+.process-btn.active {
+  background: rgba(0, 229, 255, 0.15);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}

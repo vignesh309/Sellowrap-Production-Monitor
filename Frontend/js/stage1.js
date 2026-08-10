@@ -73,7 +73,7 @@ function logout() {
 }
 // ==========================================
 
-// --- INITIALIZE DATA ON PAGE LOAD ---
+// --- UPDATE YOUR EXISTING fetchMasterData() ---
 async function fetchMasterData() {
     try {
         const response = await fetch('/init_stage1');
@@ -84,13 +84,15 @@ async function fetchMasterData() {
         mouldMaster = data.moulds;
         rejectionCodes = data.rejections;
         shortfallCodes = data.shortfalls;
+        machineList = data.machines; // Store the raw data
 
-        machineList = data.machines; // 🚨 Store the full objects
-        let machineCodes = machineList.map(m => m.code); // Extract just the names
-        populateDropdown("machine", machineCodes);
+        // NEW: Populate generic dropdowns
         populateDropdown("part_number", Object.keys(data.parts));
         populateDropdown("operator", data.operators);
         populateDropdown("supervisor", data.supervisors);
+
+        // NEW: Trigger the filter logic to initialize the machine list
+        selectProcess(currentActiveProcess);
 
         document.getElementById("machine").addEventListener("change", checkActiveMachineState);
         document.getElementById("machine").addEventListener("change", handleMachineSelection);
@@ -104,6 +106,38 @@ async function fetchMasterData() {
         console.error("Error loading master data:", error);
         alert("Error loading system data. Please refresh the page.");
     }
+}
+
+// --- NEW: DYNAMIC PROCESS SWITCHER ---
+let currentActiveProcess = "THERMOWELDING"; // Default on page load
+
+function selectProcess(processName) {
+    currentActiveProcess = processName;
+
+    // 1. Update Button Highlights visually
+    const buttons = document.querySelectorAll('.process-btn');
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.process === processName) {
+            btn.classList.add('active');
+            // Auto-scroll the active button into view
+            const container = document.getElementById('process_tabs');
+            const scrollPos = btn.offsetLeft - (container.offsetWidth / 2) + (btn.offsetWidth / 2);
+            container.scrollTo({ left: scrollPos, behavior: 'smooth' });
+        }
+    });
+
+    // 2. Filter the machine list strictly for this process
+    // Note: Assuming your API returns it as 'process', change to 'machine_process' if needed based on your backend
+    let filteredMachines = machineList.filter(m => m.process === processName || m.machine_process === processName);
+    
+    // 3. Update the dropdown datalist
+    let machineCodes = filteredMachines.map(m => m.code || m.machine_code); 
+    populateDropdown("machine", machineCodes);
+
+    // 4. Wipe the current screen so the operator doesn't mix data
+    document.getElementById("machine").value = "";
+    wipeScreenForNewMachine();
 }
 
 function populateDropdown(elementId, items) {
