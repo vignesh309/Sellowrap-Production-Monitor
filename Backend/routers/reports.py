@@ -1108,20 +1108,44 @@ def get_teep_summary(
     machine: str = Query(""),
     shift: str = Query("")
 ):
-    """Fetches TEEP (Asset OEE) Summary. Uses Total Shift Time for Availability."""
+    """Fetches TEEP (Asset OEE) Summary. Drives from hourly_log to include Idle machines."""
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # The SQL query is identical to your OEE query
+        # Base query on production_hourly_log to capture auto-logged idle time
         query = """
-            WITH BatchTargets AS (
+            WITH HourlyAgg AS (
                 SELECT 
                     batch_id,
+                    production_date,
+                    shift,
+                    machine_code,
+                    MAX(part_number) as part_number,
                     MAX(operator_code) as operator,
                     MAX(supervisor_code) as supervisor,
-                    SUM(target_shots * COALESCE(active_cavities, 1)) as target_qty
+                    SUM(target_shots * COALESCE(active_cavities, 1)) as target_qty,
+                    SUM(ok_parts + ng_parts) as total_qty,
+                    SUM(ok_parts) as ok_qty,
+                    SUM(ng_parts) as ng_qty
                 FROM production_hourly_log
-                GROUP BY batch_id
+                WHERE 1=1
+        """
+        params = []
+        if start_date:
+            query += " AND production_date >= %s"
+            params.append(start_date)
+        if end_date:
+            query += " AND production_date <= %s"
+            params.append(end_date)
+        if machine:
+            query += " AND machine_code = %s"
+            params.append(machine)
+        if shift:
+            query += " AND shift = %s"
+            params.append(shift)
+
+        query += """
+                GROUP BY batch_id, production_date, shift, machine_code
             ),
             DowntimeAgg AS (
                 SELECT 
@@ -1143,52 +1167,36 @@ def get_teep_summary(
                 GROUP BY pr.batch_id
             )
             SELECT 
-                split_part(bm.batch_id, '_', 1) as b_date,
-                split_part(bm.batch_id, '_', 2) as b_shift,
-                split_part(bm.batch_id, '_', 3) as b_machine,
-                split_part(bm.batch_id, '_', 5) as b_part,
-                COALESCE(pm.part_name, 'Unknown') as part_name,
-                COALESCE(pm.customer_name, 'Unknown') as customer_name,
-                bm.process_name,
+                ha.production_date as b_date,
+                ha.shift as b_shift,
+                ha.machine_code as b_machine,
+                ha.part_number as b_part,
+                COALESCE(pm.part_name, CASE WHEN ha.part_number = 'AUTO-PART' THEN 'IDLE / NO PLAN' ELSE 'Unknown' END) as part_name,
+                COALESCE(pm.customer_name, '-') as customer_name,
+                COALESCE(mm.machine_process, 'UNKNOWN') as process_name,
                 
-                COALESCE(bt.target_qty, 0) as target_qty,
-                (COALESCE(bm.ok_qty, 0) + COALESCE(bm.ng_qty, 0)) as total_qty,
-                COALESCE(bm.ok_qty, 0) as ok_qty,
-                COALESCE(bm.ng_qty, 0) as ng_qty,
+                COALESCE(ha.target_qty, 0) as target_qty,
+                COALESCE(ha.total_qty, 0) as total_qty,
+                COALESCE(ha.ok_qty, 0) as ok_qty,
+                COALESCE(ha.ng_qty, 0) as ng_qty,
                 
-                SPLIT_PART(bt.operator, ' - ', 1) as operator,
-                SPLIT_PART(bt.supervisor, ' - ', 1) as supervisor,
-                bm.remarks,
+                SPLIT_PART(ha.operator, ' - ', 1) as operator,
+                SPLIT_PART(ha.supervisor, ' - ', 1) as supervisor,
+                COALESCE(bm.remarks, CASE WHEN ha.part_number = 'AUTO-PART' THEN 'Auto-Logged Idle Time' ELSE '' END) as remarks,
                 
-                COALESCE(dt.planned_dt_mins, 0) as planned_dt_mins,
+                COALESCE(dt.planned_dt_mins, CASE WHEN ha.part_number = 'AUTO-PART' THEN 720 ELSE 0 END) as planned_dt_mins,
                 COALESCE(dt.unplanned_dt_mins, 0) as unplanned_dt_mins,
-                COALESCE(dt.major_shortfall, '-') as major_shortfall,
+                COALESCE(dt.major_shortfall, CASE WHEN ha.part_number = 'AUTO-PART' THEN 'No Plan' ELSE '-' END) as major_shortfall,
                 COALESCE(ra.major_ng, '-') as major_ng
 
-            FROM batch_master bm
-            LEFT JOIN BatchTargets bt ON bm.batch_id = bt.batch_id
-            LEFT JOIN DowntimeAgg dt ON bm.batch_id = dt.batch_id
-            LEFT JOIN RejectionAgg ra ON bm.batch_id = ra.batch_id
-            LEFT JOIN part_master pm ON split_part(bm.batch_id, '_', 5) = pm.part_no
-            WHERE 1=1
+            FROM HourlyAgg ha
+            LEFT JOIN machine_master mm ON ha.machine_code = mm.machine_code
+            LEFT JOIN DowntimeAgg dt ON ha.batch_id = dt.batch_id
+            LEFT JOIN RejectionAgg ra ON ha.batch_id = ra.batch_id
+            LEFT JOIN part_master pm ON ha.part_number = pm.part_no
+            LEFT JOIN batch_master bm ON ha.batch_id = bm.batch_id
+            ORDER BY ha.production_date DESC, ha.shift ASC, mm.machine_process ASC, ha.machine_code ASC
         """
-        params = []
-
-        if start_date:
-            query += " AND split_part(bm.batch_id, '_', 1) >= %s"
-            params.append(start_date)
-        if end_date:
-            query += " AND split_part(bm.batch_id, '_', 1) <= %s"
-            params.append(end_date)
-        if machine:
-            query += " AND split_part(bm.batch_id, '_', 3) = %s"
-            params.append(machine)
-        if shift:
-            query += " AND split_part(bm.batch_id, '_', 2) = %s"
-            params.append(shift)
-
-        query += " ORDER BY split_part(bm.batch_id, '_', 1) DESC, split_part(bm.batch_id, '_', 2) ASC"
-
         cur.execute(query, tuple(params))
         rows = cur.fetchall()
 
@@ -1204,35 +1212,31 @@ def get_teep_summary(
             major_shortfall = r[16]
             major_ng = r[17]
 
-            # 🚨 NEW TEEP MATH LOGIC 🚨
+            # 🚨 TEEP MATH LOGIC 🚨
             total_shift_time = 720.0 
-            # Operating time deducts all stops, but the base remains 720!
             operating_time = total_shift_time - planned_dt_mins - unplanned_dt_mins
+            if operating_time < 0: operating_time = 0.0
 
-            # 1. TEEP Availability (Operating Time / TOTAL Time)
             if total_shift_time > 0:
                 avail_pct = (operating_time / total_shift_time) * 100
             else:
                 avail_pct = 0.0
 
-            # 2. Performance (Same as OEE)
             if target_qty > 0:
                 perf_pct = (total_qty / target_qty) * 100
             else:
                 perf_pct = 0.0
             if perf_pct > 100: perf_pct = 100.0 
 
-            # 3. Quality (Same as OEE)
             if total_qty > 0:
                 qual_pct = (ok_qty / total_qty) * 100
             else:
                 qual_pct = 0.0
 
-            # TEEP Compound Formula
             teep_pct = (avail_pct / 100) * (perf_pct / 100) * (qual_pct / 100) * 100
 
             records.append({
-                "date": r[0],
+                "date": str(r[0]),
                 "shift": r[1],
                 "machine": r[2],
                 "part_no": r[3],
@@ -1246,7 +1250,6 @@ def get_teep_summary(
                 "major_ng": major_ng,
                 "major_shortfall": major_shortfall,
                 
-                # Expose the specific times for the executive view
                 "total_time": round(total_shift_time),
                 "planned_dt": round(planned_dt_mins),
                 "unplanned_dt": round(unplanned_dt_mins),

@@ -64,6 +64,14 @@ def part_master_page():
 def employee_master_page():
     return FileResponse(get_html_path("employee_master.html"))
 
+@router.get("/shortfall_reason_master", response_class=HTMLResponse)
+def shortfall_reason_master_page():
+    return FileResponse(get_html_path("shortfall_reason_master.html"))
+
+@router.get("/rejection_reason_master", response_class=HTMLResponse)
+def rejection_reason_master_page():
+    return FileResponse(get_html_path("rejection_reason_master.html"))
+
 @router.get("/batch-ledger-page", response_class=HTMLResponse)
 def batch_ledger_page():
     return FileResponse(get_html_path("batch_ledger.html"))

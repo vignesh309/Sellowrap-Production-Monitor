@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Data: Rejection Reason Explorer</title>
+    <link rel="stylesheet" href="/static/css/rejection_reason_master.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>Master Data Management</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">A</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Admin01</span>
+                    <span id="role-display" class="user-role">ADMIN</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+
+            <!-- SEARCH HEADER -->
+            <div class="explore-header"
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 class="section-title" style="margin: 0; border: none;">Rejection Reason Master</h2>
+
+                <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+                    <label style="margin: 0;">Search Reason:</label>
+                    <input list="reason_list" id="search_reason_id" placeholder="-- Search by Code or Name --"
+                        style="width: 300px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+
+                    <datalist id="reason_list"></datalist>
+                    <button class="btn-primary" onclick="searchReason()" style="margin: 0;">Load Data</button>
+                </div>
+            </div>
+
+            <!-- CRUD TOOLBAR -->
+            <div class="crud-toolbar">
+                <button id="btn_new" class="btn-action btn-new" onclick="startNewReason()">➕ NEW</button>
+                <button id="btn_edit" class="btn-action btn-edit" onclick="enableEditMode()">✏️ EDIT</button>
+                <button id="btn_save" class="btn-action btn-save" onclick="saveReason()" disabled>💾 SAVE</button>
+                <button id="btn_delete" class="btn-action btn-delete" onclick="deleteReason()">🗑️ DELETE</button>
+            </div>
+
+            <!-- CORE DETAILS FORM GRID -->
+            <h3 class="sub-title">1. Reason Configuration</h3>
+            <div class="form-grid">
+                <div>
+                    <label>Reason Code</label>
+                    <input type="text" id="reason_code" placeholder="e.g. WELD-01" disabled>
+                </div>
+                <div>
+                    <label>Reason Name</label>
+                    <input type="text" id="reason_name" placeholder="e.g. Start Up" disabled>
+                </div>
+                <div>
+                    <label>Category</label>
+                    <input list="category_list" id="category" placeholder="e.g. Welding Issue" disabled autocomplete="off">
+                    <datalist id="category_list">
+                        <option value="Welding Issue"></option>
+                        <option value="Moulding Issue"></option>
+                        <option value="Assembly Issue"></option>
+                        <option value="Material Defect"></option>
+                        <option value="General"></option>
+                    </datalist>
+                </div>
+                <div>
+                    <label>OEE Impact</label>
+                    <select id="oee_impact" disabled>
+                        <option value="Quality">Quality</option>
+                        <option value="Performance">Performance</option>
+                        <option value="Availability">Availability</option>
+                        <option value="None">None</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Status</label>
+                    <select id="is_active" disabled>
+                        <option value="true">Active (Enabled)</option>
+                        <option value="false">Inactive (Disabled)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- MASTER LIST OVERVIEW -->
+            <div class="table-section" style="margin-top: 30px; margin-bottom: 40px;">
+                <div class="table-header">
+                    <h3 class="sub-title" style="margin: 0; border: none;">2. Master List Overview</h3>
+                </div>
+                <div class="table-container" style="max-height: 400px;">
+                    <table class="master-table" style="width: 100%; white-space: nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Reason Code</th>
+                                <th>Reason Name</th>
+                                <th>Category</th>
+                                <th>OEE Impact</th>
+                                <th style="text-align: center;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="overview_table_body">
+                            <tr><td colspan="5" style="text-align: center; color: gray;">Loading master list...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/static/js/rejection_reason_master.js"></script>
+</body>
+</html>

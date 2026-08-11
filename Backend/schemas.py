@@ -99,7 +99,7 @@ class ActiveMachineState(BaseModel):
     supervisor_code: str
 
 # ==========================================
-# Emplpoyee Master Schema
+# Employee Master Schema
 # ==========================================
 
 class EmployeeModel(BaseModel):
@@ -112,3 +112,16 @@ class EmployeeModel(BaseModel):
 
 class OTPVerifyModel(BaseModel):
     otp: str
+
+class RejectionReasonPayload(BaseModel):
+    reason_code: str
+    reason_name: str
+    category: str
+    oee_impact: str
+    is_active: bool
+
+class ShortfallReasonPayload(BaseModel):
+    reason_code: str
+    reason_name: str
+    category: str
+    is_active: bool

@@ -251,7 +251,7 @@ function renderUnifiedTable() {
         if (currentMode === "EXPLORE") {
             tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: gray;">No routing assigned.</td></tr>`;
         } else if (currentMode === "NEW") {
-            addUnifiedRowToUI(1, "Moulding", "", "", 1, 1, 0, 0, 0, 0);
+            addUnifiedRowToUI(1, "MOULDING", "", "", 1, 1, 0, 0, 0, 0);
         }
     }
 }

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from config import CHAT_ID
 from database import get_conn
-from schemas import PartMasterPayload, MachinePayload, EmployeeModel, OTPVerifyModel
+from schemas import PartMasterPayload, MachinePayload, EmployeeModel, OTPVerifyModel, RejectionReasonPayload, ShortfallReasonPayload
 import random
 from services.telegram_notifier import send_telegram_message
 
@@ -409,3 +409,253 @@ def verify_otp(payload: OTPVerifyModel):
         return {"status": "success", "valid": True}
     
     return {"status": "error", "valid": False}
+
+# ==========================================
+# REJECTION REASON MASTER ROUTES
+# ==========================================
+
+@router.get("/api/rejection_list")
+def get_rejection_list():
+    """Fetches all rejection reasons for the master overview table."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            """
+            SELECT id, reason_code, reason_name, category, oee_impact, is_active 
+            FROM rejection_reason_master 
+            ORDER BY reason_code ASC
+            """
+        )
+        reasons = []
+        for row in cur.fetchall():
+            reasons.append({
+                "id": row[0],
+                "reason_code": row[1],
+                "reason_name": row[2],
+                "category": row[3],
+                "oee_impact": row[4],
+                "is_active": row[5]
+            })
+        return reasons
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+
+@router.get("/api/rejection/{reason_code}")
+def get_rejection_reason(reason_code: str):
+    """Fetches a single rejection reason by its code."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            """
+            SELECT id, reason_code, reason_name, category, oee_impact, is_active 
+            FROM rejection_reason_master 
+            WHERE reason_code = %s
+            """,
+            (reason_code,)
+        )
+        row = cur.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Reason not found")
+
+        return {
+            "id": row[0],
+            "reason_code": row[1],
+            "reason_name": row[2],
+            "category": row[3],
+            "oee_impact": row[4],
+            "is_active": row[5]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+
+@router.post("/api/rejection/save")
+def save_rejection_reason(payload: RejectionReasonPayload):
+    """Creates or updates a rejection reason using an Upsert (ON CONFLICT)."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        # Assuming reason_code has a UNIQUE constraint in your database
+        cur.execute(
+            """
+            INSERT INTO rejection_reason_master 
+                (reason_code, reason_name, category, oee_impact, is_active, created_at, updated_at)
+            VALUES 
+                (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            ON CONFLICT (reason_code) DO UPDATE SET
+                reason_name = EXCLUDED.reason_name,
+                category = EXCLUDED.category,
+                oee_impact = EXCLUDED.oee_impact,
+                is_active = EXCLUDED.is_active,
+                updated_at = CURRENT_TIMESTAMP;
+            """,
+            (
+                payload.reason_code, 
+                payload.reason_name, 
+                payload.category, 
+                payload.oee_impact, 
+                payload.is_active
+            )
+        )
+        conn.commit()
+        return {"message": f"Reason {payload.reason_code} saved successfully"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+
+@router.delete("/api/rejection/{reason_code}")
+def delete_rejection_reason(reason_code: str):
+    """Deletes a rejection reason permanently."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM rejection_reason_master WHERE reason_code = %s", (reason_code,))
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Reason not found")
+            
+        conn.commit()
+        return {"message": "Reason deleted successfully"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+# ==========================================
+# SHORTFALL REASON MASTER ROUTES
+# ==========================================
+
+@router.get("/api/shortfall_list")
+def get_shortfall_list():
+    """Fetches all shortfall reasons for the master overview table."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            """
+            SELECT id, reason_code, reason_name, category, is_active 
+            FROM shortfall_reason_master 
+            ORDER BY reason_code ASC
+            """
+        )
+        reasons = []
+        for row in cur.fetchall():
+            reasons.append({
+                "id": row[0],
+                "reason_code": row[1],
+                "reason_name": row[2],
+                "category": row[3],
+                "is_active": row[4]
+            })
+        return reasons
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+
+@router.get("/api/shortfall/{reason_code}")
+def get_shortfall_reason(reason_code: str):
+    """Fetches a single shortfall reason by its code."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            """
+            SELECT id, reason_code, reason_name, category, is_active 
+            FROM shortfall_reason_master 
+            WHERE reason_code = %s
+            """,
+            (reason_code,)
+        )
+        row = cur.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Reason not found")
+
+        return {
+            "id": row[0],
+            "reason_code": row[1],
+            "reason_name": row[2],
+            "category": row[3],
+            "is_active": row[4]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+
+@router.post("/api/shortfall/save")
+def save_shortfall_reason(payload: ShortfallReasonPayload):
+    """Creates or updates a shortfall reason using an Upsert (ON CONFLICT)."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        # Assumes reason_code has a UNIQUE constraint in your shortfall_reason_master table
+        cur.execute(
+            """
+            INSERT INTO shortfall_reason_master 
+                (reason_code, reason_name, category, is_active, created_at, updated_at)
+            VALUES 
+                (%s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            ON CONFLICT (reason_code) DO UPDATE SET
+                reason_name = EXCLUDED.reason_name,
+                category = EXCLUDED.category,
+                is_active = EXCLUDED.is_active,
+                updated_at = CURRENT_TIMESTAMP;
+            """,
+            (
+                payload.reason_code, 
+                payload.reason_name, 
+                payload.category, 
+                payload.is_active
+            )
+        )
+        conn.commit()
+        return {"message": f"Shortfall reason {payload.reason_code} saved successfully"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+
+@router.delete("/api/shortfall/{reason_code}")
+def delete_shortfall_reason(reason_code: str):
+    """Deletes a shortfall reason permanently."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM shortfall_reason_master WHERE reason_code = %s", (reason_code,))
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Reason not found")
+            
+        conn.commit()
+        return {"message": "Reason deleted successfully"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()

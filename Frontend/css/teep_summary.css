@@ -281,23 +281,27 @@ table {
 
 /* Handles the multi-tier header specific to the TEEP HTML */
 thead th { 
-    background-color: var(--bg-input); 
+    background-color: var(--bg-input); /* Ensures a solid background */
     color: var(--accent-prod); 
     padding: 10px 15px; 
     position: sticky; 
-    top: 0; 
     text-transform: uppercase; 
     font-size: 11px; 
     letter-spacing: 0.5px; 
     border-bottom: 2px solid var(--border-color); 
     border-right: 1px solid rgba(255,255,255,0.05);
-    z-index: 2; 
 }
 
-/* Specific sticky height adjustments if you use 2-tier headers */
+/* Force the top tier to stay above everything */
+thead tr:nth-child(1) th {
+    top: 0;
+    z-index: 3; 
+}
+
+/* Accurately seals the gap below the first 33px row */
 thead tr:nth-child(2) th {
-    top: 36px; /* Adjust based on actual height of first header row */
-    z-index: 1;
+    top: 33px; 
+    z-index: 2;
 }
 
 tbody td { 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <!-- Pointing to your dedicated TEEP CSS file -->
     <link rel="stylesheet" href="/static/css/teep_summary.css">
 </head>
+
 <body>
 
     <!-- NAVBAR -->
@@ -18,7 +20,9 @@
 
         <div class="nav-utils">
             <button class="hub-btn" onclick="window.location.href='/hub'" title="Return to Hub">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
                 Return to Hub
             </button>
 
@@ -29,9 +33,13 @@
                     <span id="role-display" class="user-role">Role</span>
                 </div>
             </div>
-            
+
             <button class="logout-btn" onclick="logout()" title="Secure Logout">
-                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
                 Log Out
             </button>
         </div>
@@ -40,7 +48,7 @@
     <!-- MAIN CONTENT -->
     <div class="container">
         <div class="card">
-            
+
             <!-- SEARCH FILTERS (Now matching OEE style) -->
             <div class="search-container">
                 <div class="date-box">
@@ -67,10 +75,11 @@
                 </select>
 
                 <button class="btn-primary" onclick="loadTEEPReport()">Generate TEEP Report</button>
-                
+
                 <button class="btn-success" onclick="exportToExcel()">
                     <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;">
-                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-3v3h-2v-3H8v-2h3v-3h2v3h3v2zm-3-7V3.5L18.5 9H13z" />
+                        <path
+                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-3v3h-2v-3H8v-2h3v-3h2v3h3v2zm-3-7V3.5L18.5 9H13z" />
                     </svg>
                     Download Excel
                 </button>
@@ -81,10 +90,18 @@
                 <table id="dataTable">
                     <thead>
                         <tr>
-                            <th colspan="5">Batch Details</th>
-                            <th colspan="4" style="background: rgba(255, 177, 66, 0.1); color: var(--status-yellow);">Time Allocation (Mins)</th>
-                            <th colspan="4" style="background: rgba(0, 229, 255, 0.1); color: var(--accent-prod);">Production Units</th>
-                            <th colspan="4" style="background: rgba(0, 240, 118, 0.1); color: var(--status-green);">Asset Efficiency (%)</th>
+                            <!-- Force a solid background using your theme variable -->
+                            <th colspan="5" style="background-color: var(--bg-input);">Batch Details</th>
+                            
+                            <!-- Removed rgba transparency, added thick bottom border for color coding -->
+                            <th colspan="4" style="background-color: var(--bg-input); color: var(--status-yellow); border-bottom: 3px solid var(--status-yellow);">
+                                Time Allocation (Mins)</th>
+                                
+                            <th colspan="4" style="background-color: var(--bg-input); color: var(--accent-prod); border-bottom: 3px solid var(--accent-prod);">
+                                Production Units</th>
+                                
+                            <th colspan="4" style="background-color: var(--bg-input); color: var(--status-green); border-bottom: 3px solid var(--status-green);">
+                                Asset Efficiency (%)</th>
                         </tr>
                         <tr>
                             <th>Date</th>
@@ -92,19 +109,19 @@
                             <th>Machine Code</th>
                             <th class="txt-left">Part No</th>
                             <th class="txt-left">Process</th>
-                            
+
                             <!-- Time -->
                             <th>Total Time</th>
                             <th>Planned DT</th>
                             <th>Unplanned DT</th>
                             <th>Run Time</th>
-                            
+
                             <!-- Prod -->
                             <th>Target Qty</th>
                             <th>Total Qty</th>
                             <th>OK Qty</th>
                             <th>NG Qty</th>
-                            
+
                             <!-- TEEP -->
                             <th>Availability</th>
                             <th>Performance</th>
@@ -113,7 +130,10 @@
                         </tr>
                     </thead>
                     <tbody id="teepTableBody">
-                        <tr><td colspan="17" style="color: var(--text-muted); font-style: italic;">Select filters and click Generate to load data.</td></tr>
+                        <tr>
+                            <td colspan="17" style="color: var(--text-muted); font-style: italic;">Select filters and
+                                click Generate to load data.</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -137,4 +157,5 @@
         }
     </script>
 </body>
+
 </html>
