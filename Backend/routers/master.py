@@ -153,10 +153,10 @@ def get_part_master(part_no: str):
             "routing": [],
         }
 
-        # 🚨 Added erp_code to the SELECT statement
+        # Reverted SELECT statement (no erp_code)
         cur.execute(
             """
-            SELECT sequence_no, process_name, erp_code, mold_no, mold_name, cavity, active_cavities, 
+            SELECT sequence_no, process_name, mold_no, mold_name, cavity, active_cavities, 
                    hourly_target, target_temp, target_pressure, target_setting 
             FROM part_routing 
             WHERE part_no = %s 
@@ -170,15 +170,14 @@ def get_part_master(part_no: str):
                 {
                     "sequence": r[0],
                     "process_name": r[1],
-                    "erp_code": r[2] if r[2] else "",  # 🚨 Mapped new field
-                    "mold_no": r[3] if r[3] else "-",
-                    "mold_name": r[4] if r[4] else "-",
-                    "cavities": float(r[5] or 1.0),
-                    "active_cavities": float(r[6] or 1.0),
-                    "hourly_target": r[7] or 0,
-                    "target_temp": float(r[8] or 0),
-                    "target_pressure": float(r[9] or 0),
-                    "target_setting": float(r[10] or 0),
+                    "mold_no": r[2] if r[2] else "-",
+                    "mold_name": r[3] if r[3] else "-",
+                    "cavities": float(r[4] or 1.0),
+                    "active_cavities": float(r[5] or 1.0),
+                    "hourly_target": r[6] or 0,
+                    "target_temp": float(r[7] or 0),
+                    "target_pressure": float(r[8] or 0),
+                    "target_setting": float(r[9] or 0),
                 }
             )
 
@@ -217,21 +216,20 @@ def save_part_master(payload: PartMasterPayload):
                 else 0.0
             )
 
-            # 🚨 Added erp_code to the INSERT statement
+            # Reverted INSERT statement (no erp_code)
             cur.execute(
                 """
                 INSERT INTO part_routing (
-                    part_no, sequence_no, process_name, erp_code, mold_no, mold_name, 
+                    part_no, sequence_no, process_name, mold_no, mold_name, 
                     cavity, active_cavities, cycle_time, hourly_target, 
                     target_temp, target_pressure, target_setting
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
                 (
                     payload.part_no,
                     process.sequence,
                     process.process_name,
-                    process.erp_code, # 🚨 Bound new field
                     process.mold_no,
                     process.mold_name,
                     process.cavities,
@@ -274,7 +272,8 @@ def delete_part_master(part_no: str):
         cur.close()
         conn.close()
 
-# 🚨 RESTORED: The Dropdown List Endpoint that was causing the 404 error!
+
+# 🚨 RESTORED: The Dropdown List Endpoint
 @router.get("/api/part_list")
 def get_part_list_dropdown():
     """Fetches a lightweight list of parts for the search dropdown."""

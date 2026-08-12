@@ -74,29 +74,22 @@
                     <label>Machine Name</label>
                     <input type="text" id="machine_name" placeholder="e.g. Molding Machine 21" disabled>
                 </div>
-                
+
                 <div>
                     <label>Machine Process</label>
-                    <input list="process_list" id="machine_process" placeholder="e.g. Moulding" disabled autocomplete="off">
+                    <input list="process_list" id="machine_process" placeholder="e.g. Moulding" disabled
+                        autocomplete="off">
                     <datalist id="process_list">
-                        <option value="MOUDLING"></option>
-                        <option value="FILM ROLL MAKING"></option>
-                        <option value="FRAMING"></option>
-                        <option value="BLANKING"></option>
-                        <option value="MANUAL PASTING"></option>
+                        <option value="MOULDING"></option>
                         <option value="ASSEMBLY"></option>
+                        <option value="ASSEMBLY_SPM"></option>
+                        <option value="FILM ROLL MAKING"></option>
+                        <option value="MANUAL PASTING"></option>
                         <option value="PRESS CUT"></option>
-                        <option value="SYSCO CUT"></option>
-                        <option value="BANDSAW CUTTING"></option>
                         <option value="DEFLASHING"></option>
                         <option value="PACKING"></option>
                         <option value="FINAL INSPN"></option>
-                        <option value="THERMOFORMING"></option>
-                        <option value="PRINTING"></option>
                         <option value="THERMOWELDING"></option>
-                        <option value="BUTYL PASTING"></option>
-                        <option value="PALLETIZATION"></option>
-                        <option value="REGRINDING"></option>
                     </datalist>
                 </div>
 
@@ -115,4 +108,5 @@
     <script src="/static/js/machine_master.js"></script>
 
 </body>
+
 </html>
