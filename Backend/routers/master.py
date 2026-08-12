@@ -137,7 +137,6 @@ def get_part_master(part_no: str):
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # 1. Fetch Core Part
         cur.execute(
             "SELECT part_no, part_name, customer_name FROM part_master WHERE part_no = %s",
             (part_no,),
@@ -154,10 +153,10 @@ def get_part_master(part_no: str):
             "routing": [],
         }
 
-        # 2. Fetch the Unified Routing Sequence
+        # 🚨 Added erp_code to the SELECT statement
         cur.execute(
             """
-            SELECT sequence_no, process_name, mold_no, mold_name, cavity, active_cavities, 
+            SELECT sequence_no, process_name, erp_code, mold_no, mold_name, cavity, active_cavities, 
                    hourly_target, target_temp, target_pressure, target_setting 
             FROM part_routing 
             WHERE part_no = %s 
@@ -171,14 +170,15 @@ def get_part_master(part_no: str):
                 {
                     "sequence": r[0],
                     "process_name": r[1],
-                    "mold_no": r[2] if r[2] else "-",
-                    "mold_name": r[3] if r[3] else "-",
-                    "cavities": float(r[4] or 1.0),
-                    "active_cavities": float(r[5] or 1.0),
-                    "hourly_target": r[6] or 0,
-                    "target_temp": float(r[7] or 0),
-                    "target_pressure": float(r[8] or 0),
-                    "target_setting": float(r[9] or 0),
+                    "erp_code": r[2] if r[2] else "",  # 🚨 Mapped new field
+                    "mold_no": r[3] if r[3] else "-",
+                    "mold_name": r[4] if r[4] else "-",
+                    "cavities": float(r[5] or 1.0),
+                    "active_cavities": float(r[6] or 1.0),
+                    "hourly_target": r[7] or 0,
+                    "target_temp": float(r[8] or 0),
+                    "target_pressure": float(r[9] or 0),
+                    "target_setting": float(r[10] or 0),
                 }
             )
 
@@ -196,7 +196,6 @@ def save_part_master(payload: PartMasterPayload):
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # 1. Upsert Part Data
         cur.execute(
             """
             INSERT INTO part_master (part_no, part_name, customer_name)
@@ -209,30 +208,30 @@ def save_part_master(payload: PartMasterPayload):
             (payload.part_no, payload.part_name, payload.customer_name),
         )
 
-        # 2. Sync Unified Routing
         cur.execute("DELETE FROM part_routing WHERE part_no = %s", (payload.part_no,))
 
         for process in payload.routing:
-            # Re-calculate cycle time automatically for the database
             cycle_time_mins = (
                 round((60.0 / process.hourly_target), 2)
                 if process.hourly_target > 0
                 else 0.0
             )
 
+            # 🚨 Added erp_code to the INSERT statement
             cur.execute(
                 """
                 INSERT INTO part_routing (
-                    part_no, sequence_no, process_name, mold_no, mold_name, 
+                    part_no, sequence_no, process_name, erp_code, mold_no, mold_name, 
                     cavity, active_cavities, cycle_time, hourly_target, 
                     target_temp, target_pressure, target_setting
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
                 (
                     payload.part_no,
                     process.sequence,
                     process.process_name,
+                    process.erp_code, # 🚨 Bound new field
                     process.mold_no,
                     process.mold_name,
                     process.cavities,

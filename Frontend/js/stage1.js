@@ -607,7 +607,7 @@ function addSplitCard(hourIndex, defaultStart = "", defaultEnd = "", canRemove =
         <div class="hour-inputs">
             <div>
                 <label>Actual Shots</label>
-                <input type="number" id="shots_${hourIndex}_${splitIndex}" value="0" min="0" oninput="calculateTotals()" style="color: var(--status-yellow); font-weight:bold; font-size: 18px;">
+                <input type="number" id="shots_${hourIndex}_${splitIndex}" value="" min="0" oninput="calculateTotals()" style="color: var(--status-yellow); font-weight:bold; font-size: 18px;">
             </div>
         </div>
         

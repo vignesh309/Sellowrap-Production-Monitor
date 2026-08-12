@@ -172,6 +172,7 @@ async function savePart() {
             payload.routing.push({
                 sequence: parseInt(row.querySelector(".proc-seq").value) || (index + 1),
                 process_name: procName,
+                erp_code: row.querySelector(".erp-code").value.trim() || "", // 🚨 NEW
                 mold_no: row.querySelector(".mold-no").value.trim() || "-",
                 mold_name: row.querySelector(".mold-name").value.trim() || "-",
                 cavities: parseFloat(row.querySelector(".mold-cav").value) || 1,
@@ -242,30 +243,30 @@ function renderUnifiedTable() {
     if (currentPartData.routing && currentPartData.routing.length > 0) {
         currentPartData.routing.forEach(r => {
             addUnifiedRowToUI(
-                r.sequence, r.process_name,
+                r.sequence, r.process_name, r.erp_code, // 🚨 NEW
                 r.mold_no, r.mold_name, r.cavities, r.active_cavities,
                 r.hourly_target, r.target_temp, r.target_pressure, r.target_setting
             );
         });
     } else {
         if (currentMode === "EXPLORE") {
-            tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: gray;">No routing assigned.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="12" style="text-align: center; color: gray;">No routing assigned.</td></tr>`;
         } else if (currentMode === "NEW") {
-            addUnifiedRowToUI(1, "MOULDING", "", "", 1, 1, 0, 0, 0, 0);
+            addUnifiedRowToUI(1, "MOULDING", "", "", "", 1, 1, 0, 0, 0, 0); // 🚨 Added blank erp_code
         }
     }
 }
 
 function addUnifiedRow() {
     let rowCount = document.querySelectorAll("#unified_table_body tr.data-row").length;
-    addUnifiedRowToUI(rowCount + 1, "", "", "", 1, 1, 0, 0, 0, 0);
+    addUnifiedRowToUI(rowCount + 1, "", "", "", "", 1, 1, 0, 0, 0, 0); // 🚨 Added blank erp_code
 
     // Trigger formatting on the newly spawned row
     const newRow = document.querySelector("#unified_table_body tr:last-child .proc-name");
     if (newRow) checkProcessType(newRow);
 }
 
-function addUnifiedRowToUI(seq, procName, moldNo, moldName, cav, actCav, tgtHr, temp, press, timer) {
+function addUnifiedRowToUI(seq, procName, erpCode, moldNo, moldName, cav, actCav, tgtHr, temp, press, timer) {
     const tbody = document.getElementById("unified_table_body");
     if (tbody.innerHTML.includes("No routing assigned")) tbody.innerHTML = "";
 
@@ -280,6 +281,7 @@ function addUnifiedRowToUI(seq, procName, moldNo, moldName, cav, actCav, tgtHr, 
         <td>
             <input list="process_list_options" class="proc-name" value="${procName}" ${!isEdit ? 'disabled' : ''} onchange="checkProcessType(this)" onkeyup="checkProcessType(this)" placeholder="Process..." style="width: 100%; box-sizing: border-box;">
         </td>
+        <td><input type="text" class="erp-code" value="${erpCode || ''}" ${!isEdit ? 'disabled' : ''} style="width: 120px;" placeholder="ERP Code"></td>
         <td><input type="text" class="mold-no" value="${moldNo}" ${!isEdit ? 'disabled' : ''} style="width: 100px;"></td>
         <td><input type="text" class="mold-name" value="${moldName}" ${!isEdit ? 'disabled' : ''} style="width: 120px;"></td>
         <td><input type="number" class="mold-cav" step="any" value="${cav}" ${!isEdit ? 'disabled' : ''} style="width: 50px; text-align: center;"></td>
@@ -295,7 +297,6 @@ function addUnifiedRowToUI(seq, procName, moldNo, moldName, cav, actCav, tgtHr, 
     `;
     tbody.appendChild(tr);
 
-    // Initial run to format the row correctly based on its starting value
     if (isEdit) {
         checkProcessType(tr.querySelector('.proc-name'));
     }

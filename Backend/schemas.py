@@ -28,6 +28,7 @@ class UnifiedRouteItem(BaseModel):
 class ProcessItem(BaseModel):
     sequence: int
     process_name: str
+    erp_code: str = ""
     hourly_target: int = 0        # 🚨 NEW
     target_temp: float = 0.0      
     target_pressure: float = 0.0  

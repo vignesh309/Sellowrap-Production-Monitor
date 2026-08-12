@@ -1108,6 +1108,176 @@ def get_teep_summary(
     machine: str = Query(""),
     shift: str = Query("")
 ):
+    """Fetches TEEP (Asset OEE) Summary. Uses Total Shift Time for Availability."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        # The SQL query is identical to your OEE query
+        query = """
+            WITH BatchTargets AS (
+                SELECT 
+                    batch_id,
+                    MAX(operator_code) as operator,
+                    MAX(supervisor_code) as supervisor,
+                    SUM(target_shots * COALESCE(active_cavities, 1)) as target_qty
+                FROM production_hourly_log
+                GROUP BY batch_id
+            ),
+            DowntimeAgg AS (
+                SELECT 
+                    hl.batch_id,
+                    SUM(CASE WHEN sm.oee_impact = 'None' THEN COALESCE(ps.quantity, 0) ELSE 0 END) as planned_dt_mins,
+                    SUM(CASE WHEN sm.oee_impact = 'Availability' THEN COALESCE(ps.quantity, 0) ELSE 0 END) as unplanned_dt_mins,
+                    MAX(ps.reason_name) as major_shortfall
+                FROM production_shortfalls ps
+                JOIN production_hourly_log hl ON ps.log_id = hl.id
+                LEFT JOIN shortfall_reason_master sm ON ps.reason_name = sm.reason_name
+                GROUP BY hl.batch_id
+            ),
+            RejectionAgg AS (
+                SELECT 
+                    pr.batch_id,
+                    MAX(pr.reason_name) as major_ng
+                FROM production_rejections pr
+                WHERE pr.quantity > 0
+                GROUP BY pr.batch_id
+            )
+            SELECT 
+                split_part(bm.batch_id, '_', 1) as b_date,
+                split_part(bm.batch_id, '_', 2) as b_shift,
+                split_part(bm.batch_id, '_', 3) as b_machine,
+                split_part(bm.batch_id, '_', 5) as b_part,
+                COALESCE(pm.part_name, 'Unknown') as part_name,
+                COALESCE(pm.customer_name, 'Unknown') as customer_name,
+                bm.process_name,
+                
+                COALESCE(bt.target_qty, 0) as target_qty,
+                (COALESCE(bm.ok_qty, 0) + COALESCE(bm.ng_qty, 0)) as total_qty,
+                COALESCE(bm.ok_qty, 0) as ok_qty,
+                COALESCE(bm.ng_qty, 0) as ng_qty,
+                
+                SPLIT_PART(bt.operator, ' - ', 1) as operator,
+                SPLIT_PART(bt.supervisor, ' - ', 1) as supervisor,
+                bm.remarks,
+                
+                COALESCE(dt.planned_dt_mins, 0) as planned_dt_mins,
+                COALESCE(dt.unplanned_dt_mins, 0) as unplanned_dt_mins,
+                COALESCE(dt.major_shortfall, '-') as major_shortfall,
+                COALESCE(ra.major_ng, '-') as major_ng
+
+            FROM batch_master bm
+            LEFT JOIN BatchTargets bt ON bm.batch_id = bt.batch_id
+            LEFT JOIN DowntimeAgg dt ON bm.batch_id = dt.batch_id
+            LEFT JOIN RejectionAgg ra ON bm.batch_id = ra.batch_id
+            LEFT JOIN part_master pm ON split_part(bm.batch_id, '_', 5) = pm.part_no
+            WHERE 1=1
+        """
+        params = []
+
+        if start_date:
+            query += " AND split_part(bm.batch_id, '_', 1) >= %s"
+            params.append(start_date)
+        if end_date:
+            query += " AND split_part(bm.batch_id, '_', 1) <= %s"
+            params.append(end_date)
+        if machine:
+            query += " AND split_part(bm.batch_id, '_', 3) = %s"
+            params.append(machine)
+        if shift:
+            query += " AND split_part(bm.batch_id, '_', 2) = %s"
+            params.append(shift)
+
+        query += " ORDER BY split_part(bm.batch_id, '_', 1) DESC, split_part(bm.batch_id, '_', 2) ASC"
+
+        cur.execute(query, tuple(params))
+        rows = cur.fetchall()
+
+        records = []
+        for r in rows:
+            target_qty = int(r[7])
+            total_qty = int(r[8])
+            ok_qty = int(r[9])
+            ng_qty = int(r[10])
+            
+            planned_dt_mins = float(r[14])
+            unplanned_dt_mins = float(r[15])
+            major_shortfall = r[16]
+            major_ng = r[17]
+
+            # 🚨 NEW TEEP MATH LOGIC 🚨
+            total_shift_time = 720.0 
+            # Operating time deducts all stops, but the base remains 720!
+            operating_time = total_shift_time - planned_dt_mins - unplanned_dt_mins
+
+            # 1. TEEP Availability (Operating Time / TOTAL Time)
+            if total_shift_time > 0:
+                avail_pct = (operating_time / total_shift_time) * 100
+            else:
+                avail_pct = 0.0
+
+            # 2. Performance (Same as OEE)
+            if target_qty > 0:
+                perf_pct = (total_qty / target_qty) * 100
+            else:
+                perf_pct = 0.0
+            if perf_pct > 100: perf_pct = 100.0 
+
+            # 3. Quality (Same as OEE)
+            if total_qty > 0:
+                qual_pct = (ok_qty / total_qty) * 100
+            else:
+                qual_pct = 0.0
+
+            # TEEP Compound Formula
+            teep_pct = (avail_pct / 100) * (perf_pct / 100) * (qual_pct / 100) * 100
+
+            records.append({
+                "date": r[0],
+                "shift": r[1],
+                "machine": r[2],
+                "part_no": r[3],
+                "part_name": r[4],
+                "customer_name": r[5],
+                "process_name": r[6],
+                "target_qty": target_qty,
+                "total_qty": total_qty,
+                "ok_qty": ok_qty,
+                "ng_qty": ng_qty,
+                "major_ng": major_ng,
+                "major_shortfall": major_shortfall,
+                
+                # Expose the specific times for the executive view
+                "total_time": round(total_shift_time),
+                "planned_dt": round(planned_dt_mins),
+                "unplanned_dt": round(unplanned_dt_mins),
+                "actual_run_time": round(operating_time),
+                
+                "avail_pct": round(avail_pct, 2),
+                "perf_pct": round(perf_pct, 2),
+                "qual_pct": round(qual_pct, 2),
+                "teep_pct": round(teep_pct, 2),
+                
+                "operator": r[11] or "-",
+                "supervisor": r[12] or "-",
+                "remarks": r[13] or ""
+            })
+
+        return {"records": records}
+        
+    except Exception as e:
+        print("TEEP Summary Error:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+@router.get("/api/get_teep_summary_idle_machines")
+def get_teep_summary_idle_machines(
+    start_date: str = Query(""),
+    end_date: str = Query(""),
+    machine: str = Query(""),
+    shift: str = Query("")
+):
     """Fetches TEEP (Asset OEE) Summary. Drives from hourly_log to include Idle machines."""
     conn = get_conn()
     cur = conn.cursor()

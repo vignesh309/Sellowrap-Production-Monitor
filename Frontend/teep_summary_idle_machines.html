@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEEP Summary (Idle Included) - ERP</title>
+    <!-- Reusing the exact same CSS! -->
+    <link rel="stylesheet" href="/static/css/teep_summary.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Company Logo" onerror="this.style.display='none'">
+            <h2>TEEP SUMMARY (INCLUDES IDLE ASSETS)</h2>
+        </div>
+
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'" title="Return to Hub">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            
+            <button class="logout-btn" onclick="logout()" title="Secure Logout">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <div class="card">
+            
+            <!-- SEARCH FILTERS -->
+            <div class="search-container">
+                <div class="date-box">
+                    <label>From:</label>
+                    <input type="date" id="startDate">
+                    <span style="color: var(--border-color);">|</span>
+                    <label>To:</label>
+                    <input type="date" id="endDate">
+                </div>
+
+                <select id="shiftFilter" class="filter-select">
+                    <option value="">All Shifts</option>
+                    <option value="A">Shift A</option>
+                    <option value="B">Shift B</option>
+                </select>
+
+                <select id="machineFilter" class="filter-select">
+                    <option value="">All Machines</option>
+                    <option value="DEF-01">DEF-01</option>
+                    <option value="IMM-250">IMM-250</option>
+                    <option value="IMM-400">IMM-400</option>
+                    <option value="TW-01">TW-01</option>
+                    <option value="TW-10">TW-10</option>
+                </select>
+
+                <button class="btn-primary" onclick="loadTEEPReport()">Generate Idle Report</button>
+                
+                <button class="btn-success" onclick="exportToExcel()">
+                    <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-3v3h-2v-3H8v-2h3v-3h2v3h3v2zm-3-7V3.5L18.5 9H13z" />
+                    </svg>
+                    Download Excel
+                </button>
+            </div>
+
+            <!-- DATA TABLE -->
+            <div class="table-wrapper">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th colspan="5" style="background-color: var(--bg-input);">Batch Details</th>
+                            <th colspan="4" style="background-color: var(--bg-input); color: var(--status-yellow); border-bottom: 3px solid var(--status-yellow);">Time Allocation (Mins)</th>
+                            <th colspan="4" style="background-color: var(--bg-input); color: var(--accent-prod); border-bottom: 3px solid var(--accent-prod);">Production Units</th>
+                            <th colspan="4" style="background-color: var(--bg-input); color: var(--status-green); border-bottom: 3px solid var(--status-green);">Asset Efficiency (%)</th>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <th>Shift</th>
+                            <th>Machine Code</th>
+                            <th class="txt-left">Part No</th>
+                            <th class="txt-left">Process</th>
+                            
+                            <th>Total Time</th>
+                            <th>Planned DT</th>
+                            <th>Unplanned DT</th>
+                            <th>Run Time</th>
+                            
+                            <th>Target Qty</th>
+                            <th>Total Qty</th>
+                            <th>OK Qty</th>
+                            <th>NG Qty</th>
+                            
+                            <th>Availability</th>
+                            <th>Performance</th>
+                            <th>Quality</th>
+                            <th class="highlight-teep">TEEP %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teepTableBody">
+                        <tr><td colspan="17" style="color: var(--text-muted); font-style: italic;">Select filters and click Generate to load data.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <!-- Pointing to the NEW JS file -->
+    <script src="/static/js/teep_summary_idle_machines.js"></script>
+    <script>
+        function exportToExcel() {
+            let table = document.getElementById("dataTable");
+            if (!table || table.rows.length <= 2) {
+                alert("No data available to export.");
+                return;
+            }
+            let workbook = XLSX.utils.table_to_book(table, { sheet: "TEEP Idle Summary", raw: true });
+            let dateStr = document.getElementById('startDate').value || "Report";
+            XLSX.writeFile(workbook, `TEEP_Idle_Summary_${dateStr}.xlsx`);
+        }
+    </script>
+</body>
+</html>

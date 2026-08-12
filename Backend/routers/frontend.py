@@ -104,6 +104,10 @@ def oee_summary_page():
 def teep_summary_page():
     return FileResponse(get_html_path("teep_summary.html"))
 
+@router.get("/teep-summary-idle-machines", response_class=HTMLResponse)
+def teep_summary_idle_machines_page():
+    return FileResponse(get_html_path("teep_summary_idle_machines.html"))
+
 @router.get("/oeeteep-dashboard", response_class=HTMLResponse)
 def oeeteep_dashboard_page():
     return FileResponse(get_html_path("oeeteep_dashboard.html"))
