@@ -10,15 +10,27 @@ import os
 import psycopg2
 from datetime import datetime
 import subprocess
+import sys
 
-# =========================
-# DATABASE CONFIGURATION
-# =========================
+# =========================================================
+# PATH FIX: Allow importing config from parent Backend folder
+# =========================================================
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
+
+# Now safely import your database configuration variables
+from config import DB_HOST, DB_NAME, DB_USER, DB_PASSWORD
+
+# =========================================================
+# DYNAMIC DATABASE CONFIGURATION
+# =========================================================
 DB_CONFIG = {
-    "host": "200.200.210.249",
-    "database": "Sellowrap_Database",
-    "user": "postgres",
-    "password": "Password123"
+    "host": DB_HOST,
+    "database": DB_NAME,
+    "user": DB_USER,
+    "password": DB_PASSWORD
 }
 
 # Cache to prevent running "CREATE TABLE" queries unnecessarily
