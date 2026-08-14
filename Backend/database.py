@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 2. Read them securely
-DB_HOST = os.getenv("DB_HOST", "200.200.210.110") # The IP acts as a fallback if the env fails
+DB_HOST = os.getenv("DB_HOST", "") # The IP acts as a fallback if the env fails
 DB_NAME = os.getenv("DB_NAME", "")
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASS = os.getenv("DB_PASSWORD") 
