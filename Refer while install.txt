@@ -138,3 +138,33 @@ Testing scenarios
 unpluging the lan cable and giving two to three triggers then shutting down raspberry pi then after
 that powering on pi device after some seconds no data is coming from pi device to the mqtt_listener 
 service, so i have a doubt turning off the raspberry pi is deleting data in machine.db
+
+** To find the Schema of table **
+
+SELECT column_name, data_type, is_nullable, column_default
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE table_name = 'production_shortfalls';
+
+
+** GITHUB Commands **
+
+Run this two commands to one by one to ignore .env or any specific files to ignore from pushing to repository
+
+Remove the .env file from Git's tracking memory
+
+git rm --cached Backend/.env
+
+Create a .gitignore file and add the .env path to it so Git ignores it forever
+
+echo Backend/.env >> .gitignore
+
+Run this commands one by one:
+git add .gitignore
+git commit -m "Security Update: Remove and ignore .env file"
+git push origin main
+
+To force pull the code from repository:
+
+git fetch --all
+git reset --hard origin/main
+git pull origin main
