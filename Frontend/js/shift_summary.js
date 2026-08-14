@@ -127,3 +127,15 @@ function startAutoScroll(container) {
         
     }, 3000); 
 }
+function openTVMode() {
+    const dateVal = document.getElementById("report_date").value;
+    const shiftVal = document.getElementById("report_shift").value;
+    
+    if (!dateVal || !shiftVal) {
+        alert("Please select a date and shift first.");
+        return;
+    }
+
+    // 🚨 CHANGED: Using '_self' ensures the TV remote's back button works perfectly!
+    window.open(`/shift-summary-tv?date=${dateVal}&shift=${shiftVal}`, '_self');
+}

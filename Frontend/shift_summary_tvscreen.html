@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV Dashboard - Shift Summary</title>
+    <link rel="stylesheet" href="/static/css/shift_summary_tvscreen.css">
+</head>
+<body>
+
+    <!-- Minimal TV Header -->
+    <div class="tv-header">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Company Logo" onerror="this.style.display='none'">
+            <h2>LIVE SHIFT SUMMARY</h2>
+        </div>
+        <div class="shift-info" id="tv-shift-info">
+            Loading...
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table id="report-table">
+            <thead>
+                <tr>
+                    <th>MACHINE CODE</th>
+                    <th>PART NO</th>
+                    <th>PART NAME</th>
+                    <th>CUSTOMER</th>
+                    <th class="text-right">TARGET</th>
+                    <th class="text-right">TOTAL QTY</th>
+                    <th class="text-right">OK QTY</th>
+                    <th class="text-right">NG QTY</th>
+                    <th>OPERATOR(S)</th>
+                </tr>
+            </thead>
+            <tbody id="report-body">
+                <tr><td colspan="9" class="empty-state">Initializing Dashboard...</td></tr>
+            </tbody>
+        </table>
+        <div id="empty-state" class="empty-state" style="display: none;">
+            No production data found for this Shift yet.
+        </div>
+    </div>
+
+    <script src="/static/js/shift_summary_tvscreen.js"></script>
+</body>
+</html>

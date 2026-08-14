@@ -12,7 +12,8 @@
 
     <div class="navbar" id="top-navbar">
         <div class="brand">
-            <img src="/static/img/Company_logo.png" alt="Company Logo" style="height: 50px; width: auto; border-radius: 4px;" onerror="this.style.display='none'">
+            <img src="/static/img/Company_logo.png" alt="Company Logo"
+                style="height: 50px; width: auto; border-radius: 4px;" onerror="this.style.display='none'">
             <h2>SHIFT SUMMARY REPORT</h2>
         </div>
 
@@ -34,7 +35,9 @@
 
             <button class="logout-btn" onclick="logout()" title="Secure Logout">
                 <svg viewBox="0 0 24 24">
-                    <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path>
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
                 </svg>
                 Log Out
             </button>
@@ -43,16 +46,30 @@
 
     <div class="controls-bar">
         <div class="report-controls">
-            <label style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase;">Select Date:</label>
+            <label
+                style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase;">Select
+                Date:</label>
             <input type="date" id="report_date" onchange="loadReport()">
 
-            <label style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase; margin-left: 15px;">Shift:</label>
+            <label
+                style="color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase; margin-left: 15px;">Shift:</label>
             <select id="report_shift" onchange="loadReport()">
                 <option value="A">Shift A</option>
                 <option value="B">Shift B</option>
             </select>
         </div>
-        <button class="btn-fullscreen" onclick="toggleFullScreen()">📺 Fullscreen</button>
+
+        <!-- NEW: Flex container for multiple buttons -->
+        <div style="display: flex; gap: 12px;">
+            <button class="btn-fullscreen"
+                style="background: linear-gradient(135deg, #ff8c00 0%, #ffcf00 100%); color: #000;"
+                onclick="openTVMode()">
+                🖥️ TV Screen
+            </button>
+            <button class="btn-fullscreen" onclick="toggleFullScreen()">
+                📺 Fullscreen
+            </button>
+        </div>
     </div>
 
     <div class="container" id="main-container">

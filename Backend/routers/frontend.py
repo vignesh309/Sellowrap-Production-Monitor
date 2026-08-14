@@ -96,6 +96,10 @@ def partwise_report_page():
 def shift_summary_page():
     return FileResponse(get_html_path("shift_summary.html"))
 
+@router.get("/shift-summary-tvscreen", response_class=HTMLResponse)
+def shift_summary_tvscreen_page():
+    return FileResponse(get_html_path("shift_summary_tvscreen.html"))
+
 @router.get("/oee-summary", response_class=HTMLResponse)
 def oee_summary_page():
     return FileResponse(get_html_path("oee_summary.html"))
