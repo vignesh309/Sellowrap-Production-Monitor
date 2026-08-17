@@ -40,16 +40,16 @@ DB_LOCK = threading.Lock()
 # =========================
 # MACHINE CONFIGURATION
 # =========================
+# 🚨 CHANGED: The 'name' is now exactly what will be stored in machine_id
 MACHINES = [
-    {"ip": "200.200.210.239", "port": 8200, "name": "Si-130-6"},
-    {"ip": "192.168.3.150", "port": 8200, "name": "Si-100-6S"}
+    {"ip": "200.200.210.239", "port": 8200, "name": "IMM-01"},
+    {"ip": "192.168.3.150", "port": 8200, "name": "IMM-02"}
 ]
-
 ENCODING = "shift_jis"
 CONNECT_TIMEOUT = 10
 SOCKET_TIMEOUT = 1
 XON_INTERVAL = 60.0
-STATUS_INTERVAL = 900.0  # Changed to 15 minutes (900 seconds)
+STATUS_INTERVAL = 900.0  # 15 minutes
 
 XON = b'\x11'
 CR = b'\r'
@@ -59,7 +59,7 @@ ANSWER = {35: 36, 37: 38, 45: 46, 47: 48, 48: 48, 50: 51}
 # COLORS & UTILS
 # =========================
 try:
-    subprocess.run("", shell=True, check=False) # <--- Replaced os.system("")
+    subprocess.run("", shell=True, check=False)
 except Exception:
     pass
 
@@ -317,7 +317,7 @@ def save_history1_to_db(machine_id, data_dict):
 
 def save_alarm_to_db(machine_id, data_dict):
     conn = None
-    cursor=None
+    cursor = None
     try:
         conn = psycopg2.connect(
             host=DB_CONFIG["host"],
@@ -352,7 +352,6 @@ def save_alarm_to_db(machine_id, data_dict):
         if conn:
             conn.close()
 
-
 # =========================
 # TOYO MACHINE CLASS
 # =========================
@@ -366,7 +365,7 @@ class ToyoMachine:
         self.is_running = True
 
     def receiver(self):
-        if self.sock is None:      # <--- Add this safety check
+        if self.sock is None:
             return
         buffer = b""
         while self.is_running:
@@ -457,7 +456,7 @@ class ToyoMachine:
                 break
 
     def request(self, factor):
-        if self.sock is None:      # <--- Add this safety check
+        if self.sock is None:
             return None
         body = f'":",{factor},'
         packet = make_packet(body)
@@ -505,7 +504,14 @@ class ToyoMachine:
 
                 threading.Thread(target=self.receiver, daemon=True).start()
 
+                # 1. Request Status (Factor 45)
                 self.request(45)
+                
+                # 2. 🚨 NEW: Trigger Machine Mode (Factor 32) immediately on startup
+                try:
+                    self.sock.sendall(make_packet('":",32,'))
+                except Exception:
+                    pass
 
                 last_xon = time.time()
                 last_status = time.time()
@@ -514,7 +520,15 @@ class ToyoMachine:
                     now = time.time()
 
                     if now - last_status >= STATUS_INTERVAL:
+                        # Request Status every 15 mins
                         self.request(45)
+                        
+                        # 🚨 NEW: Trigger Machine Mode every 15 mins as well
+                        try:
+                            self.sock.sendall(make_packet('":",32,'))
+                        except Exception:
+                            pass
+                            
                         last_status = now
 
                     if now - last_xon >= XON_INTERVAL:

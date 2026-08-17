@@ -1,0 +1,184 @@
+/* --- GLOBAL THEME --- */
+:root {
+    --bg-main: #14172b;
+    --bg-panel: #1e223c;
+    --bg-input: #262a47;
+    --border-color: rgba(81, 128, 230, 0.2);
+    --border-solid: #5180e6;
+    --text-main: #ffffff;
+    --text-muted: #c1deff;
+    --accent-prod: #00e5ff;
+    --accent-rep: #ffb142;
+    --status-green: #00f076;
+    --status-red: #ff2a7a;
+    --scroll-track: rgba(10, 12, 24, 0.9);
+    --scroll-thumb: #3a416f;
+    --scroll-thumb-hover: #00e5ff;
+}
+
+html, body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+/* --- ENTERPRISE NAVBAR (EXACT MATCH TO HUB) --- */
+.navbar {
+    background-color: var(--bg-panel);
+    border-bottom: 1px solid #5180e6;
+    padding: 10px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand { display: flex; align-items: center; gap: 15px; }
+.brand img { height: 50px; border-radius: 4px; }
+.brand h2 { margin: 0; color: var(--accent-prod); font-size: 20px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+
+.nav-utils { display: flex; align-items: center; }
+
+.hub-btn {
+    background: rgba(0, 229, 255, 0.08);
+    border: 1px solid var(--accent-prod);
+    color: var(--accent-prod);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 20px;
+    transition: 0.3s;
+}
+
+.hub-btn:hover {
+    background: var(--accent-prod);
+    color: #000;
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+}
+
+.user-profile {
+    display: flex; align-items: center; gap: 12px;
+    padding-right: 20px; margin-right: 20px;
+    border-right: 1px solid rgba(81, 128, 230, 0.4);
+}
+
+.avatar {
+    width: 50px; height: 50px; border-radius: 5px;
+    background: linear-gradient(135deg, var(--accent-prod) 0%, #0072ff 100%);
+    display: flex; justify-content: center; align-items: center;
+    font-weight: bold; font-size: 18px; color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 229, 255, 0.3);
+}
+
+.user-info { display: flex; flex-direction: column; justify-content: center; }
+.user-name { font-weight: bold; font-size: 15px; color: #fff; }
+.user-role { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+.logout-btn {
+    background: transparent; border: none; color: #ff2a7a; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    font-weight: bold; font-size: 14px; padding: 8px 12px; border-radius: 6px; transition: 0.3s;
+}
+
+.logout-btn:hover { background: rgba(255, 42, 122, 0.1); color: #ff5494; }
+.logout-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* --- PAGE LAYOUT --- */
+.container { max-width: 95%; margin: 30px auto; display: flex; flex-direction: column; gap: 25px; }
+
+.page-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border-color); padding-bottom: 15px;
+}
+
+.page-header h2 { margin: 0; color: white; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+
+/* --- CONTROL PANEL --- */
+.control-panel {
+    background: rgba(30, 34, 60, 0.4); backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color); border-radius: 12px;
+    padding: 20px; display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;
+}
+
+.input-group { display: flex; flex-direction: column; gap: 8px; }
+.input-group label { font-size: 12px; color: var(--text-muted); font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.input-group input, .input-group select {
+    padding: 10px 15px; border-radius: 6px; background-color: var(--bg-input);
+    color: white; border: 1px solid var(--border-color); font-size: 14px; outline: none; min-width: 180px;
+}
+
+.btn-fetch {
+    background: linear-gradient(135deg, var(--accent-prod) 0%, #0072ff 100%);
+    color: #000; border: none; padding: 12px 25px; font-weight: bold;
+    border-radius: 6px; cursor: pointer; transition: 0.3s; height: 40px; display: flex; align-items: center;
+}
+
+.btn-fetch:hover { box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4); transform: translateY(-2px); }
+
+/* --- DATA TABLE --- */
+.table-card {
+    background: var(--bg-panel); border: 1px solid var(--border-color);
+    border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.table-container {
+    overflow-x: auto; max-height: 65vh;
+    scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+
+thead th {
+    background-color: var(--bg-input); color: var(--accent-prod); padding: 15px;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 2px solid var(--border-solid); position: sticky; top: 0; z-index: 10;
+}
+
+tbody td { padding: 12px 15px; border-bottom: 1px solid rgba(81, 128, 230, 0.2); font-size: 14px; }
+tbody tr:hover { background-color: rgba(0, 229, 255, 0.05); }
+
+/* Specific Column Formatting */
+.col-machine { font-weight: bold; color: white; }
+.col-code { color: var(--accent-rep); font-weight: 500; font-family: monospace; font-size: 15px; }
+.col-message { color: var(--text-main); white-space: normal; min-width: 300px; }
+
+.status-triggered {
+    color: var(--status-red);
+    font-weight: bold;
+    background: rgba(255, 42, 122, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.status-reset {
+    color: var(--status-green);
+    font-weight: bold;
+    background: rgba(0, 240, 118, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.empty-state { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
+
+/* --- CUSTOM SCROLLBAR --- */
+html, body, .table-container { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--scroll-track); border-radius: 8px; }
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb); border: 2px solid transparent; background-clip: padding-box;
+    border-radius: 8px; transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+::-webkit-scrollbar-thumb:hover { background-color: var(--scroll-thumb-hover); box-shadow: 0 0 10px rgba(0, 229, 255, 0.45); }
+::-webkit-scrollbar-thumb:active { background-color: var(--scroll-thumb-hover); }

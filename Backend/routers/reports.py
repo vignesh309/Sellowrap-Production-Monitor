@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
 from datetime import date
+from datetime import datetime
 from database import get_conn
 from services.telegram_notifier import generate_hourly_report
 
@@ -845,6 +846,173 @@ def get_shift_summary(date: str, shift: str):
 
 from fastapi import APIRouter, Query, HTTPException
 
+@router.get("/api/report/moulding_machines_history")
+def get_moulding_machine_history(
+    start: str = Query(..., description="Start date YYYY-MM-DD"),
+    end: str = Query(..., description="End date YYYY-MM-DD"),
+    machine: str = Query("ALL", description="Machine ID or ALL")
+):
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        # 1. Parse dates and span to cover the full end day
+        start_dt = datetime.strptime(start, "%Y-%m-%d")
+        end_dt = datetime.strptime(end, "%Y-%m-%d")
+        
+        start_time_str = f"{start} 00:00:00"
+        end_time_str = f"{end} 23:59:59"
+
+        # 2. Generate required table suffixes (e.g., ['aug_2026', 'sep_2026'])
+        suffixes = []
+        curr = start_dt.replace(day=1)
+        while curr <= end_dt:
+            suffixes.append(curr.strftime("%b_%Y").lower())
+            if curr.month == 12:
+                curr = curr.replace(year=curr.year + 1, month=1)
+            else:
+                curr = curr.replace(month=curr.month + 1)
+
+        # 3. Verify which of these tables actually exist in the database
+        valid_tables = []
+        for suffix in suffixes:
+            table_name = f"moulding_machines_history1_{suffix}"
+            cur.execute(
+                "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = %s)", 
+                (table_name,)
+            )
+            if cur.fetchone()[0]:
+                valid_tables.append(table_name)
+
+        # If no tables exist for the selected dates, return an empty array
+        if not valid_tables:
+            return []
+
+        # 4. Construct a dynamic UNION ALL query to search across all valid tables
+        query_parts = []
+        params = []
+        
+        for table in valid_tables:
+            base_query = f"""
+                SELECT history_timestamp, machine_id, parameter_name, unit, old_value, new_value, changed_by 
+                FROM {table}
+                WHERE history_timestamp >= %s AND history_timestamp <= %s
+            """
+            table_params = [start_time_str, end_time_str]
+            
+            if machine != "ALL":
+                base_query += " AND machine_id = %s"
+                table_params.append(machine)
+                
+            query_parts.append(base_query)
+            params.extend(table_params)
+
+        # Combine queries and sort newest to oldest
+        final_query = " UNION ALL ".join(query_parts) + " ORDER BY history_timestamp DESC"
+        
+        cur.execute(final_query, tuple(params))
+        rows = cur.fetchall()
+        
+        # 5. Format results exactly as the JavaScript expects
+        results = []
+        for row in rows:
+            results.append({
+                "history_timestamp": row[0],
+                "machine_id": row[1],
+                "parameter_name": row[2],
+                "unit": row[3],
+                "old_value": row[4],
+                "new_value": row[5],
+                "changed_by": row[6]
+            })
+            
+        return results
+
+    except Exception as e:
+        print(f"History API Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+@router.get("/api/report/moulding_machines_alarms")
+def get_moulding_machine_alarms(
+    start: str = Query(..., description="Start date YYYY-MM-DD"),
+    end: str = Query(..., description="End date YYYY-MM-DD"),
+    machine: str = Query("ALL", description="Machine ID or ALL")
+):
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        start_dt = datetime.strptime(start, "%Y-%m-%d")
+        end_dt = datetime.strptime(end, "%Y-%m-%d")
+        
+        start_time_str = f"{start} 00:00:00"
+        end_time_str = f"{end} 23:59:59"
+
+        suffixes = []
+        curr = start_dt.replace(day=1)
+        while curr <= end_dt:
+            suffixes.append(curr.strftime("%b_%Y").lower())
+            if curr.month == 12:
+                curr = curr.replace(year=curr.year + 1, month=1)
+            else:
+                curr = curr.replace(month=curr.month + 1)
+
+        valid_tables = []
+        for suffix in suffixes:
+            table_name = f"moulding_machines_alarms_{suffix}"
+            cur.execute(
+                "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = %s)", 
+                (table_name,)
+            )
+            if cur.fetchone()[0]:
+                valid_tables.append(table_name)
+
+        if not valid_tables:
+            return []
+
+        query_parts = []
+        params = []
+        
+        for table in valid_tables:
+            base_query = f"""
+                SELECT alarm_timestamp, machine_id, alarm_code, alarm_message, alarm_status 
+                FROM {table}
+                WHERE alarm_timestamp >= %s AND alarm_timestamp <= %s
+            """
+            table_params = [start_time_str, end_time_str]
+            
+            if machine != "ALL":
+                base_query += " AND machine_id = %s"
+                table_params.append(machine)
+                
+            query_parts.append(base_query)
+            params.extend(table_params)
+
+        final_query = " UNION ALL ".join(query_parts) + " ORDER BY alarm_timestamp DESC"
+        
+        cur.execute(final_query, tuple(params))
+        rows = cur.fetchall()
+        
+        results = []
+        for row in rows:
+            results.append({
+                "alarm_timestamp": row[0],
+                "machine_id": row[1],
+                "alarm_code": row[2],
+                "alarm_message": row[3],
+                "alarm_status": row[4]
+            })
+            
+        return results
+
+    except Exception as e:
+        print(f"Alarms API Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+        
 @router.get("/api/get_oee_summary")
 def get_oee_summary(
     start_date: str = Query(""),

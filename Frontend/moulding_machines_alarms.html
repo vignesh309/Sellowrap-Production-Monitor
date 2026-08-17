@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Alarms Log - Sellowrap</title>
+    <link rel="stylesheet" href="/static/css/moulding_machines_alarms.css">
+</head>
+<body>
+
+    <!-- EXACT MATCH NAVBAR -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>MOULDING MACHINES ALARMS</h2>
+        </div>
+
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            
+            <button class="logout-btn" onclick="logout()" title="Secure Logout">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- FILTERS -->
+        <div class="control-panel">
+            <div class="input-group">
+                <label>Date From</label>
+                <input type="date" id="filter_date_from">
+            </div>
+            <div class="input-group">
+                <label>Date To</label>
+                <input type="date" id="filter_date_to">
+            </div>
+            <div class="input-group">
+                <label>Machine ID</label>
+                <select id="filter_machine">
+                    <option value="ALL">All Machines</option>
+                    <option value="IMM-01">IMM-01</option>
+                    <option value="IMM-02">IMM-02</option>
+                </select>
+            </div>
+            <button class="btn-fetch" onclick="fetchAlarmsData()">🔍 Fetch Alarms</button>
+        </div>
+
+        <!-- DATA TABLE -->
+        <div class="table-card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Machine ID</th>
+                            <th>Alarm Code</th>
+                            <th>Alarm Message</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alarms_table_body">
+                        <tr>
+                            <td colspan="5" class="empty-state">Select filters and click 'Fetch Alarms' to view data.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/moulding_machines_alarms.js"></script>
+</body>
+</html>

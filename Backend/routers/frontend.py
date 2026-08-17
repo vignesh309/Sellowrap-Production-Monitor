@@ -88,6 +88,14 @@ def production_hourly_reports_page():
 def loss_analysis_page():
     return FileResponse(get_html_path("loss_analysis.html"))
 
+@router.get("/moulding-machines-history", response_class=HTMLResponse)
+def moulding_machines_history_page():
+    return FileResponse(get_html_path("moulding_machines_history.html"))
+
+@router.get("/moulding-machines-alarms", response_class=HTMLResponse)
+def moulding_machines_alarms_page():
+    return FileResponse(get_html_path("moulding_machines_alarms.html"))
+
 @router.get("/partwise-report", response_class=HTMLResponse)
 def partwise_report_page():
     return FileResponse(get_html_path("partwise_report.html"))
