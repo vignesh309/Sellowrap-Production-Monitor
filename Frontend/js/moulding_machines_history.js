@@ -30,27 +30,37 @@ window.onload = () => {
 };
 
 // --- FETCH & RENDER LOGIC ---
-async function fetchHistoryData() {
+let currentPage = 1;
+const limitPerPage = 500;
+let totalPages = 1;
+
+async function fetchHistoryData(page = 1) {
+    currentPage = page;
+
     const dateFrom = document.getElementById("filter_date_from").value;
     const dateTo = document.getElementById("filter_date_to").value;
     const machineId = document.getElementById("filter_machine").value;
     const tbody = document.getElementById("history_table_body");
+    const paginationControls = document.getElementById("pagination_controls");
 
     if (!dateFrom || !dateTo) {
         alert("Please select a valid date range.");
         return;
     }
 
-    // Show loading state
-    tbody.innerHTML = `<tr><td colspan="7" class="empty-state" style="color: var(--accent-prod);">Loading history data...</td></tr>`;
+    // Show loading state and hide pagination
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-state" style="color: var(--accent-prod);">Loading page ${currentPage}...</td></tr>`;
+    if (paginationControls) paginationControls.style.display = "none";
 
     try {
-        // 🚨 Updated to match your new Backend API Route
-        const response = await fetch(`/api/report/moulding_machines_history?start=${dateFrom}&end=${dateTo}&machine=${machineId}`);
+        const response = await fetch(`/api/report/moulding_machines_history?start=${dateFrom}&end=${dateTo}&machine=${machineId}&page=${currentPage}&limit=${limitPerPage}`);
         
         if (!response.ok) throw new Error("Failed to fetch data from server");
         
-        const data = await response.json();
+        const responseData = await response.json();
+        const data = responseData.data;
+        totalPages = responseData.total_pages;
+        
         tbody.innerHTML = "";
 
         if (data.length === 0) {
@@ -58,9 +68,8 @@ async function fetchHistoryData() {
             return;
         }
 
-        // Render rows directly from database
+        // Render rows
         data.forEach(row => {
-            // Format the PostgreSQL timestamp into a clean, readable string
             const timeObj = new Date(row.history_timestamp);
             const timeFormatted = timeObj.toLocaleString('en-IN', { 
                 year: 'numeric', month: 'short', day: 'numeric', 
@@ -81,9 +90,51 @@ async function fetchHistoryData() {
             `;
         });
 
+        // Update and show pagination controls
+        if (paginationControls) {
+            document.getElementById("page_input").value = currentPage;
+            document.getElementById("page_total").innerText = `of ${totalPages} (Total: ${responseData.total_rows})`;
+            document.getElementById("btn_prev").disabled = currentPage === 1;
+            document.getElementById("btn_next").disabled = currentPage === totalPages;
+            paginationControls.style.display = "flex";
+        }
+
     } catch (error) {
         console.error("Error:", error);
-        // Show actual error state to user instead of mock data
         tbody.innerHTML = `<tr><td colspan="7" class="empty-state" style="color: var(--status-red);">Error loading data. Check server connection.</td></tr>`;
+    }
+}
+
+// Function triggered by Previous/Next buttons
+function changePage(direction) {
+    const newPage = currentPage + direction;
+    if (newPage >= 1 && newPage <= totalPages) {
+        fetchHistoryData(newPage);
+    }
+}
+
+// Function to manually jump to a typed page
+function jumpToPage() {
+    let inputVal = parseInt(document.getElementById("page_input").value);
+    
+    // Safety checks
+    if (isNaN(inputVal) || inputVal < 1) {
+        inputVal = 1;
+    } else if (inputVal > totalPages) {
+        inputVal = totalPages;
+    }
+    
+    // Only fetch if they actually changed the page
+    if (inputVal !== currentPage) {
+        fetchHistoryData(inputVal);
+    } else {
+        document.getElementById("page_input").value = currentPage; 
+    }
+}
+
+// Allow pressing "Enter" in the input box to trigger the jump
+function handlePageJump(event) {
+    if (event.key === "Enter") {
+        jumpToPage();
     }
 }

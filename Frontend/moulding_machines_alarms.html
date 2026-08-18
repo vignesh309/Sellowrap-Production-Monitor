@@ -60,7 +60,7 @@
                     <option value="IMM-02">IMM-02</option>
                 </select>
             </div>
-            <button class="btn-fetch" onclick="fetchAlarmsData()">🔍 Fetch Alarms</button>
+            <button class="btn-fetch" onclick="fetchAlarmsData(1)">🔍 Fetch Alarms</button>
         </div>
 
         <!-- DATA TABLE -->
@@ -83,6 +83,19 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+        <!-- PAGINATION CONTROLS -->
+        <div class="pagination-container" id="pagination_controls" style="display: none;">
+            <button class="btn-page" id="btn_prev" onclick="changePage(-1)">◀ Previous</button>
+            
+            <div class="page-jump">
+                <span>Page</span>
+                <input type="number" id="page_input" min="1" onkeypress="handlePageJump(event)">
+                <span id="page_total">of 1</span>
+                <button class="btn-jump" onclick="jumpToPage()">Go</button>
+            </div>
+
+            <button class="btn-page" id="btn_next" onclick="changePage(1)">Next ▶</button>
         </div>
     </div>
 

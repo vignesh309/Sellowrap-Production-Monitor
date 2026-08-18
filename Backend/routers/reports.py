@@ -4,6 +4,7 @@ from datetime import date
 from datetime import datetime
 from database import get_conn
 from services.telegram_notifier import generate_hourly_report
+import math
 
 router = APIRouter()
 
@@ -850,19 +851,19 @@ from fastapi import APIRouter, Query, HTTPException
 def get_moulding_machine_history(
     start: str = Query(..., description="Start date YYYY-MM-DD"),
     end: str = Query(..., description="End date YYYY-MM-DD"),
-    machine: str = Query("ALL", description="Machine ID or ALL")
+    machine: str = Query("ALL", description="Machine ID or ALL"),
+    page: int = Query(1, description="Page number"),
+    limit: int = Query(500, description="Items per page")
 ):
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # 1. Parse dates and span to cover the full end day
         start_dt = datetime.strptime(start, "%Y-%m-%d")
         end_dt = datetime.strptime(end, "%Y-%m-%d")
         
         start_time_str = f"{start} 00:00:00"
         end_time_str = f"{end} 23:59:59"
 
-        # 2. Generate required table suffixes (e.g., ['aug_2026', 'sep_2026'])
         suffixes = []
         curr = start_dt.replace(day=1)
         while curr <= end_dt:
@@ -872,7 +873,6 @@ def get_moulding_machine_history(
             else:
                 curr = curr.replace(month=curr.month + 1)
 
-        # 3. Verify which of these tables actually exist in the database
         valid_tables = []
         for suffix in suffixes:
             table_name = f"moulding_machines_history1_{suffix}"
@@ -883,11 +883,9 @@ def get_moulding_machine_history(
             if cur.fetchone()[0]:
                 valid_tables.append(table_name)
 
-        # If no tables exist for the selected dates, return an empty array
         if not valid_tables:
-            return []
+            return {"data": [], "total_rows": 0, "total_pages": 1, "current_page": 1}
 
-        # 4. Construct a dynamic UNION ALL query to search across all valid tables
         query_parts = []
         params = []
         
@@ -906,13 +904,22 @@ def get_moulding_machine_history(
             query_parts.append(base_query)
             params.extend(table_params)
 
-        # Combine queries and sort newest to oldest
-        final_query = " UNION ALL ".join(query_parts) + " ORDER BY history_timestamp DESC"
+        # 1. Combine queries
+        combined_query = " UNION ALL ".join(query_parts)
+
+        # 2. Get Total Row Count
+        count_query = f"SELECT COUNT(*) FROM ({combined_query}) AS total_results"
+        cur.execute(count_query, tuple(params))
+        total_rows = cur.fetchone()[0]
+
+        # 3. Get Paginated Data
+        offset = (page - 1) * limit
+        final_query = f"{combined_query} ORDER BY history_timestamp DESC LIMIT %s OFFSET %s"
         
-        cur.execute(final_query, tuple(params))
+        data_params = list(params) + [limit, offset]
+        cur.execute(final_query, tuple(data_params))
         rows = cur.fetchall()
         
-        # 5. Format results exactly as the JavaScript expects
         results = []
         for row in rows:
             results.append({
@@ -925,7 +932,14 @@ def get_moulding_machine_history(
                 "changed_by": row[6]
             })
             
-        return results
+        total_pages = math.ceil(total_rows / limit) if total_rows > 0 else 1
+
+        return {
+            "data": results,
+            "total_rows": total_rows,
+            "total_pages": total_pages,
+            "current_page": page
+        }
 
     except Exception as e:
         print(f"History API Error: {e}")
@@ -938,7 +952,9 @@ def get_moulding_machine_history(
 def get_moulding_machine_alarms(
     start: str = Query(..., description="Start date YYYY-MM-DD"),
     end: str = Query(..., description="End date YYYY-MM-DD"),
-    machine: str = Query("ALL", description="Machine ID or ALL")
+    machine: str = Query("ALL", description="Machine ID or ALL"),
+    page: int = Query(1, description="Page number"),
+    limit: int = Query(500, description="Items per page")
 ):
     conn = get_conn()
     cur = conn.cursor()
@@ -969,7 +985,7 @@ def get_moulding_machine_alarms(
                 valid_tables.append(table_name)
 
         if not valid_tables:
-            return []
+            return {"data": [], "total_rows": 0, "total_pages": 1, "current_page": 1}
 
         query_parts = []
         params = []
@@ -989,9 +1005,20 @@ def get_moulding_machine_alarms(
             query_parts.append(base_query)
             params.extend(table_params)
 
-        final_query = " UNION ALL ".join(query_parts) + " ORDER BY alarm_timestamp DESC"
+        # 1. Combine queries into a single subquery string
+        combined_query = " UNION ALL ".join(query_parts)
+
+        # 2. Get Total Row Count (to calculate total pages)
+        count_query = f"SELECT COUNT(*) FROM ({combined_query}) AS total_results"
+        cur.execute(count_query, tuple(params))
+        total_rows = cur.fetchone()[0]
+
+        # 3. Get Paginated Data
+        offset = (page - 1) * limit
+        final_query = f"{combined_query} ORDER BY alarm_timestamp DESC LIMIT %s OFFSET %s"
         
-        cur.execute(final_query, tuple(params))
+        data_params = list(params) + [limit, offset]
+        cur.execute(final_query, tuple(data_params))
         rows = cur.fetchall()
         
         results = []
@@ -1004,7 +1031,14 @@ def get_moulding_machine_alarms(
                 "alarm_status": row[4]
             })
             
-        return results
+        total_pages = math.ceil(total_rows / limit) if total_rows > 0 else 1
+
+        return {
+            "data": results,
+            "total_rows": total_rows,
+            "total_pages": total_pages,
+            "current_page": page
+        }
 
     except Exception as e:
         print(f"Alarms API Error: {e}")
@@ -1012,7 +1046,7 @@ def get_moulding_machine_alarms(
     finally:
         cur.close()
         conn.close()
-        
+
 @router.get("/api/get_oee_summary")
 def get_oee_summary(
     start_date: str = Query(""),

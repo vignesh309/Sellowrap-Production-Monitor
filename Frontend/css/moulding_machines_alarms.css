@@ -35,8 +35,13 @@ html, body {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    position: sticky;
+    
+    /* 🚨 CHANGED TO FIXED SO IT NEVER HIDES */
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
     z-index: 1000;
 }
 
@@ -95,7 +100,14 @@ html, body {
 .logout-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
 /* --- PAGE LAYOUT --- */
-.container { max-width: 95%; margin: 30px auto; display: flex; flex-direction: column; gap: 25px; }
+.container {
+    max-width: 95%;
+    /* 🚨 INCREASED TOP MARGIN TO 100px TO CLEAR FIXED NAVBAR */
+    margin: 100px auto 30px auto; 
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
 
 .page-header {
     display: flex; justify-content: space-between; align-items: center;
@@ -182,3 +194,81 @@ html, body, .table-container { scrollbar-width: thin; scrollbar-color: var(--scr
 }
 ::-webkit-scrollbar-thumb:hover { background-color: var(--scroll-thumb-hover); box-shadow: 0 0 10px rgba(0, 229, 255, 0.45); }
 ::-webkit-scrollbar-thumb:active { background-color: var(--scroll-thumb-hover); }
+
+/* --- PAGINATION --- */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+    padding: 15px;
+    background: rgba(30, 34, 60, 0.4);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.page-indicator {
+    color: var(--text-muted);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.btn-page {
+    background-color: var(--bg-input);
+    color: var(--accent-prod);
+    border: 1px solid var(--border-solid);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-page:hover:not(:disabled) {
+    background-color: var(--accent-prod);
+    color: #000;
+}
+
+.btn-page:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.page-jump {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.page-jump input {
+    width: 60px;
+    padding: 6px;
+    border-radius: 6px;
+    background-color: var(--bg-input);
+    color: white;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    outline: none;
+    font-weight: bold;
+    color-scheme: dark;
+}
+
+.btn-jump {
+    background: rgba(0, 229, 255, 0.1);
+    color: var(--accent-prod);
+    border: 1px solid var(--border-solid);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-jump:hover {
+    background: var(--accent-prod);
+    color: #000;
+}
