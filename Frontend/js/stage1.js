@@ -1214,12 +1214,32 @@ function validateTimeRange(hourIndex, splitIndex) {
     return { start: tStart, end: tEnd };
 }
 
-// 🚨 UPDATED: Now safely updates numbers on the fly without wiping manual edits!
+// 🚨 UPDATED: Now safely updates numbers AND prevents time-travel bugs!
 function injectIoTCounts(iotCounts) {
     if (!iotCounts) return;
 
+    const now = new Date();
+    const globalDateStr = document.getElementById("global_date").value;
+    const globalShift = document.getElementById("global_shift").value;
+
     hours.forEach((timeObj, hourIndex) => {
         const startHour = parseInt(timeObj.start.split(":")[0], 10);
+        
+        // --- 🚨 TIME TRAVEL PREVENTION LOGIC 🚨 ---
+        // Calculate the physical exact date and time of this specific block
+        let blockDate = new Date(globalDateStr);
+        if (globalShift === "B" && startHour < 7) {
+            // If it's Shift B and the block is 00:00 to 06:00, it physically happens the NEXT calendar day
+            blockDate.setDate(blockDate.getDate() + 1);
+        }
+        blockDate.setHours(startHour, 0, 0, 0);
+
+        // If this block's physical time hasn't happened yet, strictly ignore any IoT data for it!
+        if (now < blockDate) {
+            return; 
+        }
+        // ------------------------------------------
+
         const autoCount = iotCounts[startHour];
 
         if (autoCount !== undefined) {
@@ -1232,10 +1252,9 @@ function injectIoTCounts(iotCounts) {
                     let currentVal = parseInt(shotsInput.value) || 0;
                     let lastInjected = parseInt(shotsInput.dataset.lastIot) || 0;
 
-                    // Update if it's 0, OR if it's exactly what we injected 15 seconds ago
                     if (currentVal === 0 || currentVal === lastInjected) {
                         shotsInput.value = autoCount;
-                        shotsInput.dataset.lastIot = autoCount; // Memorize this new number!
+                        shotsInput.dataset.lastIot = autoCount; 
                     }
                 }
             }
@@ -1666,20 +1685,21 @@ window.onload = async () => {
     }
 };
 
-// 🚨 NEW: Background Sync - Pings the server every 15 seconds
+// 🚨 UPDATED: Background Sync now passes the shift to the backend
 setInterval(async () => {
     let machine = document.getElementById("machine").value;
     let dateVal = document.getElementById("global_date").value;
+    let shiftVal = document.getElementById("global_shift").value; // <-- Added this
+
     enforceTimeLocks();
-    // Only ping the server if the operator actually has a machine selected
-    if (!machine || !dateVal) return;
+    
+    if (!machine || !dateVal || !shiftVal) return;
 
     try {
-        const res = await fetch(`/api/get_live_iot_count?date=${dateVal}&machine_code=${encodeURIComponent(machine)}`);
+        // <-- Added shift to the URL
+        const res = await fetch(`/api/get_live_iot_count?date=${dateVal}&shift=${shiftVal}&machine_code=${encodeURIComponent(machine)}`);
         if (res.ok) {
             const data = await res.json();
-            
-            // Push the fresh data into the UI
             injectIoTCounts(data.iot_counts);
         }
     } catch (e) { 

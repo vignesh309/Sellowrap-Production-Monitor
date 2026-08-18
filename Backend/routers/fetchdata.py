@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import psycopg2
 from database import get_conn
@@ -112,7 +112,7 @@ def live_factory_status(date: str):
         conn.close()
 
 @router.get("/api/get_live_moulding_data")
-def get_live_moulding_data(machine_code: str, date: str = None):
+def get_live_moulding_data(machine_code: str, date: str = None, shift: str = None):
     conn = get_conn()
     cur = conn.cursor()
     
@@ -167,16 +167,26 @@ def get_live_moulding_data(machine_code: str, date: str = None):
         if mold_row:
             response_data["mold_name"] = mold_row[0]
             
-        # 5. 🚨 SMART QUERY: Calculate exact hourly shots directly from the PLC monitor table
-        if date:
+        # 5. 🚨 SMART QUERY: Calculate exact hourly shots using true Shift Window
+        if date and shift:
+            # Calculate physical start and end times for the shift
+            start_date_obj = datetime.strptime(date, "%Y-%m-%d")
+            
+            if shift == "A":
+                start_dt = start_date_obj.replace(hour=7, minute=0, second=0)
+                end_dt = start_date_obj.replace(hour=18, minute=59, second=59)
+            else: # Shift B
+                start_dt = start_date_obj.replace(hour=19, minute=0, second=0)
+                end_dt = (start_date_obj + timedelta(days=1)).replace(hour=6, minute=59, second=59)
+
             cur.execute(f"""
                 WITH FirstShots AS (
-                    -- Get the very first shot count recorded at the start of each hour
+                    -- Get the very first shot count recorded at the start of each hour within the shift window
                     SELECT DISTINCT ON (EXTRACT(HOUR FROM monitor_timestamp))
                         EXTRACT(HOUR FROM monitor_timestamp) AS hr,
                         shot_count
                     FROM moulding_machines_monitor1_{suffix}
-                    WHERE machine_id = %s AND DATE(monitor_timestamp) = %s
+                    WHERE machine_id = %s AND monitor_timestamp >= %s AND monitor_timestamp <= %s
                     ORDER BY EXTRACT(HOUR FROM monitor_timestamp), monitor_timestamp ASC
                 )
                 SELECT 
@@ -186,10 +196,11 @@ def get_live_moulding_data(machine_code: str, date: str = None):
                     COALESCE(
                         LEAD(shot_count) OVER (ORDER BY hr), 
                         (SELECT MAX(shot_count) FROM moulding_machines_monitor1_{suffix} 
-                         WHERE machine_id = %s AND DATE(monitor_timestamp) = %s AND EXTRACT(HOUR FROM monitor_timestamp) = FirstShots.hr)
+                         WHERE machine_id = %s AND monitor_timestamp >= %s AND monitor_timestamp <= %s 
+                         AND EXTRACT(HOUR FROM monitor_timestamp) = FirstShots.hr)
                     ) - shot_count AS hourly_shots
                 FROM FirstShots;
-            """, (machine_code, date, machine_code, date))
+            """, (machine_code, start_dt, end_dt, machine_code, start_dt, end_dt))
             
             for row in cur.fetchall():
                 hour_no = int(row[0])

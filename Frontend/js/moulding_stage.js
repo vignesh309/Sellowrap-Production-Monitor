@@ -76,13 +76,14 @@ function logout() {
 async function syncMouldingTelemetry() {
     let machine = document.getElementById("machine").value;
     let dateVal = document.getElementById("global_date").value;
+    let shiftVal = document.getElementById("global_shift").value;
     
     enforceTimeLocks();
 
     if (!machine || !dateVal) return;
 
     try {
-        const res = await fetch(`/api/get_live_moulding_data?machine_code=${encodeURIComponent(machine)}&date=${dateVal}`);
+        const res = await fetch(`/api/get_live_moulding_data?machine_code=${encodeURIComponent(machine)}&date=${dateVal}&shift=${shiftVal}`);
         
         if (res.ok) {
             const data = await res.json();
@@ -169,7 +170,25 @@ async function syncMouldingTelemetry() {
 }
 
 // Ping the PLC database tables every 15 seconds
-setInterval(syncMouldingTelemetry, 15000);
+setInterval(async () => {
+    let machine = document.getElementById("machine").value;
+    let dateVal = document.getElementById("global_date").value;
+    let shiftVal = document.getElementById("global_shift").value; // <-- Add this
+    enforceTimeLocks();
+
+    if (!machine || !dateVal || !shiftVal) return;
+
+    try {
+        // Pass the shift in the URL
+        const res = await fetch(`/api/get_live_iot_count?date=${dateVal}&shift=${shiftVal}&machine_code=${encodeURIComponent(machine)}`);
+        if (res.ok) {
+            const data = await res.json();
+            injectIoTCounts(data.iot_counts);
+        }
+    } catch (e) { 
+        console.error("IoT Background Sync Error:", e); 
+    }
+}, 15000);
 
 // --- INITIALIZE DATA ON PAGE LOAD ---
 async function fetchMasterData() {
@@ -1210,11 +1229,32 @@ function validateTimeRange(hourIndex, splitIndex) {
     return { start: tStart, end: tEnd };
 }
 
+// 🚨 UPDATED: Now safely updates numbers AND prevents time-travel bugs!
 function injectIoTCounts(iotCounts) {
     if (!iotCounts) return;
 
+    const now = new Date();
+    const globalDateStr = document.getElementById("global_date").value;
+    const globalShift = document.getElementById("global_shift").value;
+
     hours.forEach((timeObj, hourIndex) => {
         const startHour = parseInt(timeObj.start.split(":")[0], 10);
+        
+        // --- 🚨 TIME TRAVEL PREVENTION LOGIC 🚨 ---
+        // Calculate the physical exact date and time of this specific block
+        let blockDate = new Date(globalDateStr);
+        if (globalShift === "B" && startHour < 7) {
+            // If it's Shift B and the block is 00:00 to 06:00, it physically happens the NEXT calendar day
+            blockDate.setDate(blockDate.getDate() + 1);
+        }
+        blockDate.setHours(startHour, 0, 0, 0);
+
+        // If this block's physical time hasn't happened yet, strictly ignore any IoT data for it!
+        if (now < blockDate) {
+            return; 
+        }
+        // ------------------------------------------
+
         const autoCount = iotCounts[startHour];
 
         if (autoCount !== undefined) {

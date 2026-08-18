@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from database import get_conn
 from schemas import Stage1BlockSubmit, FinalizeBatchPayload, ActiveMachineState
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi.responses import StreamingResponse
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
@@ -346,19 +346,42 @@ def get_batch_logs(date: str, shift: str, machine_code: str):
         conn.close()
 
 @router.get("/api/get_live_iot_count")
-def get_live_iot_count(date: str, machine_code: str):
+def get_live_iot_count(date: str, machine_code: str, shift: str = "A"):
     """Ultra-fast endpoint to ping IoT counts every 15 seconds."""
     conn = get_conn()
     cur = conn.cursor()
     try:
-        cur.execute("""
-            SELECT hour_no, part_count 
-            FROM machine_hourly_summary 
-            WHERE machine_code = %s AND summary_date = %s
-        """, (machine_code, date))
+        # Calculate the next calendar day for Shift B's after-midnight hours
+        start_date_obj = datetime.strptime(date, "%Y-%m-%d")
+        next_day_str = (start_date_obj + timedelta(days=1)).strftime("%Y-%m-%d")
+
+        if shift == "A":
+            # Shift A is entirely within the same physical calendar day (07:00 to 18:59)
+            cur.execute("""
+                SELECT hour_no, part_count 
+                FROM machine_hourly_summary 
+                WHERE machine_code = %s 
+                  AND summary_date = %s 
+                  AND hour_no >= 7 AND hour_no <= 18
+            """, (machine_code, date))
+        else:
+            # 🚨 SMART QUERY: Shift B bridges across two physical calendar days!
+            # Fetch 19:00 to 23:59 from Day 1, and 00:00 to 06:59 from Day 2
+            cur.execute("""
+                SELECT hour_no, part_count 
+                FROM machine_hourly_summary 
+                WHERE machine_code = %s 
+                  AND (
+                      (summary_date = %s AND hour_no >= 19 AND hour_no <= 23)
+                      OR 
+                      (summary_date = %s AND hour_no >= 0 AND hour_no <= 6)
+                  )
+            """, (machine_code, date, next_day_str))
         
-        iot_counts = {str(row[0]): row[1] for row in cur.fetchall()}
+        # Format dictionary with integer keys so the frontend maps them correctly
+        iot_counts = {int(row[0]): row[1] for row in cur.fetchall()}
         return {"iot_counts": iot_counts}
+
     except Exception as e:
         print(f"BACKGROUND SYNC ERROR: {e}")
         return {"iot_counts": {}}
