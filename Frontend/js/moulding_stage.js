@@ -1622,13 +1622,36 @@ function applyRestoredLogs(isFinalized = false) {
 // PAGE INITIALIZATION & BOOTSTRAP
 // ==========================================
 window.onload = async () => {
-    // 1. Set the correct local date
     const now = new Date();
-    const offsetDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
-    const dateInput = document.getElementById("global_date");
-    if (dateInput) {
-        dateInput.value = offsetDate.toISOString().split('T')[0];
+    let logicalDate = new Date(now);
+    let currentShift = "A";
+
+    const currentHour = now.getHours(); // Returns 0-23
+
+    // 🚨 SMART LOGICAL SHIFT CALCULATION 🚨
+    if (currentHour >= 0 && currentHour < 7) {
+        // Between Midnight and 7 AM: The logical shift belongs to YESTERDAY'S Shift B.
+        logicalDate.setDate(logicalDate.getDate() - 1);
+        currentShift = "B";
+    } 
+    else if (currentHour >= 19) {
+        // Between 7 PM and Midnight: The logical shift is TODAY'S Shift B.
+        currentShift = "B";
+    } 
+    else {
+        // Between 7 AM and 7 PM: The logical shift is TODAY'S Shift A.
+        currentShift = "A";
     }
+
+    // Format the date string properly avoiding timezone shifting bugs
+    const offsetDate = new Date(logicalDate.getTime() - (logicalDate.getTimezoneOffset() * 60000));
+    const logicalDateStr = offsetDate.toISOString().split('T')[0];
+    
+    const dateInput = document.getElementById("global_date");
+    const shiftInput = document.getElementById("global_shift");
+
+    if (dateInput) dateInput.value = logicalDateStr;
+    if (shiftInput) shiftInput.value = currentShift;
 
     // 2. Fetch the Master Data (This will automatically trigger renderAllHourBlocks inside it)
     await fetchMasterData();
@@ -1638,10 +1661,17 @@ window.onload = async () => {
 
     // 4. Handle URL parameters (if redirecting from a hub)
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('machine') && urlParams.get('date') && urlParams.get('shift')) {
-        document.getElementById("machine").value = urlParams.get('machine');
-        document.getElementById("global_date").value = urlParams.get('date');
-        document.getElementById("global_shift").value = urlParams.get('shift');
+    const urlMachine = urlParams.get('machine');
+    const urlDate = urlParams.get('date');
+    const urlShift = urlParams.get('shift');
+
+    if (urlMachine && urlDate && urlShift) {
+        let machineSelect = document.getElementById("machine");
+        
+        if (machineSelect) machineSelect.value = urlMachine;
+        if (dateInput) dateInput.value = urlDate;
+        if (shiftInput) shiftInput.value = urlShift;
+        
         checkActiveMachineState();
     }
 };
