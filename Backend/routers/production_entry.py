@@ -779,13 +779,21 @@ def get_machines():
     conn = get_conn()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT machine_code, machine_name FROM machine_master WHERE is_active = true ORDER BY machine_code ASC")
-        rows = cur.fetchall()
-        machines = [{"code": r[0], "name": r[1] or r[0]} for r in rows]
+        # 🚨 Make sure machine_process is included in the SELECT query!
+        cur.execute("SELECT machine_code, machine_name, machine_process FROM machine_master WHERE is_active = true ORDER BY machine_code ASC")
+        
+        machines = []
+        for row in cur.fetchall():
+            machines.append({
+                "code": row[0],
+                "name": row[1],
+                "process": row[2] # 🚨 This is the missing link!
+            })
+            
         return {"machines": machines}
     except Exception as e:
-        print(f"MACHINE FETCH ERROR: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Error fetching machines: {e}")
+        return {"machines": []}
     finally:
         cur.close()
         conn.close()

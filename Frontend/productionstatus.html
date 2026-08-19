@@ -46,7 +46,19 @@
 
     <div class="filter-bar" id="filter-bar"
         style="background: var(--bg-panel); padding: 15px 40px; display: flex; gap: 25px; align-items: center; border-bottom: 1px solid var(--border-color);">
-
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="color: var(--accent-cyan); font-weight: bold; font-size: 12px; text-transform: uppercase;">Process:</label>
+            <select id="process_select" onchange="handleProcessChange()"
+                style="background: var(--bg-input); border: 1px solid var(--border-color); color: white; padding: 8px 12px; border-radius: 6px; outline: none; cursor: pointer; width: 180px;">
+                <option value="ALL">-- All Processes --</option>
+                <option value="MOULDING">Moulding</option>
+                <option value="ASSEMBLY">Assembly</option>
+                <option value="ASSEMBLY_SPM">Assembly SPM</option>
+                <option value="THERMOWELDING">Thermowelding</option>
+                <option value="MANUAL PASTING">Manual Pasting</option>
+                <option value="PRESS CUT">Press Cut</option>
+            </select>
+        </div>
         <div style="display: flex; align-items: center; gap: 10px;">
             <label
                 style="color: var(--accent-cyan); font-weight: bold; font-size: 12px; text-transform: uppercase;">Machine:</label>

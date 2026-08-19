@@ -1,23 +1,24 @@
 const backend = window.location.origin;
 
+
 // ==========================================
 // USER AUTHENTICATION & PROFILE DISPLAY
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     const role = localStorage.getItem("userRole");
     const fullName = localStorage.getItem("userFullName");
-
+    
     // 1. Hard Redirect if Not Logged In
     if (!role || !fullName) {
         window.location.href = "/";
         return; 
     }
-
+    
     // 2. Safely Update the Navbar UI
     const displayUser = document.getElementById("user-display");
     const displayRole = document.getElementById("role-display");
     const displayAvatar = document.getElementById("user-avatar");
-
+    
     if (displayUser) {
         displayUser.innerText = fullName; // Displays "Mike Bossman" instead of "mikeb"
     }
@@ -30,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Grabs the first letter of their full name for the avatar bubble
         displayAvatar.innerText = fullName.charAt(0).toUpperCase(); 
     }
-
+    
     // 3. Apply Role-Based Security Hiding
     if (role === "Operator") {
         document.querySelectorAll(".restrict-operator").forEach(el => el.style.display = "none");
@@ -39,6 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".restrict-supervisor").forEach(el => el.style.display = "none");
     }
 });
+
+let globalMachineList = []; // 🚨 NEW: Stores machines so we can filter them locally
 
 // Global Logout Function
 function logout() {
@@ -61,8 +64,22 @@ const shiftBTimes = [
 ];
 
 window.onload = async () => {
+    // 1. 🚨 SMART LOGICAL SHIFT CALCULATION 🚨
+    const now = new Date();
+    let logicalDate = new Date(now);
+    const currentHour = now.getHours();
+
+    // If it is before 7 AM, the "current" production day is physically yesterday
+    if (currentHour >= 0 && currentHour < 7) {
+        logicalDate.setDate(logicalDate.getDate() - 1);
+    }
+
+    // Format the date string properly avoiding timezone shifting bugs
+    const offsetDate = new Date(logicalDate.getTime() - (logicalDate.getTimezoneOffset() * 60000));
+    const logicalDateStr = offsetDate.toISOString().split('T')[0];
+
     const liveDateInput = document.getElementById('live_date');
-    if(liveDateInput) liveDateInput.value = new Date().toISOString().split('T')[0];
+    if(liveDateInput) liveDateInput.value = logicalDateStr;
     
     await fetchMachineList();
     fetchLiveStatus();
@@ -88,23 +105,48 @@ async function fetchMachineList() {
         const response = await fetch(`${backend}/api/get_machines`); 
         if (response.ok) {
             const data = await response.json();
-            const machineList = data.machines; 
-            const select = document.getElementById("machine_select");
-            if (!select) return;
-
-            machineList.forEach(m => {
-                select.innerHTML += `<option value="${m.code}">${m.code} - ${m.name}</option>`;
-            });
+            globalMachineList = data.machines; 
+            
+            // Build the initial dropdown with ALL machines
+            updateMachineDropdown("ALL");
         }
     } catch (e) {
         console.error("Could not load machine list", e);
     }
 }
 
+// --- Cascading Dropdown Logic ---
+function updateMachineDropdown(selectedProcess) {
+    const select = document.getElementById("machine_select");
+    if (!select) return;
+    
+    // Reset options
+    select.innerHTML = '<option value="ALL">-- All Machines --</option>';
+
+    globalMachineList.forEach(m => {
+        // Force both sides to UPPERCASE so "Moulding" always matches "MOULDING"
+        const mProcess = (m.process || m.machine_process || "").toUpperCase();
+        const selProcess = selectedProcess.toUpperCase();
+        
+        if (selectedProcess === "ALL" || mProcess === selProcess) {
+            select.innerHTML += `<option value="${m.code}">${m.code} - ${m.name}</option>`;
+        }
+    });
+}
+
+// --- 🚨 NEW: Triggered when Process dropdown changes ---
+function handleProcessChange() {
+    const selectedProcess = document.getElementById("process_select").value;
+    updateMachineDropdown(selectedProcess);
+    fetchLiveStatus(); // Refresh the board with the new process filter
+}
+
 // --- API: Fetch Live Floor Data ---
 async function fetchLiveStatus() {
     const selectedDate = document.getElementById('live_date').value;
+    const selectedProcess = document.getElementById('process_select').value;
     const selectedMachine = document.getElementById('machine_select').value;
+    
     if (!selectedDate) return;
 
     try {
@@ -114,6 +156,18 @@ async function fetchLiveStatus() {
         const res = await response.json();
         let machinesData = res.data;
 
+        // 🚨 NEW: Apply Process Filter to the visual cards
+        if (selectedProcess !== "ALL") {
+            const selProcess = selectedProcess.toUpperCase();
+            
+            const validMachineCodes = globalMachineList
+                .filter(m => (m.process || m.machine_process || "").toUpperCase() === selProcess)
+                .map(m => m.code);
+            
+            machinesData = machinesData.filter(m => validMachineCodes.includes(m.machine));
+        }
+
+        // Apply Machine Filter
         if (selectedMachine !== "ALL") {
             machinesData = machinesData.filter(m => m.machine === selectedMachine);
         }
@@ -121,7 +175,7 @@ async function fetchLiveStatus() {
         // 1. Render the main grid with DB data
         renderDashboard(machinesData);
         
-        // 2. 🚨 NEW: Fetch IoT counts to fill in the blank hourly table cells
+        // 2. Fetch IoT counts to fill in the blank hourly table cells
         fetchDetailedIoTCounts(selectedDate, machinesData);
         
     } catch (error) {
@@ -129,33 +183,55 @@ async function fetchLiveStatus() {
     }
 }
 
-// --- 🚨 UPDATED: Removed the "Idle" block so live data shows immediately! ---
+// --- 🚨 UPDATED: Fetches both shifts and prevents Time Travel! ---
 async function fetchDetailedIoTCounts(dateVal, machines) {
+    const now = new Date();
+
     machines.forEach(async (mac) => {
         const machineCode = mac.machine;
         
-        // Only skip "NO PLAN". Allow "Idle" (Awaiting Data) to fetch IoT counts!
+        // Skip machines with NO PLAN
         if (mac.current_part_no === "NO PLAN") return;
 
         try {
-            const res = await fetch(`/api/get_live_iot_count?date=${dateVal}&machine_code=${machineCode}`);
-            if (res.ok) {
-                const jsonResponse = await res.json();
-                const iotCounts = jsonResponse.iot_counts || jsonResponse;
+            // Because the API now requires a shift, we ask for both Shift A and B to fill the whole dashboard
+            const [resA, resB] = await Promise.all([
+                fetch(`/api/get_live_iot_count?date=${dateVal}&shift=A&machine_code=${encodeURIComponent(machineCode)}`),
+                fetch(`/api/get_live_iot_count?date=${dateVal}&shift=B&machine_code=${encodeURIComponent(machineCode)}`)
+            ]);
+
+            let iotCounts = {};
+            if (resA.ok) {
+                const jsonA = await resA.json();
+                Object.assign(iotCounts, jsonA.iot_counts || jsonA);
+            }
+            if (resB.ok) {
+                const jsonB = await resB.json();
+                Object.assign(iotCounts, jsonB.iot_counts || jsonB);
+            }
                 
-                // Scan all 24 possible hours
-                for (let hour = 0; hour < 24; hour++) {
-                    const cell = document.getElementById(`dtl_act_${machineCode}_${hour}`);
+            // Scan all 24 possible hours
+            for (let hour = 0; hour < 24; hour++) {
+                const cell = document.getElementById(`dtl_act_${machineCode}_${hour}`);
+                
+                if (cell && cell.dataset.unsubmitted === "true") {
                     
-                    // If this cell exists and is flagged as unsubmitted by the DB
-                    if (cell && cell.dataset.unsubmitted === "true") {
-                        const liveCount = iotCounts[hour];
+                    // --- TIME TRAVEL PREVENTION LOGIC ---
+                    let blockDate = new Date(dateVal);
+                    // If hour is 0-6 (Midnight to 6 AM), it belongs to Shift B and happens on the NEXT calendar day
+                    if (hour < 7) {
+                        blockDate.setDate(blockDate.getDate() + 1);
+                    }
+                    blockDate.setHours(hour, 0, 0, 0);
+
+                    // If this block's physical time hasn't happened yet, skip it!
+                    if (now < blockDate) continue;
+                    // ------------------------------------
+
+                    const liveCount = iotCounts[hour];
                         
-                        // If the sensor has recorded parts for this hour, inject it!
-                        if (liveCount !== undefined && liveCount > 0) {
-                            // Make it cyan and italicized so users know it's a live sensor pulse
-                            cell.innerHTML = `<span style="color: var(--accent-cyan); font-weight: bold; font-style: italic;" title="Live Sensor Pulse">${liveCount}</span>`;
-                        }
+                    if (liveCount !== undefined && liveCount > 0) {
+                        cell.innerHTML = `<span style="color: var(--accent-cyan); font-weight: bold; font-style: italic;" title="Live Sensor Pulse">${liveCount}</span>`;
                     }
                 }
             }

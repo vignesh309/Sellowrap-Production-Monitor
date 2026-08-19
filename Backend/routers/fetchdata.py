@@ -19,7 +19,8 @@ def live_factory_status(date: str):
                        machine_code, part_number, operator_code, is_no_plan
                 FROM production_hourly_log
                 WHERE production_date = %s
-                ORDER BY machine_code, start_time DESC
+                -- 🚨 FIX: Order by the physical creation time, NOT the string text of the hour!
+                ORDER BY machine_code, created_at DESC
             )
             SELECT m.machine_code, m.machine_name, 
                    l.part_number, l.operator_code, pm.part_name,

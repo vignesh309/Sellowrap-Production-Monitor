@@ -416,9 +416,15 @@ class ToyoMachine:
                     elif factor in (30, 31):
                         try:
                             fields = next(csv.reader([txt.strip()]))
+                            alarm_code = fields[4].strip()
+                            
+                            # 🚨 NEW: Ignore specific nuisance alarms to prevent database bloat
+                            if alarm_code in ["160", "108", "138", "106", "193"]:
+                                continue
+
                             alarm_data = {
                                 "timestamp": f"{fields[2].strip()} {fields[3].strip()}",
-                                "alarm_code": fields[4].strip(),
+                                "alarm_code": alarm_code,
                                 "alarm_message": fields[7].strip('" '),
                                 "alarm_status": "TRIGGERED" if factor == 30 else "RESET"
                             }
