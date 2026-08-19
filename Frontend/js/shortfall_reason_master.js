@@ -1,10 +1,10 @@
 // --- STATE MANAGEMENT ---
 let currentMode = "EXPLORE";
 let currentReasonData = {}; 
-let fullMasterList = []; // Holds all data for the overview table
+let fullMasterList = []; 
 
-// DOM Elements
-const formInputs = ["reason_code", "reason_name", "category", "is_active"];
+// 🚨 UPDATED: Added oee_impact and valid_processes to form tracking
+const formInputs = ["reason_code", "reason_name", "category", "oee_impact", "valid_processes", "is_active"];
 const btnNew = document.getElementById("btn_new");
 const btnEdit = document.getElementById("btn_edit");
 const btnSave = document.getElementById("btn_save");
@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return; 
     }
 
-    // Populate Navbar UI
     const displayUser = document.getElementById("user-display");
     const displayRole = document.getElementById("role-display");
     const displayAvatar = document.getElementById("user-avatar");
@@ -31,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (displayRole) displayRole.innerText = role.toUpperCase();
     if (displayAvatar) displayAvatar.innerText = fullName.charAt(0).toUpperCase(); 
 
-    // Initialize Page State
     setMode("EXPLORE");
     refreshMasterList();
 });
@@ -49,18 +47,15 @@ function setMode(mode) {
     const isExplore = mode === "EXPLORE";
     const isNew = mode === "NEW";
 
-    // Enable/Disable core form inputs based on state
     formInputs.forEach(id => {
         let el = document.getElementById(id);
         if (el) el.disabled = isExplore;
     });
 
-    // Reason Code should be completely locked down during an EDIT to prevent PK issues
     if (mode === "EDIT") {
         document.getElementById("reason_code").disabled = true;
     }
 
-    // Manage Buttons
     btnNew.disabled = !isExplore;
     btnEdit.disabled = !isExplore || !document.getElementById("reason_code").value;
     btnSave.disabled = isExplore;
@@ -68,7 +63,8 @@ function setMode(mode) {
 
     if (isNew) {
         clearForm();
-        document.getElementById("is_active").value = "true"; // Default to active for new
+        document.getElementById("is_active").value = "true"; 
+        document.getElementById("oee_impact").value = "Availability"; // Default fallback for Shortfalls
     }
 }
 
@@ -85,18 +81,15 @@ function clearForm() {
 // ==========================================
 async function refreshMasterList() {
     try {
+        // 🚨 Pointing to shortfall API
         const response = await fetch('/api/shortfall_list');
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const data = await response.json(); 
         fullMasterList = data;
         
         updateSearchDatalist();
         renderOverviewTable();
-
     } catch (error) {
         console.error("Failed to load master list:", error);
     }
@@ -120,7 +113,7 @@ function renderOverviewTable() {
     tbody.innerHTML = "";
 
     if (fullMasterList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: gray;">No shortfall reasons configured.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: gray;">No shortfall reasons configured.</td></tr>`;
         return;
     }
 
@@ -128,8 +121,10 @@ function renderOverviewTable() {
         const tr = document.createElement("tr");
         const statusClass = r.is_active ? "chip-active" : "chip-inactive";
         const statusText = r.is_active ? "Active" : "Inactive";
+        
+        // 🚨 SAFELY PARSE ARRAY FOR TABLE
+        const processesDisplay = Array.isArray(r.valid_processes) ? r.valid_processes.join(", ") : (r.valid_processes || "-");
 
-        // Click row to quick-load it into the form
         tr.onclick = () => {
             document.getElementById("search_reason_id").value = r.reason_code;
             searchReason();
@@ -139,6 +134,8 @@ function renderOverviewTable() {
             <td style="font-weight: bold; color: var(--accent-cyan);">${r.reason_code}</td>
             <td>${r.reason_name}</td>
             <td>${r.category}</td>
+            <td>${r.oee_impact || "-"}</td>
+            <td>${processesDisplay}</td>
             <td style="text-align: center;"><span class="status-chip ${statusClass}">${statusText}</span></td>
         `;
         tbody.appendChild(tr);
@@ -150,6 +147,7 @@ async function searchReason() {
     if (!reasonCode) { alert("Please enter a Reason Code to search."); return; }
 
     try {
+        // 🚨 Pointing to shortfall API
         const response = await fetch(`/api/shortfall/${encodeURIComponent(reasonCode)}`);
         if (!response.ok) throw new Error("Reason not found");
         
@@ -167,7 +165,15 @@ function populateForm(data) {
     document.getElementById("reason_code").value = data.reason_code || "";
     document.getElementById("reason_name").value = data.reason_name || "";
     document.getElementById("category").value = data.category || "";
+    document.getElementById("oee_impact").value = data.oee_impact || "Availability";
     document.getElementById("is_active").value = data.is_active === true ? "true" : "false";
+    
+    // Safely parse the valid_processes array back into a string for the text box
+    let processes = data.valid_processes || "";
+    if (Array.isArray(processes)) {
+        processes = processes.join(", ");
+    }
+    document.getElementById("valid_processes").value = processes;
 
     setMode("EXPLORE");
 }
@@ -179,10 +185,16 @@ function startNewReason() { setMode("NEW"); }
 function enableEditMode() { setMode("EDIT"); }
 
 async function saveReason() {
+    // Convert comma-separated text into a clean Array for the backend
+    let rawProcesses = document.getElementById("valid_processes").value.trim();
+    let processesArray = rawProcesses ? rawProcesses.split(',').map(s => s.trim().toUpperCase()) : [];
+
     let payload = {
         reason_code: document.getElementById("reason_code").value.trim(),
         reason_name: document.getElementById("reason_name").value.trim(),
         category: document.getElementById("category").value.trim(),
+        oee_impact: document.getElementById("oee_impact").value,
+        valid_processes: processesArray, 
         is_active: document.getElementById("is_active").value === "true"
     };
 
@@ -203,6 +215,7 @@ async function saveReason() {
     btnSave.disabled = true;
 
     try {
+        // 🚨 Pointing to shortfall API
         const response = await fetch('/api/shortfall/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -218,10 +231,10 @@ async function saveReason() {
         
         setMode("EXPLORE");
         document.getElementById("search_reason_id").value = payload.reason_code;
-        refreshMasterList(); // Re-pull data to update bottom table
+        refreshMasterList(); 
 
     } catch (error) {
-        alert(error.message);
+        alert(`❌ Server Error: ${error.message}`);
     } finally {
         btnSave.disabled = false;
         btnSave.innerText = "💾 SAVE";
@@ -237,6 +250,7 @@ async function deleteReason() {
     }
 
     try {
+        // 🚨 Pointing to shortfall API
         const response = await fetch(`/api/shortfall/${encodeURIComponent(reasonCode)}`, { method: 'DELETE' });
         
         if (!response.ok) {
@@ -251,6 +265,6 @@ async function deleteReason() {
         refreshMasterList();
 
     } catch (error) {
-        alert(error.message);
+        alert(`❌ Server Error: ${error.message}`);
     }
 }

@@ -67,36 +67,45 @@
             </div>
 
             <!-- CORE DETAILS FORM GRID -->
-            <h3 class="sub-title">1. Reason Configuration</h3>
+            <h3 class="sub-title">1. Shortfall Configuration</h3>
             <div class="form-grid">
                 <div>
                     <label>Reason Code</label>
-                    <input type="text" id="reason_code" placeholder="e.g. WELD-01" disabled>
+                    <input type="text" id="reason_code" placeholder="e.g. BD-01" disabled>
                 </div>
                 <div>
                     <label>Reason Name</label>
-                    <input type="text" id="reason_name" placeholder="e.g. Start Up" disabled>
+                    <input type="text" id="reason_name" placeholder="e.g. Machine Breakdown" disabled>
                 </div>
                 <div>
                     <label>Category</label>
-                    <input list="category_list" id="category" placeholder="e.g. Welding Issue" disabled autocomplete="off">
+                    <input list="category_list" id="category" placeholder="e.g. Maintenance" disabled autocomplete="off">
                     <datalist id="category_list">
-                        <option value="Welding Issue"></option>
-                        <option value="Moulding Issue"></option>
-                        <option value="Assembly Issue"></option>
-                        <option value="Material Defect"></option>
-                        <option value="General"></option>
+                        <option value="Machine Breakdown"></option>
+                        <option value="Material Shortage"></option>
+                        <option value="Manpower Shortage"></option>
+                        <option value="Setup / Changeover"></option>
+                        <option value="Utility Failure"></option>
+                        <option value="Tooling Issue"></option>
                     </datalist>
                 </div>
+                
+                <!-- 🚨 NEW: OEE Impact Dropdown -->
                 <div>
                     <label>OEE Impact</label>
                     <select id="oee_impact" disabled>
-                        <option value="Quality">Quality</option>
-                        <option value="Performance">Performance</option>
                         <option value="Availability">Availability</option>
-                        <option value="None">None</option>
+                        <option value="Performance">Performance</option>
+                        <option value="Quality">Quality</option>
                     </select>
                 </div>
+
+                <!-- 🚨 NEW: Valid Processes Input -->
+                <div>
+                    <label>Valid Processes</label>
+                    <input type="text" id="valid_processes" placeholder="MOULDING, ASSEMBLY" disabled title="Separate multiple processes with commas">
+                </div>
+
                 <div>
                     <label>Status</label>
                     <select id="is_active" disabled>
@@ -118,12 +127,14 @@
                                 <th>Reason Code</th>
                                 <th>Reason Name</th>
                                 <th>Category</th>
-                                <th>OEE Impact</th>
+                                <th>OEE Impact</th> <!-- 🚨 NEW -->
+                                <th>Valid Processes</th> <!-- 🚨 NEW -->
                                 <th style="text-align: center;">Status</th>
                             </tr>
                         </thead>
                         <tbody id="overview_table_body">
-                            <tr><td colspan="5" style="text-align: center; color: gray;">Loading master list...</td></tr>
+                            <!-- Updated colspan to 6 to match new columns -->
+                            <tr><td colspan="6" style="text-align: center; color: gray;">Loading master list...</td></tr>
                         </tbody>
                     </table>
                 </div>

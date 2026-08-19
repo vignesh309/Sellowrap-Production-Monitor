@@ -212,22 +212,27 @@ async function saveReason() {
     btnSave.disabled = true;
 
     try {
-        // ACTUAL IMPLEMENTATION:
         const response = await fetch('/api/rejection/save', {
              method: 'POST',
              headers: { 'Content-Type': 'application/json' },
              body: JSON.stringify(payload)
         });
-        if (!response.ok) throw new Error("Failed to save reason");
+        
+        // 🚨 UPDATED: Now it extracts the exact error from Python!
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Failed to save reason");
+        }
 
         alert("Reason saved successfully!");
         
         setMode("EXPLORE");
         document.getElementById("search_reason_id").value = payload.reason_code;
-        refreshMasterList(); // Re-pull data to update bottom table
+        refreshMasterList(); 
 
     } catch (error) {
-        alert(error.message);
+        // Now if Python fails, the alert will tell you EXACTLY why!
+        alert(`❌ Server Error: ${error.message}`);
     } finally {
         btnSave.disabled = false;
         btnSave.innerText = "💾 SAVE";

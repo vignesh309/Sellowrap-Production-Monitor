@@ -68,15 +68,15 @@
             <div class="form-grid">
                 <div>
                     <label>Reason Code</label>
-                    <input type="text" id="reason_code" placeholder="e.g. BD-01" disabled>
+                    <input type="text" id="reason_code" placeholder="e.g. SF-01" disabled>
                 </div>
                 <div>
                     <label>Reason Name</label>
-                    <input type="text" id="reason_name" placeholder="e.g. Machine Breakdown" disabled>
+                    <input type="text" id="reason_name" placeholder="e.g. Material Shortage" disabled>
                 </div>
                 <div>
                     <label>Category</label>
-                    <input list="category_list" id="category" placeholder="e.g. Maintenance" disabled autocomplete="off">
+                    <input list="category_list" id="category" placeholder="e.g. Material" disabled autocomplete="off">
                     <datalist id="category_list">
                         <option value="Machine Breakdown"></option>
                         <option value="Material Shortage"></option>
@@ -86,6 +86,23 @@
                         <option value="Tooling Issue"></option>
                     </datalist>
                 </div>
+                
+                <!-- 🚨 NEW: OEE Impact Dropdown -->
+                <div>
+                    <label>OEE Impact</label>
+                    <select id="oee_impact" disabled>
+                        <option value="Availability">Availability</option>
+                        <option value="Performance">Performance</option>
+                        <option value="Quality">Quality</option>
+                    </select>
+                </div>
+
+                <!-- 🚨 NEW: Valid Processes Input -->
+                <div>
+                    <label>Valid Processes</label>
+                    <input type="text" id="valid_processes" placeholder="MOULDING, THERMOWELDING" disabled title="Separate multiple processes with commas">
+                </div>
+
                 <div>
                     <label>Status</label>
                     <select id="is_active" disabled>
@@ -107,11 +124,13 @@
                                 <th>Reason Code</th>
                                 <th>Reason Name</th>
                                 <th>Category</th>
+                                <th>OEE Impact</th> <!-- 🚨 NEW -->
+                                <th>Valid Processes</th> <!-- 🚨 NEW -->
                                 <th style="text-align: center;">Status</th>
                             </tr>
                         </thead>
                         <tbody id="overview_table_body">
-                            <tr><td colspan="4" style="text-align: center; color: gray;">Loading master list...</td></tr>
+                            <tr><td colspan="6" style="text-align: center; color: gray;">Loading master list...</td></tr>
                         </tbody>
                     </table>
                 </div>

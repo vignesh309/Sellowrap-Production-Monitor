@@ -125,4 +125,6 @@ class ShortfallReasonPayload(BaseModel):
     reason_code: str
     reason_name: str
     category: str
+    oee_impact: str
+    valid_processes: List[str]
     is_active: bool

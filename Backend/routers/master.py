@@ -547,7 +547,7 @@ def get_shortfall_list():
     try:
         cur.execute(
             """
-            SELECT id, reason_code, reason_name, category, is_active 
+            SELECT id, reason_code, reason_name, category, oee_impact, valid_processes, is_active 
             FROM shortfall_reason_master 
             ORDER BY reason_code ASC
             """
@@ -559,7 +559,10 @@ def get_shortfall_list():
                 "reason_code": row[1],
                 "reason_name": row[2],
                 "category": row[3],
-                "is_active": row[4]
+                "oee_impact": row[4],
+                # Safely return an empty list if valid_processes is NULL in the database
+                "valid_processes": row[5] if row[5] else [], 
+                "is_active": row[6]
             })
         return reasons
     except Exception as e:
@@ -577,7 +580,7 @@ def get_shortfall_reason(reason_code: str):
     try:
         cur.execute(
             """
-            SELECT id, reason_code, reason_name, category, is_active 
+            SELECT id, reason_code, reason_name, category, oee_impact, valid_processes, is_active 
             FROM shortfall_reason_master 
             WHERE reason_code = %s
             """,
@@ -592,7 +595,9 @@ def get_shortfall_reason(reason_code: str):
             "reason_code": row[1],
             "reason_name": row[2],
             "category": row[3],
-            "is_active": row[4]
+            "oee_impact": row[4],
+            "valid_processes": row[5] if row[5] else [],
+            "is_active": row[6]
         }
     except HTTPException:
         raise
@@ -609,23 +614,27 @@ def save_shortfall_reason(payload: ShortfallReasonPayload):
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # Assumes reason_code has a UNIQUE constraint in your shortfall_reason_master table
+        # Psycopg2 automatically converts Python lists to PostgreSQL Arrays!
         cur.execute(
             """
             INSERT INTO shortfall_reason_master 
-                (reason_code, reason_name, category, is_active, created_at, updated_at)
+                (reason_code, reason_name, category, oee_impact, valid_processes, is_active, created_at, updated_at)
             VALUES 
-                (%s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                (%s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             ON CONFLICT (reason_code) DO UPDATE SET
                 reason_name = EXCLUDED.reason_name,
                 category = EXCLUDED.category,
+                oee_impact = EXCLUDED.oee_impact,
+                valid_processes = EXCLUDED.valid_processes,
                 is_active = EXCLUDED.is_active,
                 updated_at = CURRENT_TIMESTAMP;
             """,
             (
                 payload.reason_code, 
                 payload.reason_name, 
-                payload.category, 
+                payload.category,
+                payload.oee_impact,
+                payload.valid_processes,
                 payload.is_active
             )
         )
