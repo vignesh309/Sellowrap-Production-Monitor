@@ -1,0 +1,342 @@
+/* --- GLOBAL THEME --- */
+:root {
+    --bg-main: #14172b;
+    --bg-panel: #1e223c;
+    --bg-input: #262a47;
+    --border-color: rgba(81, 128, 230, 0.2);
+    --border-solid: #5180e6;
+    --text-main: #ffffff;
+    --text-muted: #c1deff;
+    --accent-prod: #00e5ff;
+    --accent-cyan: #00e5ff;
+    --status-green: #00f076;
+    --status-red: #ff2a7a;
+    --status-yellow: #ffb142;
+    --status-blue: #0072ff;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* --- ENTERPRISE NAVBAR --- */
+.navbar {
+    background-color: var(--bg-panel);
+    border-bottom: 1px solid var(--border-solid);
+    padding: 10px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand { display: flex; align-items: center; gap: 15px; }
+.brand img { height: 50px; border-radius: 4px; }
+.brand h2 { margin: 0; color: var(--accent-prod); font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
+
+.nav-utils { display: flex; align-items: center; }
+
+/* --- USER IDENTITY SECTION --- */
+.user-profile {
+    display: flex; align-items: center; gap: 12px;
+    padding-right: 20px; margin-right: 20px;
+    border-right: 1px solid rgba(81, 128, 230, 0.4);
+}
+
+.avatar {
+    width: 50px; height: 50px; border-radius: 5px;
+    background: linear-gradient(135deg, var(--accent-prod) 0%, #0072ff 100%);
+    display: flex; justify-content: center; align-items: center;
+    font-weight: bold; font-size: 18px; color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 229, 255, 0.3); 
+}
+
+.user-info { display: flex; flex-direction: column; justify-content: center; }
+.user-name { font-weight: bold; font-size: 15px; color: #fff; }
+.user-role { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;}
+
+.hub-btn {
+    background: rgba(0, 229, 255, 0.08); border: 1px solid var(--accent-prod);
+    color: var(--accent-prod); padding: 8px 16px; border-radius: 6px;
+    cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;
+    margin-right: 20px; transition: 0.3s;
+}
+.hub-btn:hover { background: var(--accent-prod); color: #000; box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+
+.logout-btn {
+    background: transparent; border: none; color: #ff2a7a;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    font-weight: bold; font-size: 14px; padding: 8px 12px;
+    border-radius: 6px; transition: 0.3s;
+}
+.logout-btn:hover { background: rgba(255, 42, 122, 0.1); color: #ff5494; }
+.logout-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* --- DASHBOARD LAYOUT --- */
+.main-container {
+    display: flex;
+    padding: 30px 40px;
+    gap: 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sidebar-item {
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidebar-item:hover,
+.sidebar-item.active {
+    background: rgba(0, 229, 255, 0.1);
+    color: var(--accent-prod);
+    border-color: rgba(0, 229, 255, 0.3);
+    padding-left: 25px;
+}
+
+/* --- CONTENT CANVAS --- */
+.content-canvas {
+    flex-grow: 1;
+}
+
+.section-group {
+    margin-bottom: 60px;
+    scroll-margin-top: 100px;
+}
+
+.section-header {
+    display: flex; align-items: center; gap: 15px;
+    margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;
+}
+
+.section-header h2 {
+    margin: 0; font-size: 18px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted);
+}
+
+.card { 
+    background: rgba(30, 34, 60, 0.4);
+    backdrop-filter: blur(12px);
+    padding: 25px; 
+    border-radius: 12px; 
+    border: 1px solid var(--border-color); 
+}
+
+/* --- FORM & TABLE --- */
+.mapping-form {
+    display: grid; 
+    grid-template-columns: 1.5fr 1.5fr 2fr auto; 
+    gap: 15px;
+    margin-bottom: 30px; 
+    padding-bottom: 20px; 
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mapping-form input {
+    padding: 12px; border-radius: 6px; background: var(--bg-input);
+    color: white; border: 1px solid var(--border-color); width: 100%; box-sizing: border-box;
+}
+
+.btn-primary { 
+    padding: 10px 20px; 
+    background: linear-gradient(135deg, var(--accent-prod) 0%, #0072ff 100%); 
+    color: #ffffff; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    font-size: 13px; 
+    transition: 0.3s; 
+    height: 38px; 
+    white-space: nowrap;
+}
+.btn-primary:hover { 
+    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4); 
+    transform: translateY(-1px); 
+}
+
+.btn-add {
+    background: linear-gradient(135deg, var(--accent-prod) 0%, #0072ff 100%);
+    color: #000; border: none; padding: 0 25px; font-weight: bold;
+    border-radius: 6px; cursor: pointer; transition: 0.3s;
+}
+.btn-add:hover { box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4); transform: translateY(-2px); }
+
+table { width: 100%; border-collapse: collapse; text-align: left; }
+thead th {
+    background-color: var(--bg-input); color: var(--accent-prod);
+    padding: 15px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 2px solid var(--border-solid);
+}
+tbody td { padding: 15px; border-bottom: 1px solid rgba(81, 128, 230, 0.2); font-size: 14px; }
+tbody tr:hover { background-color: rgba(0, 229, 255, 0.05); }
+
+.loading-cell { text-align: center; padding: 20px; color: var(--text-muted); }
+
+.btn-delete {
+    background: transparent; color: var(--status-red); border: 1px solid var(--status-red);
+    padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: 0.3s;
+}
+.btn-delete:hover { background: var(--status-red); color: white; }
+
+/* =========================================
+   CANVAS HEADER & AUTO-SYNC BUTTON
+   ========================================= */
+.canvas-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.btn-autosync {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-autosync:hover {
+    background: var(--accent-cyan);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-autosync:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Adds a small rotation effect to the sync icon when clicked */
+.btn-autosync svg {
+    transition: transform 0.4s ease;
+}
+
+.btn-autosync:active svg {
+    transform: rotate(180deg);
+}
+
+/* =========================================
+   SHARED MASTER LAYOUT STYLES
+   ========================================= */
+.card { 
+    background: var(--bg-panel); padding: 30px; border-radius: 16px; 
+    border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+}
+
+h3.sub-title { 
+    color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.1); 
+    padding-bottom: 8px; margin-top: 25px; margin-bottom: 15px; font-size: 14px; text-transform: uppercase; 
+}
+
+label { 
+    display: block; margin-top: 10px; margin-bottom: 6px; font-weight: 500; 
+    color: var(--text-muted); font-size: 11px; text-transform: uppercase; 
+}
+
+/* =========================================
+   STANDARD INPUT STYLING (ACTIVE STATE)
+   ========================================= */
+input, select {
+    width: 100%;
+    padding: 14px 16px; /* Increased padding makes the box taller and wider */
+    border-radius: 8px;
+    border: 1px solid var(--border-solid); /* Uses your theme's solid blue border */
+    background-color: var(--bg-input) !important; /* Forces the dark navy background */
+    color: var(--text-main) !important; /* Keeps the text crisp white */
+    font-size: 15px; /* Slightly larger text for readability */
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* Glowing effect when the user clicks inside to type */
+input:focus, select:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    background-color: rgba(38, 42, 71, 0.8) !important; /* Very subtle lightening on focus */
+}
+
+input:disabled, select:disabled { 
+    background-color: rgba(0,0,0,0.2) !important; border-color: rgba(81, 128, 230, 0.2) !important; 
+    color: #8fa8d6 !important; cursor: not-allowed; 
+}
+
+.form-grid { 
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 15px; align-items: end; background: rgba(0,0,0,0.1); 
+    padding: 20px; border-radius: 12px; border: 1px solid rgba(81, 128, 230, 0.2);
+}
+
+.crud-toolbar {
+    display: flex; gap: 15px; padding: 15px 20px; background: rgba(0,0,0,0.25);
+    border-radius: 12px; border: 1px solid rgba(81, 128, 230, 0.3); margin-bottom: 25px;
+}
+
+.btn-action {
+    padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; 
+    cursor: pointer; transition: 0.3s; flex: 1; max-width: 200px;
+    display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 13px;
+}
+
+.btn-new { background: rgba(0, 240, 118, 0.15); color: var(--status-green); border: 1px solid var(--status-green); }
+.btn-new:hover:not(:disabled) { background: var(--status-green); color: black; box-shadow: 0 0 15px rgba(0, 240, 118, 0.4); }
+
+.btn-edit { background: rgba(255, 177, 66, 0.15); color: var(--status-yellow); border: 1px solid var(--status-yellow); }
+.btn-edit:hover:not(:disabled) { background: var(--status-yellow); color: black; box-shadow: 0 0 15px rgba(255, 177, 66, 0.4); }
+
+.btn-save { background: rgba(0, 114, 255, 0.15); color: #6db0ff; border: 1px solid var(--status-blue); }
+.btn-save:hover:not(:disabled) { background: var(--status-blue); color: white; box-shadow: 0 0 15px rgba(0, 114, 255, 0.4); }
+
+.btn-delete { background: rgba(255, 42, 122, 0.15); color: var(--status-red); border: 1px solid var(--status-red); }
+.btn-delete:hover:not(:disabled) { background: var(--status-red); color: white; box-shadow: 0 0 15px rgba(255, 42, 122, 0.4); }
+
+.btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* --- MOBILE --- */
+@media (max-width: 1000px) {
+    .main-container { flex-direction: column; padding: 20px; }
+    .sidebar { width: 100%; position: static; flex-direction: row; overflow-x: auto; padding-bottom: 10px; }
+    .sidebar-item { white-space: nowrap; }
+    .mapping-form { grid-template-columns: 1fr; }
+}

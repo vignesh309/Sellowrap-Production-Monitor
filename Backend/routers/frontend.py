@@ -47,10 +47,10 @@ def production_entry_stage_1_page():
 def moulding_stage_page():
     return FileResponse(get_html_path("moulding_stage.html"))
 
+@router.get("/moulding-stage-hourly-status", response_class=HTMLResponse)
+def moulding_stage_hourly_status_page():
+    return FileResponse(get_html_path("moulding_stage_hourly_status.html"))
 
-@router.get("/production-entry-stage-2", response_class=HTMLResponse)
-def production_entry_stage_2_page():
-    return FileResponse(get_html_path("production_entry_stage_2.html"))
 
 @router.get("/machine_master", response_class=HTMLResponse)
 def machine_master_page():
@@ -71,6 +71,10 @@ def shortfall_reason_master_page():
 @router.get("/rejection_reason_master", response_class=HTMLResponse)
 def rejection_reason_master_page():
     return FileResponse(get_html_path("rejection_reason_master.html"))
+
+@router.get("/erp-integration-master", response_class=HTMLResponse)
+def erp_integration_master_page():
+    return FileResponse(get_html_path("erp_integration_master.html"))
 
 @router.get("/batch-ledger-page", response_class=HTMLResponse)
 def batch_ledger_page():

@@ -19,7 +19,7 @@ from summary_worker import start_summary_worker
 from services.auto_worker import run_auto_finalization
 
 # Import our routers
-from routers import frontend, master, reports, auth, production_entry, fetchdata
+from routers import frontend, master, reports, auth, production_entry, fetchdata, erp_integration
 
 # =========================
 # Lifespan Events (Startup & Shutdown)
@@ -103,6 +103,7 @@ app.include_router(reports.router)
 app.include_router(auth.router) 
 app.include_router(production_entry.router)
 app.include_router(fetchdata.router)
+app.include_router(erp_integration.router)  # 🚨 NEW: ERP Integration Router
 
 # =========================
 # Main Entry

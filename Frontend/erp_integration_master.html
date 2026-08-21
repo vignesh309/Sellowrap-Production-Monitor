@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP Integration Master</title>
+  <link rel="stylesheet" href="/static/css/erp_integration_master.css" />
+</head>
+
+<body>
+  <!-- ENTERPRISE NAVBAR -->
+  <div class="navbar">
+    <div class="brand">
+      <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display = 'none'" />
+      <h2>ERP INTEGRATION MASTER</h2>
+    </div>
+
+    <div class="nav-utils">
+      <button class="hub-btn" onclick="window.location.href = '/hub'">
+        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+        </svg>
+        Return to Hub
+      </button>
+      <div class="user-profile">
+        <div class="avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <span id="user-display" class="user-name">Loading...</span>
+          <span id="role-display" class="user-role">Role</span>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()" title="Secure Logout">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+          </path>
+        </svg>
+        Log Out
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="main-container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-item active" onclick="scrollToSection('MACHINE', this)">
+        🏭 Machines
+      </div>
+      <div class="sidebar-item" onclick="scrollToSection('PART', this)">
+        ⚙️ Parts / Items
+      </div>
+      <div class="sidebar-item" onclick="scrollToSection('MOULD', this)">
+        🔧 Moulds / Dies
+      </div>
+      <div class="sidebar-item" onclick="scrollToSection('EMPLOYEE', this)">
+        👥 Employees
+      </div>
+      <div class="sidebar-item" onclick="scrollToSection('REJECTION', this)">
+        ❌ Rejection Reasons
+      </div>
+      <div class="sidebar-item" onclick="scrollToSection('DOWNTIME', this)">
+        📉 Downtime Reasons
+      </div>
+      <div class="sidebar-item" onclick="scrollToSection('SHIFT', this)">
+        ⏱️ Shifts
+      </div>
+    </div>
+
+    <!-- CONTENT CANVAS -->
+    <div class="content-canvas">
+      
+      <!-- Top Action Bar -->
+      <div class="canvas-header" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+        <button id="btn_autosync" class="btn-autosync" onclick="autoSyncMappings()" style="display: flex; align-items: center; gap: 8px;">
+          🔄 Auto-Sync Master Data
+        </button>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- DYNAMIC SECTIONS (Repeated Layout Template)    -->
+      <!-- ============================================== -->
+
+      <!-- MACHINE SECTION -->
+      <div id="section-MACHINE" class="section-group">
+        <div class="card">
+          <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0; border: none;">🏭 Machine Mappings</h2>
+            <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+              <label style="margin: 0;">Search Internal Code:</label>
+              <input list="dl_machines" id="search_MACHINE" placeholder="-- Search --" style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+              <datalist id="dl_machines"></datalist>
+              <button class="btn-primary" onclick="searchMapping('MACHINE')" style="margin: 0;">Load Data</button>
+            </div>
+          </div>
+
+          <div class="crud-toolbar">
+            <button id="btn_new_MACHINE" class="btn-action btn-new" onclick="setMode('MACHINE', 'NEW')">➕ NEW</button>
+            <button id="btn_edit_MACHINE" class="btn-action btn-edit" onclick="setMode('MACHINE', 'EDIT')">✏️ EDIT</button>
+            <button id="btn_save_MACHINE" class="btn-action btn-save" onclick="saveMapping('MACHINE')" disabled>💾 SAVE</button>
+            <button id="btn_delete_MACHINE" class="btn-action btn-delete" onclick="deleteMapping('MACHINE')">🗑️ DELETE</button>
+          </div>
+
+          <h3 class="sub-title">1. Mapping Details</h3>
+          <div class="form-grid">
+            <div>
+              <label>Internal Software Name</label>
+              <input type="text" id="MACHINE_internal" placeholder="e.g. IMM-21" disabled>
+            </div>
+            <div>
+              <label>FINSYS ERP Code</label>
+              <input type="text" id="MACHINE_erp" placeholder="e.g. 61/04" disabled>
+            </div>
+            <div>
+              <label>Notes (Optional)</label>
+              <input type="text" id="MACHINE_desc" placeholder="e.g. Auto-synced" disabled>
+            </div>
+          </div>
+
+          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
+          <table>
+            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
+            <tbody id="table-MACHINE"><tr><td colspan="3" class="loading-cell">Loading mappings...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PART SECTION -->
+      <div id="section-PART" class="section-group">
+        <div class="card">
+          <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0; border: none;">⚙️ Part / Item Mappings</h2>
+            <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+              <label style="margin: 0;">Search Internal Code:</label>
+              <input list="dl_parts" id="search_PART" placeholder="-- Search --" style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+              <datalist id="dl_parts"></datalist>
+              <button class="btn-primary" onclick="searchMapping('PART')" style="margin: 0;">Load Data</button>
+            </div>
+          </div>
+
+          <div class="crud-toolbar">
+            <button id="btn_new_PART" class="btn-action btn-new" onclick="setMode('PART', 'NEW')">➕ NEW</button>
+            <button id="btn_edit_PART" class="btn-action btn-edit" onclick="setMode('PART', 'EDIT')">✏️ EDIT</button>
+            <button id="btn_save_PART" class="btn-action btn-save" onclick="saveMapping('PART')" disabled>💾 SAVE</button>
+            <button id="btn_delete_PART" class="btn-action btn-delete" onclick="deleteMapping('PART')">🗑️ DELETE</button>
+          </div>
+
+          <h3 class="sub-title">1. Mapping Details</h3>
+          <div class="form-grid">
+            <div><label>Internal Software Name</label><input type="text" id="PART_internal" disabled></div>
+            <div><label>FINSYS ERP Code</label><input type="text" id="PART_erp" disabled></div>
+            <div><label>Notes (Optional)</label><input type="text" id="PART_desc" disabled></div>
+          </div>
+          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
+          <table>
+            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
+            <tbody id="table-PART"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MOULD SECTION -->
+      <div id="section-MOULD" class="section-group">
+        <div class="card">
+          <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0; border: none;">🔧 Mould / Die Mappings</h2>
+            <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+              <label style="margin: 0;">Search Internal Code:</label>
+              <input list="dl_moulds" id="search_MOULD" placeholder="-- Search --" style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+              <datalist id="dl_moulds"></datalist>
+              <button class="btn-primary" onclick="searchMapping('MOULD')" style="margin: 0;">Load Data</button>
+            </div>
+          </div>
+
+          <div class="crud-toolbar">
+            <button id="btn_new_MOULD" class="btn-action btn-new" onclick="setMode('MOULD', 'NEW')">➕ NEW</button>
+            <button id="btn_edit_MOULD" class="btn-action btn-edit" onclick="setMode('MOULD', 'EDIT')">✏️ EDIT</button>
+            <button id="btn_save_MOULD" class="btn-action btn-save" onclick="saveMapping('MOULD')" disabled>💾 SAVE</button>
+            <button id="btn_delete_MOULD" class="btn-action btn-delete" onclick="deleteMapping('MOULD')">🗑️ DELETE</button>
+          </div>
+
+          <h3 class="sub-title">1. Mapping Details</h3>
+          <div class="form-grid">
+            <div><label>Internal Software Name</label><input type="text" id="MOULD_internal" disabled></div>
+            <div><label>FINSYS ERP Code</label><input type="text" id="MOULD_erp" disabled></div>
+            <div><label>Notes (Optional)</label><input type="text" id="MOULD_desc" disabled></div>
+          </div>
+          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
+          <table>
+            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
+            <tbody id="table-MOULD"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- EMPLOYEE SECTION -->
+      <div id="section-EMPLOYEE" class="section-group">
+        <div class="card">
+          <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0; border: none;">👥 Employee Mappings</h2>
+            <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+              <label style="margin: 0;">Search Internal Code:</label>
+              <input list="dl_employees" id="search_EMPLOYEE" placeholder="-- Search --" style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+              <datalist id="dl_employees"></datalist>
+              <button class="btn-primary" onclick="searchMapping('EMPLOYEE')" style="margin: 0;">Load Data</button>
+            </div>
+          </div>
+
+          <div class="crud-toolbar">
+            <button id="btn_new_EMPLOYEE" class="btn-action btn-new" onclick="setMode('EMPLOYEE', 'NEW')">➕ NEW</button>
+            <button id="btn_edit_EMPLOYEE" class="btn-action btn-edit" onclick="setMode('EMPLOYEE', 'EDIT')">✏️ EDIT</button>
+            <button id="btn_save_EMPLOYEE" class="btn-action btn-save" onclick="saveMapping('EMPLOYEE')" disabled>💾 SAVE</button>
+            <button id="btn_delete_EMPLOYEE" class="btn-action btn-delete" onclick="deleteMapping('EMPLOYEE')">🗑️ DELETE</button>
+          </div>
+
+          <h3 class="sub-title">1. Mapping Details</h3>
+          <div class="form-grid">
+            <div><label>Internal Software Name</label><input type="text" id="EMPLOYEE_internal" disabled></div>
+            <div><label>FINSYS ERP Code</label><input type="text" id="EMPLOYEE_erp" disabled></div>
+            <div><label>Notes (Optional)</label><input type="text" id="EMPLOYEE_desc" disabled></div>
+          </div>
+          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
+          <table>
+            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
+            <tbody id="table-EMPLOYEE"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REJECTION SECTION -->
+      <div id="section-REJECTION" class="section-group">
+        <div class="card">
+          <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0; border: none;">❌ Rejection Reason Mappings</h2>
+            <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+              <label style="margin: 0;">Search Internal Code:</label>
+              <input list="dl_rejections" id="search_REJECTION" placeholder="-- Search --" style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+              <datalist id="dl_rejections"></datalist>
+              <button class="btn-primary" onclick="searchMapping('REJECTION')" style="margin: 0;">Load Data</button>
+            </div>
+          </div>
+
+          <div class="crud-toolbar">
+            <button id="btn_new_REJECTION" class="btn-action btn-new" onclick="setMode('REJECTION', 'NEW')">➕ NEW</button>
+            <button id="btn_edit_REJECTION" class="btn-action btn-edit" onclick="setMode('REJECTION', 'EDIT')">✏️ EDIT</button>
+            <button id="btn_save_REJECTION" class="btn-action btn-save" onclick="saveMapping('REJECTION')" disabled>💾 SAVE</button>
+            <button id="btn_delete_REJECTION" class="btn-action btn-delete" onclick="deleteMapping('REJECTION')">🗑️ DELETE</button>
+          </div>
+
+          <h3 class="sub-title">1. Mapping Details</h3>
+          <div class="form-grid">
+            <div><label>Internal Software Name</label><input type="text" id="REJECTION_internal" disabled></div>
+            <div><label>FINSYS ERP Code</label><input type="text" id="REJECTION_erp" disabled></div>
+            <div><label>Notes (Optional)</label><input type="text" id="REJECTION_desc" disabled></div>
+          </div>
+          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
+          <table>
+            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
+            <tbody id="table-REJECTION"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DOWNTIME SECTION -->
+      <div id="section-DOWNTIME" class="section-group">
+        <div class="card">
+          <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0; border: none;">📉 Downtime Reason Mappings</h2>
+            <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+              <label style="margin: 0;">Search Internal Code:</label>
+              <input list="dl_downtimes" id="search_DOWNTIME" placeholder="-- Search --" style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+              <datalist id="dl_downtimes"></datalist>
+              <button class="btn-primary" onclick="searchMapping('DOWNTIME')" style="margin: 0;">Load Data</button>
+            </div>
+          </div>
+
+          <div class="crud-toolbar">
+            <button id="btn_new_DOWNTIME" class="btn-action btn-new" onclick="setMode('DOWNTIME', 'NEW')">➕ NEW</button>
+            <button id="btn_edit_DOWNTIME" class="btn-action btn-edit" onclick="setMode('DOWNTIME', 'EDIT')">✏️ EDIT</button>
+            <button id="btn_save_DOWNTIME" class="btn-action btn-save" onclick="saveMapping('DOWNTIME')" disabled>💾 SAVE</button>
+            <button id="btn_delete_DOWNTIME" class="btn-action btn-delete" onclick="deleteMapping('DOWNTIME')">🗑️ DELETE</button>
+          </div>
+
+          <h3 class="sub-title">1. Mapping Details</h3>
+          <div class="form-grid">
+            <div><label>Internal Software Name</label><input type="text" id="DOWNTIME_internal" disabled></div>
+            <div><label>FINSYS ERP Code</label><input type="text" id="DOWNTIME_erp" disabled></div>
+            <div><label>Notes (Optional)</label><input type="text" id="DOWNTIME_desc" disabled></div>
+          </div>
+          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
+          <table>
+            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
+            <tbody id="table-DOWNTIME"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SHIFT SECTION -->
+      <div id="section-SHIFT" class="section-group">
+        <div class="card">
+          <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0; border: none;">⏱️ Shift Mappings</h2>
+            <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+              <label style="margin: 0;">Search Internal Code:</label>
+              <input list="dl_shifts" id="search_SHIFT" placeholder="-- Search --" style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+              <datalist id="dl_shifts">
+                <option value="A"></option>
+                <option value="B"></option>
+              </datalist>
+              <button class="btn-primary" onclick="searchMapping('SHIFT')" style="margin: 0;">Load Data</button>
+            </div>
+          </div>
+
+          <div class="crud-toolbar">
+            <button id="btn_new_SHIFT" class="btn-action btn-new" onclick="setMode('SHIFT', 'NEW')">➕ NEW</button>
+            <button id="btn_edit_SHIFT" class="btn-action btn-edit" onclick="setMode('SHIFT', 'EDIT')">✏️ EDIT</button>
+            <button id="btn_save_SHIFT" class="btn-action btn-save" onclick="saveMapping('SHIFT')" disabled>💾 SAVE</button>
+            <button id="btn_delete_SHIFT" class="btn-action btn-delete" onclick="deleteMapping('SHIFT')">🗑️ DELETE</button>
+          </div>
+
+          <h3 class="sub-title">1. Mapping Details</h3>
+          <div class="form-grid">
+            <div><label>Internal Software Name</label><input type="text" id="SHIFT_internal" disabled></div>
+            <div><label>FINSYS ERP Code</label><input type="text" id="SHIFT_erp" disabled></div>
+            <div><label>Notes (Optional)</label><input type="text" id="SHIFT_desc" disabled></div>
+          </div>
+          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
+          <table>
+            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
+            <tbody id="table-SHIFT"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/static/js/erp_integration_master.js"></script>
+</body>
+
+</html>

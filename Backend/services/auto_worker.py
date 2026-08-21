@@ -2,6 +2,11 @@ from datetime import datetime, timedelta
 from database import get_conn
 
 def run_auto_finalization(target_shift: str):
+
+    """
+    Auto-finalization has been DISABLED per user request.
+    """
+    return # 🚨 ADD THIS: Instantly stops the function from running
     """
     Runs 12 hours after a shift ends.
     If running at 07:05 AM -> Targets Shift A of the previous day.

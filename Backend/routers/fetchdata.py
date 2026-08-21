@@ -219,3 +219,95 @@ def get_live_moulding_data(machine_code: str, date: str = None, shift: str = Non
         conn.close()
         
     return response_data
+
+@router.get("/api/live_moulding_dashboard")
+def get_live_moulding_dashboard(date: str, shift: str):
+    conn = get_conn()
+    cur = conn.cursor()
+    
+    suffix = datetime.now().strftime("%b_%Y").lower()
+    
+    # Calculate exact physical time bounds based on the Logical Shift
+    start_date_obj = datetime.strptime(date, "%Y-%m-%d")
+    if shift == "A":
+        start_dt = start_date_obj.replace(hour=7, minute=0, second=0)
+        end_dt = start_date_obj.replace(hour=18, minute=59, second=59)
+    else: # Shift B
+        start_dt = start_date_obj.replace(hour=19, minute=0, second=0)
+        end_dt = (start_date_obj + timedelta(days=1)).replace(hour=6, minute=59, second=59)
+
+    response_data = []
+
+    try:
+        cur.execute("SELECT machine_code FROM machine_master WHERE is_active = true AND machine_process = 'MOULDING' ORDER BY machine_code ASC")
+        active_machines = [row[0] for row in cur.fetchall()]
+
+        for mac in active_machines:
+            mac_data = {
+                "machine": mac,
+                "mode": "UNKNOWN",
+                "cycle_time": "--",
+                "mould_name": "--",
+                "shot_count": 0,
+                "alarm": "NONE",
+                "is_idle": True # 🚨 NEW: Defaults to True (Red) until proven active
+            }
+
+            # 1. Fetch Mode
+            cur.execute(f"SELECT mode_status FROM moulding_machines_mode_{suffix} WHERE machine_id = %s ORDER BY mode_timestamp DESC LIMIT 1", (mac,))
+            mode_row = cur.fetchone()
+            if mode_row: mac_data["mode"] = mode_row[0].strip().upper()
+
+            # 2. Fetch Cycle Time AND check the 3-Minute Rule
+            cur.execute(f"SELECT cycle_time, monitor_timestamp FROM moulding_machines_monitor1_{suffix} WHERE machine_id = %s ORDER BY monitor_timestamp DESC LIMIT 1", (mac,))
+            cycle_row = cur.fetchone()
+            if cycle_row: 
+                mac_data["cycle_time"] = cycle_row[0]
+                last_time = cycle_row[1]
+                
+                # Safely parse the timestamp whether the DB sends it as a string or a datetime object
+                if isinstance(last_time, str):
+                    try:
+                        last_time = datetime.strptime(last_time, "%Y-%m-%d %H:%M:%S")
+                    except Exception:
+                        pass
+                
+                if isinstance(last_time, datetime):
+                    # 🚨 3-MINUTE RULE CALCULATION (180 seconds)
+                    if (datetime.now() - last_time).total_seconds() <= 300:
+                        mac_data["is_idle"] = False
+
+            # 3. Fetch Mould Name
+            cur.execute(f"SELECT mold_name FROM moulding_machines_status_{suffix} WHERE machine_id = %s ORDER BY status_timestamp DESC LIMIT 1", (mac,))
+            mold_row = cur.fetchone()
+            if mold_row: mac_data["mould_name"] = mold_row[0]
+
+            # 4. Fetch Last Alarm
+            cur.execute(f"SELECT alarm_message, alarm_status FROM moulding_machines_alarms_{suffix} WHERE machine_id = %s ORDER BY alarm_timestamp DESC LIMIT 1", (mac,))
+            alarm_row = cur.fetchone()
+            if alarm_row and alarm_row[1].strip().upper() == "TRIGGERED":
+                mac_data["alarm"] = alarm_row[0]
+
+            # 5. Calculate exact Shot Count for the shift
+            cur.execute(f"""
+                SELECT COUNT(*) 
+                FROM moulding_machines_monitor1_{suffix} 
+                WHERE machine_id = %s AND monitor_timestamp >= %s AND monitor_timestamp <= %s
+            """, (mac, start_dt, end_dt))
+            act_row = cur.fetchone()
+            if act_row: mac_data["shot_count"] = act_row[0]
+
+            response_data.append(mac_data)
+
+        return {"machines": response_data}
+
+    except psycopg2.errors.UndefinedTable:
+        conn.rollback()
+        return {"machines": []}
+    except Exception as e:
+        conn.rollback()
+        print(f"Error compiling Moulding Dashboard: {e}")
+        return {"machines": []}
+    finally:
+        cur.close()
+        conn.close()

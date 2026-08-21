@@ -71,7 +71,7 @@ function logout() {
 }
 
 // ==========================================
-// MOULDING PLC TELEMETRY SYNC (NEW)
+// MOULDING PLC TELEMETRY SYNC
 // ==========================================
 async function syncMouldingTelemetry() {
     let machine = document.getElementById("machine").value;
@@ -124,37 +124,60 @@ async function syncMouldingTelemetry() {
             const plcMoldString = data.mold_name || "";
             if (moldEl) moldEl.innerText = plcMoldString;
 
-            // 🚨 NEW: Auto-Populate Part & Mould Logic
+            // 🚨 NEW: Smart Auto-Populate Part & Mould Logic
             if (plcMoldString && plcMoldString !== "--" && plcMoldString !== lastCheckedPlcString) {
                 lastCheckedPlcString = plcMoldString; // Remember it so we don't spam alerts
                 
-                // Regex looks for "Mould Name (Part Number)" format
+                // Regex looks for "Anything Here (Part Number)" format
                 const match = plcMoldString.match(/^(.*?)\s*\(([^)]+)\)$/);
                 
                 if (match) {
-                    const extractedMould = match[1].trim();
+                    // HAS BRACKETS: Extract part, ignore the PLC's mould name, and look it up in DB
                     const extractedPart = match[2].trim();
-                    
                     const partInput = document.getElementById("part_number");
-                    
                     const partExists = partMaster.hasOwnProperty(extractedPart);
+                    
+                    if (partExists) {
+                        // Get current machine's process to look up the correct routing target
+                        const selectedMachineCode = document.getElementById("machine").value;
+                        const selectedMachine = machineList.find(m => m.code === selectedMachineCode);
+                        const machineProcess = selectedMachine ? selectedMachine.process : "MOULDING";
+
+                        // Look up the exact mould registered to this part in the database
+                        let dbMouldCode = "";
+                        if (partMaster[extractedPart].targets && partMaster[extractedPart].targets[machineProcess]) {
+                            const moldsForPart = Object.keys(partMaster[extractedPart].targets[machineProcess]);
+                            if (moldsForPart.length > 0) {
+                                dbMouldCode = moldsForPart[0]; // Take the correct DB mould
+                            }
+                        }
+                        
+                        const mouldExists = dbMouldCode && mouldMaster.hasOwnProperty(dbMouldCode);
+                        
+                        if (mouldExists) {
+                            // 1. Auto-Select Part
+                            partInput.value = extractedPart;
+                            filterMoldsByPart(); // Builds the mould dropdown synchronously
+                            
+                            // 2. Auto-Select Mould from Database
+                            document.getElementById("mould_code").value = dbMouldCode;
+                            fetchMoldTargets(); // Fetches targets based on selections
+                        } else {
+                            alert(`⚠️ UNREGISTERED MOULD ROUTING:\n\nThe PLC is running Part: ${extractedPart}\n\nThis part exists, but it has no Mould assigned to it for ${machineProcess} in your Routing Master.`);
+                        }
+                    } else {
+                        alert(`⚠️ UNREGISTERED PART DETECTED:\n\nThe PLC is running Part: ${extractedPart}\n\nThis part is missing from your Master database. Please create it first.`);
+                    }
+                } else {
+                    // NO BRACKETS: Treat the entire string as the Mould Name
+                    const extractedMould = plcMoldString.trim();
                     const mouldExists = mouldMaster.hasOwnProperty(extractedMould);
                     
-                    if (partExists && mouldExists) {
-                        // 🚨 REMOVED the "is empty" check. 
-                        // Now, if the PLC reports a NEW valid setup, it ALWAYS updates the UI!
-                        
-                        // 1. Auto-Select Part
-                        partInput.value = extractedPart;
-                        filterMoldsByPart(); // Builds the mould dropdown synchronously
-                        
-                        // 2. Auto-Select Mould
+                    if (mouldExists) {
                         document.getElementById("mould_code").value = extractedMould;
-                        fetchMoldTargets(); // Fetches targets based on selections
-                        
+                        fetchMoldTargets();
                     } else {
-                        // Show warning if the database is missing this setup
-                        alert(`⚠️ UNREGISTERED MOULD SETUP DETECTED:\n\nThe PLC is running:\nPart: ${extractedPart}\nMould: ${extractedMould}\n\nOne or both are missing from your Master database. Please create them in the Part Master page first to use auto-fill.`);
+                        alert(`⚠️ UNREGISTERED MOULD DETECTED:\n\nThe PLC is running Mould: ${extractedMould}\n\nThis mould is missing from your Master database. Please create it first.`);
                     }
                 }
             }

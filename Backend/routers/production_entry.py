@@ -389,13 +389,21 @@ def get_live_iot_count(date: str, machine_code: str, shift: str = "A"):
         cur.close()
         conn.close()
 
+import json
+from fastapi import APIRouter, HTTPException
+from database import get_conn
+# ... (keep your existing imports and Pydantic models)
+
 @router.post("/api/submit_stage1_block")
 def submit_stage1_block(payload: Stage1BlockSubmit):
     check_license()
     conn = get_conn()
     cur = conn.cursor()
+    
     try:
-        # 🚨 Insert into the new time columns AND active_cavities
+        # ==========================================
+        # 1. SAVE HOURLY DATA (Your Existing Logic)
+        # ==========================================
         cur.execute("""
             INSERT INTO production_hourly_log
             (batch_id, internal_batch_number, production_date, shift, start_time, end_time, machine_code, mould_code, part_number,
@@ -404,26 +412,11 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
         """, (
-            payload.batch_id, 
-            payload.internal_batch_number,
-            payload.production_date, 
-            payload.shift, 
-            payload.start_time, 
-            payload.end_time,   
-            payload.machine_code, 
-            payload.mould_code, 
-            payload.part_number,
-            payload.operator_code, 
-            payload.supervisor_code,
-            payload.target_shots, 
-            payload.actual_shots, 
-            payload.active_cavities, # 🚨 NEW: Map to payload
-            payload.ok_parts, 
-            payload.ng_parts,
-            payload.actual_temp, 
-            payload.actual_pressure, 
-            payload.actual_setting,
-            payload.is_no_plan
+            payload.batch_id, payload.internal_batch_number, payload.production_date, payload.shift, 
+            payload.start_time, payload.end_time, payload.machine_code, payload.mould_code, payload.part_number,
+            payload.operator_code, payload.supervisor_code, payload.target_shots, payload.actual_shots, 
+            payload.active_cavities, payload.ok_parts, payload.ng_parts, payload.actual_temp, 
+            payload.actual_pressure, payload.actual_setting, payload.is_no_plan
         ))
         
         result = cur.fetchone()
@@ -436,14 +429,8 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
                     (log_id, batch_id, process_name, start_time, end_time, reason_name, quantity, emp_id)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
-                    log_id,                   
-                    payload.batch_id,
-                    "Moulding",               
-                    payload.start_time,       
-                    payload.end_time,         
-                    rej.reason,               
-                    rej.qty,                  
-                    payload.operator_code     
+                    log_id, payload.batch_id, "MOULDING", payload.start_time, payload.end_time, 
+                    rej.reason, rej.qty, payload.operator_code     
                 ))
 
         if payload.shortfalls:
@@ -453,11 +440,118 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
                     (log_id, sf.reason, sf.qty) 
                 )
 
+
+        # ==========================================
+        # 2. ERP STAGING AGGREGATION & TRANSLATION
+        # ==========================================
+        
+        # A. Calculate totals for the ENTIRE batch so far
+        cur.execute("""
+            SELECT 
+                MIN(start_time), MAX(end_time),
+                COALESCE(SUM(ok_parts), 0), COALESCE(SUM(ng_parts), 0)
+            FROM production_hourly_log
+            WHERE batch_id = %s
+        """, (payload.batch_id,))
+        agg_start, agg_end, agg_ok, agg_ng = cur.fetchone()
+
+        # B. Group and Translate Rejections to JSON
+        cur.execute("""
+            SELECT COALESCE(e.finsys_code, r.reason_name), SUM(r.quantity)
+            FROM production_rejections r
+            LEFT JOIN erp_mapping_master e ON e.internal_name = r.reason_name AND e.category = 'rejection_reason_code'
+            WHERE r.batch_id = %s
+            GROUP BY 1
+        """, (payload.batch_id,))
+        rej_dict = {str(row[0]): int(row[1]) for row in cur.fetchall()}
+        rej_json = json.dumps(rej_dict)
+
+        # C. Fetch Cycle Time from Routing Master
+        # 🚨 FIX 1: Removed the hardcoded 'MOULDING' constraint so it finds Thermowelding/Assembly parts too!
+        cur.execute("""
+            SELECT cycle_time FROM part_routing 
+            WHERE part_no = %s AND mold_no = %s
+            LIMIT 1
+        """, (payload.part_number, payload.mould_code))
+        cycle_res = cur.fetchone()
+        cycle_time = float(cycle_res[0]) if cycle_res and cycle_res[0] else 0.0
+
+        # D. Calculate Downtime Minutes & Create JSON
+        cur.execute("""
+            SELECT COALESCE(e.finsys_code, s.reason_name), SUM(s.quantity)
+            FROM production_shortfalls s
+            JOIN production_hourly_log l ON l.id = s.log_id
+            LEFT JOIN erp_mapping_master e ON e.internal_name = s.reason_name AND e.category = 'short_reason_code'
+            WHERE l.batch_id = %s
+            GROUP BY 1
+        """, (payload.batch_id,))
+        
+        dt_dict = {}
+        total_dt_mins = 0.0
+        
+        for row in cur.fetchall():
+            reason_code = str(row[0])
+            missing_shots = int(row[1])
+            
+            # Formula: (Missing Shots * Cycle Time) / 60 to get Minutes
+            dt_mins = round((missing_shots * cycle_time) / 60.0, 2)
+            
+            # 🚨 FIX 2: Even if cycle time is 0.0, STILL log the reason in the JSON so data is never lost!
+            dt_dict[reason_code] = dt_mins
+            total_dt_mins += dt_mins
+                
+        dt_json = json.dumps(dt_dict)
+
+        # E. Translate Master Data Headers
+        def get_erp_code(category, internal_name):
+            cur.execute("SELECT finsys_code FROM erp_mapping_master WHERE category = %s AND internal_name = %s", (category, internal_name))
+            res = cur.fetchone()
+            return res[0] if res else internal_name
+
+        mac_erp = get_erp_code('machine_code', payload.machine_code)
+        mld_erp = get_erp_code('mold_no', payload.mould_code)
+        sup_erp = get_erp_code('emp_code', payload.supervisor_code)
+        shift_erp = get_erp_code('SHIFT', payload.shift)
+        
+        # 🚨 FIX 3: Dynamically find the machine's actual process to create the correct Part Mapping string
+        cur.execute("SELECT UPPER(machine_process) FROM machine_master WHERE machine_code = %s", (payload.machine_code,))
+        proc_res = cur.fetchone()
+        actual_process = proc_res[0] if proc_res else "MOULDING"
+
+        part_composite = f"{payload.part_number}-{actual_process}"
+        part_erp = get_erp_code('part_no', part_composite)
+
+        # F. Upsert (Delete Old, Insert New) Staging Row
+        cur.execute("DELETE FROM erp_production_staging WHERE batch_id = %s", (payload.batch_id,))
+        
+        cur.execute("""
+            INSERT INTO erp_production_staging (
+                batch_id, shop_floor, section_code, shift_name,
+                prd_start_time, prd_end_time, machine_erp_code, mould_erp_code,
+                supervisor_erp_code, operator_count, helper_count, part_erp_code,
+                job_no, job_dt, ok_qty, rej_qty, lumps, rejections_json,
+                dt_type, total_downtime_mins, downtime_json, is_pushed
+            ) VALUES (
+                %s, %s, %s, %s,
+                %s, %s, %s, %s,
+                %s, %s, %s, %s,
+                %s, %s, %s, %s, %s, %s,
+                %s, %s, %s, false
+            )
+        """, (
+            payload.batch_id, "SW0102", "61", shift_erp,
+            f"{payload.production_date} {agg_start}", f"{payload.production_date} {agg_end}", 
+            mac_erp, mld_erp, sup_erp, "001", "001", part_erp,
+            "-", payload.production_date, agg_ok, agg_ng, 0, rej_json,
+            "simple", total_dt_mins, dt_json
+        ))
+
         conn.commit()
         return {"message": "Block saved successfully", "log_id": log_id}
 
     except Exception as e:
         conn.rollback()
+        print(f"Submission Error: {str(e)}") # Prints error to server terminal
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         cur.close()
