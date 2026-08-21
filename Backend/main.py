@@ -7,16 +7,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-# 🚨 APScheduler Imports
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
-
 # 🚨 Import our relocated functions!
 from services.telegram_notifier import start_scheduler
 from summary_worker import start_summary_worker
-
-# 🚨 Import the new Auto-Finalization worker!
-from services.auto_worker import run_auto_finalization
 
 # Import our routers
 from routers import frontend, master, reports, auth, production_entry, fetchdata, erp_integration
@@ -28,40 +21,13 @@ from routers import frontend, master, reports, auth, production_entry, fetchdata
 async def lifespan(app: FastAPI):
     # 1. Start the 4-Hour Telegram Alert Scheduler (Imported from services)
     start_scheduler()
+    
     # 2. Start Summary Worker
     worker_thread = threading.Thread(target=start_summary_worker)
     worker_thread.daemon = True  # Ensures it shuts down when the server closes
     worker_thread.start()
 
-    # 3. Start APScheduler for Auto-Finalization
-    scheduler = BackgroundScheduler()
-    
-    # 07:05 AM -> Finalize Shift A from yesterday
-    scheduler.add_job(
-        run_auto_finalization, 
-        CronTrigger(hour=7, minute=5), 
-        args=['A'], 
-        id="auto_finalize_shift_A", 
-        replace_existing=True
-    )
-    
-    # 19:05 PM -> Finalize Shift B from yesterday/today
-    scheduler.add_job(
-        run_auto_finalization, 
-        CronTrigger(hour=19, minute=5), 
-        args=['B'], 
-        id="auto_finalize_shift_B", 
-        replace_existing=True
-    )
-    
-    scheduler.start()
-    print("Background Task Scheduler Started successfully.")
-
     yield  # The FastAPI server runs while yielding here
-
-    # 4. Clean Shutdown
-    scheduler.shutdown()
-    print("Background Task Scheduler Stopped cleanly.")
 
 # =========================
 # App Initialization
