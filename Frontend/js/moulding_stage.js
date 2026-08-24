@@ -879,7 +879,11 @@ async function toggleGlobalNoPlan() {
         return;
     }
 
+    // 🚨 PREVENT RACE CONDITION: Lock inputs so the operator cannot change machines mid-save!
     globalCheckbox.disabled = true; 
+    document.getElementById("machine").disabled = true;
+    document.getElementById("global_shift").disabled = true;
+    document.getElementById("global_date").disabled = true;
 
     for (const block of remainingBlocks) {
         const { i, j } = block;
@@ -893,7 +897,12 @@ async function toggleGlobalNoPlan() {
         await submitBlock(i, j);
     }
 
+    // 🚨 UNLOCK after the process is entirely complete
     globalCheckbox.disabled = false;
+    document.getElementById("machine").disabled = false;
+    document.getElementById("global_shift").disabled = false;
+    document.getElementById("global_date").disabled = false;
+    
     alert("✅ All remaining hours have been successfully submitted as No Plan.");
 }
 
@@ -1139,6 +1148,11 @@ function wipeScreenForNewMachine() {
 
     if (document.getElementById("batch_remarks")) document.getElementById("batch_remarks").value = "";
     if (document.getElementById("part_change_override")) document.getElementById("part_change_override").checked = false;
+    
+    // 🚨 FIX: Force the Global No Plan box to uncheck when wiping the screen!
+    let globalNoPlanCheck = document.getElementById("global_no_plan_check");
+    if (globalNoPlanCheck) globalNoPlanCheck.checked = false;
+    
     lastCheckedPlcString = "";
 }
 

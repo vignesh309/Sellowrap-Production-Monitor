@@ -753,24 +753,20 @@ function toggleNoPlan(hourIndex, splitIndex) {
     calculateTotals();
 }
 
-// 🚨 UPDATED: Global No Plan Toggle with Auto-Submit
 async function toggleGlobalNoPlan() {
     const globalCheckbox = document.getElementById("global_no_plan_check");
     const isGlobalNoPlan = globalCheckbox.checked;
 
-    // SCENARIO 1: Turning it OFF
     if (!isGlobalNoPlan) {
-        // Just uncheck the boxes and restore fields for unlocked blocks
         for (let i = 0; i < hours.length; i++) {
             for (let j = 0; j < splitCounts[i]; j++) {
                 const btn = document.getElementById(`btn_submit_${i}_${j}`);
                 const noPlanCheck = document.getElementById(`no_plan_${i}_${j}`);
 
-                // Ignore blocks that are already saved or locked by time rules
                 if (btn && !btn.innerText.includes("Saved") && !btn.innerText.includes("Logged") && !btn.innerText.includes("Locked")) {
                     if (noPlanCheck && noPlanCheck.checked) {
                         noPlanCheck.checked = false;
-                        toggleNoPlan(i, j); // Restores your standard targets & inputs
+                        toggleNoPlan(i, j); 
                     }
                 }
             }
@@ -778,11 +774,9 @@ async function toggleGlobalNoPlan() {
         return;
     }
 
-    // SCENARIO 2: Turning it ON (The Auto-Submit Logic)
     let submittedCount = 0;
     let remainingBlocks = [];
 
-    // Figure out how many hours are done, and queue up the remaining ones
     for (let i = 0; i < hours.length; i++) {
         let hourHasSaved = false;
         for (let j = 0; j < splitCounts[i]; j++) {
@@ -792,7 +786,6 @@ async function toggleGlobalNoPlan() {
                 if (btn.innerText.includes("Saved") || btn.innerText.includes("Logged")) {
                     hourHasSaved = true;
                 } else if (!btn.innerText.includes("Locked")) {
-                    // It's unlocked and unsaved, add it to our submission queue
                     remainingBlocks.push({ i, j });
                 }
             }
@@ -808,33 +801,37 @@ async function toggleGlobalNoPlan() {
         return;
     }
 
-    // Trigger the Confirmation Popup
     const confirmMsg = `Only ${submittedCount} hour blocks are submitted. Are you sure you want to submit the remaining ${remainingHours} hours as No Plan?`;
     
     if (!confirm(confirmMsg)) {
-        // User clicked "No" - Revert the toggle
         globalCheckbox.checked = false;
         return;
     }
 
-    // User clicked "Yes" - Process and submit all remaining blocks sequentially
-    globalCheckbox.disabled = true; // Prevent them from clicking it again while saving
+    // 🚨 PREVENT RACE CONDITION: Lock inputs so the operator cannot change machines mid-save!
+    globalCheckbox.disabled = true; 
+    document.getElementById("machine").disabled = true;
+    document.getElementById("global_shift").disabled = true;
+    document.getElementById("global_date").disabled = true;
 
     for (const block of remainingBlocks) {
         const { i, j } = block;
         const noPlanCheck = document.getElementById(`no_plan_${i}_${j}`);
         
-        // 1. Check the box to trigger UI changes and zero out fields
         if (noPlanCheck && !noPlanCheck.checked) {
             noPlanCheck.checked = true;
             toggleNoPlan(i, j);
         }
         
-        // 2. Await the actual database submission using your existing secure function
         await submitBlock(i, j);
     }
 
+    // 🚨 UNLOCK after the process is entirely complete
     globalCheckbox.disabled = false;
+    document.getElementById("machine").disabled = false;
+    document.getElementById("global_shift").disabled = false;
+    document.getElementById("global_date").disabled = false;
+    
     alert("✅ All remaining hours have been successfully submitted as No Plan.");
 }
 
@@ -1091,6 +1088,10 @@ function wipeScreenForNewMachine() {
 
     if (document.getElementById("batch_remarks")) document.getElementById("batch_remarks").value = "";
     if (document.getElementById("part_change_override")) document.getElementById("part_change_override").checked = false;
+    
+    // 🚨 FIX: Force the Global No Plan box to uncheck when wiping the screen!
+    let globalNoPlanCheck = document.getElementById("global_no_plan_check");
+    if (globalNoPlanCheck) globalNoPlanCheck.checked = false;
 }
 
 // 🚨 FIXED: Now ignores saved blocks so old splits don't get their targets overwritten!
