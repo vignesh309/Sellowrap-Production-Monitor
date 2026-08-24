@@ -1270,27 +1270,31 @@ async function submitBlock(hourIndex, splitIndex) {
     let shiftVal = document.getElementById("global_shift").value;
     let machine = document.getElementById("machine").value;
     
-    // Read the No Plan Status
     const isNoPlan = document.getElementById(`no_plan_${hourIndex}_${splitIndex}`).checked;
 
     if (!machine) { alert("Machine is strictly required."); return; }
 
-    // Setup variables
-    let mould = document.getElementById("mould_code").value || "";
-    let part = document.getElementById("part_number").value || "";
-    let operator = document.getElementById("operator").value || "";
-    let supervisor = document.getElementById("supervisor").value || "";
-    let internalBatchNum = document.getElementById("batchNo").value.trim() || "";
-    let gTemp = document.getElementById("global_temp").value || 0;
-    let gPressure = document.getElementById("global_pressure").value || 0;
-    let gSetting = document.getElementById("global_setting").value || 0;
+    let mould = document.getElementById("mould_code") ? document.getElementById("mould_code").value : "";
+    let part = document.getElementById("part_number") ? document.getElementById("part_number").value : "";
+    let operator = document.getElementById("operator") ? document.getElementById("operator").value : "";
+    let supervisor = document.getElementById("supervisor") ? document.getElementById("supervisor").value : "";
+    let internalBatchNum = document.getElementById("batchNo") ? document.getElementById("batchNo").value.trim() : "";
+    
+    let tempEl = document.getElementById("global_temp");
+    let pressEl = document.getElementById("global_pressure");
+    let setEl = document.getElementById("global_setting");
 
-    // 🚨 NEW: Validation Bypass Logic
+    let gTemp = tempEl ? (tempEl.value || 0) : 0;
+    let gPressure = pressEl ? (pressEl.value || 0) : 0;
+    let gSetting = setEl ? (setEl.value || 0) : 0;
+
     if (!isNoPlan) {
         if (!mould || !part) { alert("Please ensure Mould and Part are selected."); return; }
-        if (!internalBatchNum) { alert("Please enter a Batch Number."); return; }
         if (!operator || !supervisor) { alert("Please select an Operator and Supervisor."); return; }
-        if (!gTemp || !gPressure || !gSetting) { alert("Please enter Actual Temperature, Pressure, and Setting before submitting blocks."); return; }
+        
+        if ((tempEl && !gTemp) || (pressEl && !gPressure) || (setEl && !gSetting)) { 
+            alert("Please enter Actual Temperature, Pressure, and Setting before submitting blocks."); return; 
+        }
 
         let validMachines = Array.from(document.getElementById("machine_options").options).map(opt => opt.value);
         if (!validMachines.includes(machine)) { alert(`❌ INVALID MACHINE:\nThe machine "${machine}" is not recognized.`); return; }
@@ -1298,7 +1302,6 @@ async function submitBlock(hourIndex, splitIndex) {
         let validParts = Array.from(document.getElementById("part_options").options).map(opt => opt.value);
         if (!validParts.includes(part)) { alert(`❌ INVALID PART:\nThe planned part "${part}" is not recognized.`); return; }
     } else {
-        // Fill empty fields with dummy data for No Plan so the database doesn't crash
         part = part || "NO PLAN";
         mould = mould || "N/A";
         internalBatchNum = internalBatchNum || "N/A";
@@ -1306,6 +1309,7 @@ async function submitBlock(hourIndex, splitIndex) {
         supervisor = supervisor || "N/A";
     }
 
+    // 🚨 STANDARD BATCH ID: We DO NOT append times here. Python handles the time for ERP uniquely!
     let generatedBatchId = `${dateVal}_${shiftVal}_${machine}_${mould}_${part}`;
 
     const isSplitMode = document.getElementById(`split_check_${hourIndex}`).checked;
@@ -1327,12 +1331,10 @@ async function submitBlock(hourIndex, splitIndex) {
     let missingShots = targetShots - actualShots;
     let loggedSf = blockShortfalls[hourIndex][splitIndex] ? blockShortfalls[hourIndex][splitIndex].reduce((s, r) => s + r.qty, 0) : 0;
     
-    // Only enforce shortfall matching if it's not a No Plan block
     if (!isNoPlan && missingShots > 0 && loggedSf !== missingShots) {
         alert(`You are missing ${missingShots} shots. You have logged ${loggedSf} in the Shortfall Breakup. These must match.`); return;
     }
 
-    // 🚨 FIX: Explicitly parse as a float for the backend!
     let activeCavs = 1.0;
     if (mould && mouldMaster[mould]) {
         activeCavs = parseFloat(mouldMaster[mould].active_cavities) || 1.0;
@@ -1360,7 +1362,7 @@ async function submitBlock(hourIndex, splitIndex) {
         actual_setting: parseFloat(gSetting),
         rejections: blockRejections[hourIndex][splitIndex] || [],
         shortfalls: blockShortfalls[hourIndex][splitIndex] || [],
-        is_no_plan: isNoPlan // 🚨 NEW: Send to backend
+        is_no_plan: isNoPlan 
     };
 
     const btn = document.getElementById(`btn_submit_${hourIndex}_${splitIndex}`);
@@ -1379,7 +1381,6 @@ async function submitBlock(hourIndex, splitIndex) {
             throw new Error(errorData.detail || "Failed to save to database");
         }
 
-        // Lock UI Elements
         let noPlanCheck = document.getElementById(`no_plan_${hourIndex}_${splitIndex}`);
         if(noPlanCheck) noPlanCheck.disabled = true;
         

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP Staging Monitor</title>
+    <link rel="stylesheet" href="/static/css/erp_staging_view.css">
+</head>
+<body>
+
+    <!-- ENTERPRISE NAVBAR -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>ERP STAGING MONITOR</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="main-container">
+        
+        <!-- HEADER ACTIONS -->
+        <div class="canvas-header">
+            <div>
+                <h2 style="margin: 0; color: var(--text-main);">Staging Queue</h2>
+                <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 13px;">Review production data before pushing to FINSYS ERP.</p>
+            </div>
+            <button id="btn_push" class="btn-push" onclick="pushPayload()">
+                🚀 Push Payload to ERP
+            </button>
+        </div>
+
+        <!-- PENDING TABLE -->
+        <div class="card" style="margin-bottom: 30px;">
+            <h3 class="sub-title" style="color: var(--status-yellow); border-color: rgba(255, 177, 66, 0.3);">⏳ Pending Push</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Batch ID</th>
+                            <th>Machine (ERP)</th>
+                            <th>Part (ERP)</th>
+                            <th>OK Qty</th>
+                            <th>NG Qty</th>
+                            <th>DT (Mins)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-pending">
+                        <tr><td colspan="7" class="loading-cell">Loading pending records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- HISTORY TABLE -->
+        <div class="card">
+            <h3 class="sub-title" style="color: var(--status-green); border-color: rgba(0, 240, 118, 0.3);">✅ Successfully Pushed History</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Batch ID</th>
+                            <th>Machine (ERP)</th>
+                            <th>Part (ERP)</th>
+                            <th>OK Qty</th>
+                            <th>NG Qty</th>
+                            <th>Pushed At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-pushed">
+                        <tr><td colspan="6" class="loading-cell">Loading history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/js/erp_staging_view.js"></script>
+</body>
+</html>

@@ -1317,7 +1317,6 @@ async function submitBlock(hourIndex, splitIndex) {
     let supervisor = document.getElementById("supervisor") ? document.getElementById("supervisor").value : "";
     let internalBatchNum = document.getElementById("batchNo") ? document.getElementById("batchNo").value.trim() : "";
     
-    // NEW SAFE CODE FOR PARAMETERS
     let tempEl = document.getElementById("global_temp");
     let pressEl = document.getElementById("global_pressure");
     let setEl = document.getElementById("global_setting");
@@ -1328,11 +1327,8 @@ async function submitBlock(hourIndex, splitIndex) {
 
     if (!isNoPlan) {
         if (!mould || !part) { alert("Please ensure Mould and Part are selected."); return; }
-        if (!internalBatchNum) { alert("Please enter a Batch Number."); return; }
         if (!operator || !supervisor) { alert("Please select an Operator and Supervisor."); return; }
         
-        // Parameter check relaxed for moulding since they are automatically fetched via PLC usually, 
-        // but if manual inputs still exist and are empty, alert.
         if ((tempEl && !gTemp) || (pressEl && !gPressure) || (setEl && !gSetting)) { 
             alert("Please enter Actual Temperature, Pressure, and Setting before submitting blocks."); return; 
         }
@@ -1350,6 +1346,7 @@ async function submitBlock(hourIndex, splitIndex) {
         supervisor = supervisor || "N/A";
     }
 
+    // 🚨 STANDARD BATCH ID: We DO NOT append times here. Python handles the time for ERP uniquely!
     let generatedBatchId = `${dateVal}_${shiftVal}_${machine}_${mould}_${part}`;
 
     const isSplitMode = document.getElementById(`split_check_${hourIndex}`).checked;

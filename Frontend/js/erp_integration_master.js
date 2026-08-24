@@ -32,6 +32,7 @@ function scrollToSection(sectionId, element) {
 // --- Backend to Frontend Category Mapping ---
 const dbCategoryMap = {
     'MACHINE': 'machine_code',
+    'PROCESS': 'process_code',
     'PART': 'part_no',
     'MOULD': 'mold_no',
     'EMPLOYEE': 'emp_code',
@@ -114,47 +115,12 @@ async function loadAllMappings() {
         const response = await fetch('/api/erp_mapping/');
         if (!response.ok) throw new Error("Failed to load mappings");
         
+        // We still save this silently in the background so the Search button can find the data!
         currentMappings = await response.json();
-        
-        const uiCategories = ['MACHINE', 'PART', 'MOULD', 'EMPLOYEE', 'REJECTION', 'DOWNTIME', 'SHIFT'];
-        uiCategories.forEach(cat => renderTable(cat));
         
     } catch (error) {
         console.error(error);
     }
-}
-
-function renderTable(uiCategory) {
-    const tbody = document.getElementById(`table-${uiCategory}`);
-    if (!tbody) return;
-
-    const dbCategory = dbCategoryMap[uiCategory];
-    const data = currentMappings[dbCategory] || [];
-    
-    if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="loading-cell" style="text-align:center; padding:15px; color:gray;">No mappings found.</td></tr>`;
-        return;
-    }
-
-    let rowsHtml = '';
-    data.forEach(row => {
-        // We removed the 'Delete' column from the table since the CRUD toolbar handles it now
-        rowsHtml += `
-            <tr onclick="quickLoadRow('${uiCategory}', '${row.internal}')" style="cursor: pointer;">
-                <td style="color: var(--accent-cyan); font-weight: bold;">${row.internal}</td>
-                <td style="color: var(--status-green); font-weight: bold;">${row.erp}</td>
-                <td style="color: var(--text-muted);">${row.desc || '-'}</td>
-            </tr>
-        `;
-    });
-    tbody.innerHTML = rowsHtml;
-}
-
-// Helper to let users click a table row to instantly load it into the form
-function quickLoadRow(uiCategory, internalVal) {
-    document.getElementById(`search_${uiCategory}`).value = internalVal;
-    searchMapping(uiCategory);
-    scrollToSection(uiCategory, document.querySelector('.sidebar-item.active'));
 }
 
 async function saveMapping(uiCategory) {
@@ -248,11 +214,13 @@ async function loadDatalistOptions() {
         };
 
         populateList('dl_machines', data.machines);
+        populateList('dl_processes', data.processes);
         populateList('dl_parts', data.parts);
         populateList('dl_moulds', data.moulds);
         populateList('dl_employees', data.employees);
         populateList('dl_rejections', data.rejections);
         populateList('dl_downtimes', data.downtimes);
+        populateList('dl_shifts', data.shifts);
     } catch (error) { console.error("Error loading datalists:", error); }
 }
 
@@ -284,6 +252,6 @@ window.onload = () => {
     loadDatalistOptions();
     
     // Initialize all sections to EXPLORE mode
-    const uiCategories = ['MACHINE', 'PART', 'MOULD', 'EMPLOYEE', 'REJECTION', 'DOWNTIME', 'SHIFT'];
+    const uiCategories = ['MACHINE', 'PROCESS', 'PART', 'MOULD', 'EMPLOYEE', 'REJECTION', 'DOWNTIME', 'SHIFT'];
     uiCategories.forEach(cat => setMode(cat, 'EXPLORE'));
 };

@@ -442,32 +442,27 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
 
 
         # ==========================================
-        # 2. ERP STAGING AGGREGATION & TRANSLATION
+        # 2. ERP STAGING TRANSLATION (HOURLY ROWS)
         # ==========================================
         
-        # A. Calculate totals for the ENTIRE batch so far
-        cur.execute("""
-            SELECT 
-                MIN(start_time), MAX(end_time),
-                COALESCE(SUM(ok_parts), 0), COALESCE(SUM(ng_parts), 0)
-            FROM production_hourly_log
-            WHERE batch_id = %s
-        """, (payload.batch_id,))
-        agg_start, agg_end, agg_ok, agg_ng = cur.fetchone()
+        # A. Create the perfectly unique Time-Based ID for FINSYS (Your brilliant idea!)
+        # Looks like: "2026-08-22_A_IM09-80T-3_socket_10400587720_0700-0800"
+        clean_start = payload.start_time.replace(':', '')
+        clean_end = payload.end_time.replace(':', '')
+        erp_unique_id = f"{payload.batch_id}_{clean_start}-{clean_end}"
 
-        # B. Group and Translate Rejections to JSON
+        # B. Group and Translate Rejections to JSON (For this specific hour only!)
         cur.execute("""
             SELECT COALESCE(e.finsys_code, r.reason_name), SUM(r.quantity)
             FROM production_rejections r
             LEFT JOIN erp_mapping_master e ON e.internal_name = r.reason_name AND e.category = 'rejection_reason_code'
-            WHERE r.batch_id = %s
+            WHERE r.log_id = %s
             GROUP BY 1
-        """, (payload.batch_id,))
+        """, (log_id,))
         rej_dict = {str(row[0]): int(row[1]) for row in cur.fetchall()}
         rej_json = json.dumps(rej_dict)
 
         # C. Fetch Cycle Time from Routing Master
-        # 🚨 FIX 1: Removed the hardcoded 'MOULDING' constraint so it finds Thermowelding/Assembly parts too!
         cur.execute("""
             SELECT cycle_time FROM part_routing 
             WHERE part_no = %s AND mold_no = %s
@@ -476,15 +471,14 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         cycle_res = cur.fetchone()
         cycle_time = float(cycle_res[0]) if cycle_res and cycle_res[0] else 0.0
 
-        # D. Calculate Downtime Minutes & Create JSON
+        # D. Calculate Downtime Minutes & Create JSON (For this specific hour only!)
         cur.execute("""
             SELECT COALESCE(e.finsys_code, s.reason_name), SUM(s.quantity)
             FROM production_shortfalls s
-            JOIN production_hourly_log l ON l.id = s.log_id
             LEFT JOIN erp_mapping_master e ON e.internal_name = s.reason_name AND e.category = 'short_reason_code'
-            WHERE l.batch_id = %s
+            WHERE s.log_id = %s
             GROUP BY 1
-        """, (payload.batch_id,))
+        """, (log_id,))
         
         dt_dict = {}
         total_dt_mins = 0.0
@@ -492,17 +486,13 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         for row in cur.fetchall():
             reason_code = str(row[0])
             missing_shots = int(row[1])
-            
-            # Formula: (Missing Shots * Cycle Time) / 60 to get Minutes
-            dt_mins = round((missing_shots * cycle_time) / 60.0, 2)
-            
-            # 🚨 FIX 2: Even if cycle time is 0.0, STILL log the reason in the JSON so data is never lost!
+            dt_mins = round((missing_shots * cycle_time), 2)
             dt_dict[reason_code] = dt_mins
             total_dt_mins += dt_mins
                 
         dt_json = json.dumps(dt_dict)
 
-        # E. Translate Master Data Headers
+        # E. Translate Master Data Headers using helper function
         def get_erp_code(category, internal_name):
             cur.execute("SELECT finsys_code FROM erp_mapping_master WHERE category = %s AND internal_name = %s", (category, internal_name))
             res = cur.fetchone()
@@ -513,16 +503,18 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         sup_erp = get_erp_code('emp_code', payload.supervisor_code)
         shift_erp = get_erp_code('SHIFT', payload.shift)
         
-        # 🚨 FIX 3: Dynamically find the machine's actual process to create the correct Part Mapping string
+        # Dynamically find the machine's actual process
         cur.execute("SELECT UPPER(machine_process) FROM machine_master WHERE machine_code = %s", (payload.machine_code,))
         proc_res = cur.fetchone()
         actual_process = proc_res[0] if proc_res else "MOULDING"
 
+        process_erp = get_erp_code('process_code', actual_process)
+
         part_composite = f"{payload.part_number}-{actual_process}"
         part_erp = get_erp_code('part_no', part_composite)
 
-        # F. Upsert (Delete Old, Insert New) Staging Row
-        cur.execute("DELETE FROM erp_production_staging WHERE batch_id = %s", (payload.batch_id,))
+        # F. Upsert Staging Row using the NEW Hourly ID
+        cur.execute("DELETE FROM erp_production_staging WHERE batch_id = %s", (erp_unique_id,))
         
         cur.execute("""
             INSERT INTO erp_production_staging (
@@ -539,10 +531,11 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
                 %s, %s, %s, false
             )
         """, (
-            payload.batch_id, "SW0102", "61", shift_erp,
-            f"{payload.production_date} {agg_start}", f"{payload.production_date} {agg_end}", 
+            erp_unique_id,  # 🚨 Injects your unique time-based ID
+            "SW0102", process_erp, shift_erp,
+            f"{payload.production_date} {payload.start_time}", f"{payload.production_date} {payload.end_time}", 
             mac_erp, mld_erp, sup_erp, "001", "001", part_erp,
-            "-", payload.production_date, agg_ok, agg_ng, 0, rej_json,
+            "-", payload.production_date, payload.ok_parts, payload.ng_parts, 0, rej_json,
             "simple", total_dt_mins, dt_json
         ))
 

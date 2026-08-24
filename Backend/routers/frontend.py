@@ -76,6 +76,10 @@ def rejection_reason_master_page():
 def erp_integration_master_page():
     return FileResponse(get_html_path("erp_integration_master.html"))
 
+@router.get("/erp-staging-view", response_class=HTMLResponse)
+def erp_staging_view_page():
+    return FileResponse(get_html_path("erp_staging_view.html"))
+
 @router.get("/batch-ledger-page", response_class=HTMLResponse)
 def batch_ledger_page():
     return FileResponse(get_html_path("batch_ledger.html"))

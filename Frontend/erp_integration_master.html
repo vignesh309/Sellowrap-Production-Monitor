@@ -48,6 +48,9 @@
       <div class="sidebar-item active" onclick="scrollToSection('MACHINE', this)">
         🏭 Machines
       </div>
+      <div class="sidebar-item" onclick="scrollToSection('PROCESS', this)">
+        🔄 Processes
+      </div>
       <div class="sidebar-item" onclick="scrollToSection('PART', this)">
         ⚙️ Parts / Items
       </div>
@@ -117,15 +120,38 @@
               <input type="text" id="MACHINE_desc" placeholder="e.g. Auto-synced" disabled>
             </div>
           </div>
-
-          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
-          <table>
-            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
-            <tbody id="table-MACHINE"><tr><td colspan="3" class="loading-cell">Loading mappings...</td></tr></tbody>
-          </table>
         </div>
       </div>
+      
+      <!-- PROCESS SECTION -->
+      <div id="section-PROCESS" class="section-group">
+        <div class="card">
+          <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0; border: none;">🔄 Process Mappings</h2>
+            <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+              <label style="margin: 0;">Search Internal Code:</label>
+              <input list="dl_processes" id="search_PROCESS" placeholder="-- Search --" style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+              <datalist id="dl_processes"></datalist>
+              <button class="btn-primary" onclick="searchMapping('PROCESS')" style="margin: 0;">Load Data</button>
+            </div>
+          </div>
 
+          <div class="crud-toolbar">
+            <button id="btn_new_PROCESS" class="btn-action btn-new" onclick="setMode('PROCESS', 'NEW')">➕ NEW</button>
+            <button id="btn_edit_PROCESS" class="btn-action btn-edit" onclick="setMode('PROCESS', 'EDIT')">✏️ EDIT</button>
+            <button id="btn_save_PROCESS" class="btn-action btn-save" onclick="saveMapping('PROCESS')" disabled>💾 SAVE</button>
+            <button id="btn_delete_PROCESS" class="btn-action btn-delete" onclick="deleteMapping('PROCESS')">🗑️ DELETE</button>
+          </div>
+
+          <h3 class="sub-title">1. Mapping Details</h3>
+          <div class="form-grid">
+            <div><label>Internal Software Name</label><input type="text" id="PROCESS_internal" disabled></div>
+            <div><label>FINSYS ERP Code</label><input type="text" id="PROCESS_erp" disabled></div>
+            <div><label>Notes (Optional)</label><input type="text" id="PROCESS_desc" disabled></div>
+          </div>
+        </div>
+      </div>
+       
       <!-- PART SECTION -->
       <div id="section-PART" class="section-group">
         <div class="card">
@@ -152,11 +178,6 @@
             <div><label>FINSYS ERP Code</label><input type="text" id="PART_erp" disabled></div>
             <div><label>Notes (Optional)</label><input type="text" id="PART_desc" disabled></div>
           </div>
-          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
-          <table>
-            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
-            <tbody id="table-PART"></tbody>
-          </table>
         </div>
       </div>
 
@@ -186,11 +207,6 @@
             <div><label>FINSYS ERP Code</label><input type="text" id="MOULD_erp" disabled></div>
             <div><label>Notes (Optional)</label><input type="text" id="MOULD_desc" disabled></div>
           </div>
-          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
-          <table>
-            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
-            <tbody id="table-MOULD"></tbody>
-          </table>
         </div>
       </div>
 
@@ -220,11 +236,6 @@
             <div><label>FINSYS ERP Code</label><input type="text" id="EMPLOYEE_erp" disabled></div>
             <div><label>Notes (Optional)</label><input type="text" id="EMPLOYEE_desc" disabled></div>
           </div>
-          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
-          <table>
-            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
-            <tbody id="table-EMPLOYEE"></tbody>
-          </table>
         </div>
       </div>
 
@@ -254,11 +265,6 @@
             <div><label>FINSYS ERP Code</label><input type="text" id="REJECTION_erp" disabled></div>
             <div><label>Notes (Optional)</label><input type="text" id="REJECTION_desc" disabled></div>
           </div>
-          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
-          <table>
-            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
-            <tbody id="table-REJECTION"></tbody>
-          </table>
         </div>
       </div>
 
@@ -288,11 +294,6 @@
             <div><label>FINSYS ERP Code</label><input type="text" id="DOWNTIME_erp" disabled></div>
             <div><label>Notes (Optional)</label><input type="text" id="DOWNTIME_desc" disabled></div>
           </div>
-          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
-          <table>
-            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
-            <tbody id="table-DOWNTIME"></tbody>
-          </table>
         </div>
       </div>
 
@@ -305,8 +306,6 @@
               <label style="margin: 0;">Search Internal Code:</label>
               <input list="dl_shifts" id="search_SHIFT" placeholder="-- Search --" style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
               <datalist id="dl_shifts">
-                <option value="A"></option>
-                <option value="B"></option>
               </datalist>
               <button class="btn-primary" onclick="searchMapping('SHIFT')" style="margin: 0;">Load Data</button>
             </div>
@@ -325,11 +324,6 @@
             <div><label>FINSYS ERP Code</label><input type="text" id="SHIFT_erp" disabled></div>
             <div><label>Notes (Optional)</label><input type="text" id="SHIFT_desc" disabled></div>
           </div>
-          <h3 class="sub-title" style="margin-top: 30px;">2. Master List Overview</h3>
-          <table>
-            <thead><tr><th>Internal Software Name</th><th>FINSYS ERP Code</th><th>Notes</th></tr></thead>
-            <tbody id="table-SHIFT"></tbody>
-          </table>
         </div>
       </div>
 

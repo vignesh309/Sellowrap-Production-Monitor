@@ -1522,12 +1522,19 @@ def get_teep_summary_idle_machines(
             DowntimeAgg AS (
                 SELECT 
                     hl.batch_id,
-                    SUM(CASE WHEN sm.oee_impact = 'None' THEN COALESCE(ps.quantity, 0) ELSE 0 END) as planned_dt_mins,
-                    SUM(CASE WHEN sm.oee_impact = 'Availability' THEN COALESCE(ps.quantity, 0) ELSE 0 END) as unplanned_dt_mins,
+                    -- Convert Missing Shots to Minutes: (Shots * Cycle Time) / 60
+                    SUM(CASE WHEN sm.oee_impact = 'None' 
+                             THEN (COALESCE(ps.quantity, 0) * COALESCE(pr.cycle_time, 0)) 
+                             ELSE 0 END) as planned_dt_mins,
+                    SUM(CASE WHEN sm.oee_impact = 'Availability' 
+                             THEN (COALESCE(ps.quantity, 0) * COALESCE(pr.cycle_time, 0))
+                             ELSE 0 END) as unplanned_dt_mins,
                     MAX(ps.reason_name) as major_shortfall
                 FROM production_shortfalls ps
                 JOIN production_hourly_log hl ON ps.log_id = hl.id
                 LEFT JOIN shortfall_reason_master sm ON ps.reason_name = sm.reason_name
+                -- Join part_routing to fetch the correct cycle time for the math
+                LEFT JOIN part_routing pr ON hl.part_number = pr.part_no AND hl.mould_code = pr.mold_no
                 GROUP BY hl.batch_id
             ),
             RejectionAgg AS (

@@ -20,27 +20,29 @@ Current Folder Structure
 Sellowrap Production Monitor Version 2
 ├── Backend
 │   ├── .env
-│   ├── cf_log.txt
-│   ├── cloudflared.exe
 │   ├── config.py
 │   ├── database.py
 │   ├── main.py
-│   ├── mqtt_listener.py
-│   ├── schemas.py
-│   ├── Start_mqtt.bat
-│   ├── Start_Server.bat
-│   ├── summary_worker.py
-│   ├── utils.py
 │   ├── routers
 │   │   ├── __init__.py
 │   │   ├── auth.py
+│   │   ├── erp_integration.py
 │   │   ├── fetchdata.py
 │   │   ├── frontend.py
 │   │   ├── master.py
 │   │   ├── production_entry.py
-│   │   └── reports.py
+│   │   ├── reports.py
+│   │   └── __pycache__
+│   ├── schemas.py
 │   ├── services
-│   │   └── telegram_notifier.py
+│   │   ├── auto_worker.py
+│   │   ├── moulding_machines_data_monitor.py
+│   │   ├── mqtt_listener.py
+│   │   ├── telegram_notifier.py
+│   │   └── __pycache__
+│   ├── Start_Server.bat
+│   ├── summary_worker.py
+│   ├── utils.py
 │   └── __pycache__
 │
 ├── Frontend
@@ -48,61 +50,96 @@ Sellowrap Production Monitor Version 2
 │   ├── detailed_rejections_report.html
 │   ├── detailed_shortfalls_report.html
 │   ├── employee_master.html
+│   ├── erp_integration_master.html
+│   ├── erp_staging_view.html
 │   ├── hub.html
+│   ├── img
 │   ├── iot_report.html
 │   ├── iot_summary.html
 │   ├── login.html
 │   ├── loss_analysis.html
 │   ├── machine_master.html
+│   ├── manifest.json
+│   ├── moulding_machines_alarms.html
+│   ├── moulding_machines_history.html
+│   ├── moulding_stage.html
+│   ├── moulding_stage_hourly_status.html
 │   ├── oeeteep_dashboard.html
 │   ├── oee_summary.html
+│   ├── Plant_kpi_performance
+│   │   └── non_hazardous_waste_generation_report.html
 │   ├── part_master.html
 │   ├── partwise_report.html
 │   ├── production_entry_stage_1.html
 │   ├── production_hourly_report.html
 │   ├── production_hourly_status.html
 │   ├── productionstatus.html
+│   ├── rejection_reason_master.html
 │   ├── shift_summary.html
+│   ├── shift_summary_tvscreen.html
+│   ├── shortfall_reason_master.html
 │   ├── teep_summary.html
+│   ├── teep_summary_idle_machines.html
 │   ├── css
 │   │   ├── batch_ledger.css
 │   │   ├── detailed_rejections_report.css
 │   │   ├── detailed_shortfalls_report.css
 │   │   ├── employee_master.css
+│   │   ├── erp_integration_master.css
+│   │   ├── erp_staging_view.css
 │   │   ├── iot_report.css
 │   │   ├── iot_summary.css
 │   │   ├── machine_master.css
+│   │   ├── moulding_machines_alarms.css
+│   │   ├── moulding_machines_history.css
+│   │   ├── moulding_stage.css
+│   │   ├── moulding_stage_hourly_status.css
+│   │   ├── non_hazardous_waste_generation_report.css
 │   │   ├── oee_summary.css
-│   │   ├── part_master.css
 │   │   ├── partwise_report.css
+│   │   ├── part_master.css
 │   │   ├── production_hourly_report.css
 │   │   ├── production_hourly_status.css
 │   │   ├── productionstatus.css
+│   │   ├── rejection_reason_master.css
 │   │   ├── shift_summary.css
-│   │   └── stage1.css
-│   ├── img
+│   │   ├── shift_summary_tvscreen.css
+│   │   ├── shortfall_reason_master.css
+│   │   ├── stage1.css
+│   │   └── teep_summary.css
 │   ├── js
 │   │   ├── batch_ledger.js
 │   │   ├── detailed_rejections_report.js
 │   │   ├── detailed_shortfalls_report.js
 │   │   ├── employee_master.js
+│   │   ├── erp_integration_master.js
+│   │   ├── erp_staging_view.js
 │   │   ├── iot_report.js
 │   │   ├── iot_summary.js
 │   │   ├── loss_analysis.js
 │   │   ├── machine_master.js
+│   │   ├── moulding_machines_alarms.js
+│   │   ├── moulding_machines_history.js
+│   │   ├── moulding_stage.js
+│   │   ├── moulding_stage_hourly_status.js
+│   │   ├── non_hazardous_waste_generation_report.js
+│   │   ├── oeeteep_dashboard.js
 │   │   ├── oee_summary.js
-│   │   ├── part_master.js
 │   │   ├── partwise_report.js
+│   │   ├── part_master.js
 │   │   ├── production_hourly_report.js
 │   │   ├── production_hourly_status.js
 │   │   ├── productionstatus.js
+│   │   ├── rejection_reason_master.js
 │   │   ├── shift_summary.js
+│   │   ├── shift_summary_tvscreen.js
+│   │   ├── shortfall_reason_master.js
 │   │   ├── stage1.js
+│   │   ├── teep_summary.js
+│   │   ├── teep_summary_idle_machines.js
 │   │   └── js libraries
 │   │       ├── chart.js
 │   │       └── xlsx.full.min.js
-│   └── Plant_kpi_performance
-│       └── non_hazardous_waste_generation_report.html
 │
 └── Refer while install.txt
 

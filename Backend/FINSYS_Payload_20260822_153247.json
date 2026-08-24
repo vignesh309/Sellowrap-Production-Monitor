@@ -1,0 +1,92 @@
+[
+    {
+        "shop_floor": "SW0102",
+        "shift": "Shift A",
+        "prd_start_time": "2026-08-22T11:00:00.000Z",
+        "prd_end_time": "2026-08-22T12:00:00.000Z",
+        "Section": "61",
+        "data": [
+            {
+                "Mould_id": "MLD123",
+                "Line_superv": "Dharmendar - Dharmendar",
+                "no_help": "001",
+                "no_opr": "001",
+                "machine_id": "61",
+                "part_code": {
+                    "72090133": {
+                        "Job_no": "-",
+                        "Job_dt": "22/08/2026",
+                        "ok_qty": 60,
+                        "rej_qty": 0,
+                        "Lumps": 0,
+                        "uid": "2026-08-22_A_Test - 01_MLD123_MLDPRT0123_1100-1200",
+                        "rej_category": {}
+                    }
+                },
+                "type": "simple",
+                "total_downtime": 0.0,
+                "dt_category": {}
+            }
+        ]
+    },
+    {
+        "shop_floor": "SW0102",
+        "shift": "Shift A",
+        "prd_start_time": "2026-08-22T12:00:00.000Z",
+        "prd_end_time": "2026-08-22T13:00:00.000Z",
+        "Section": "61",
+        "data": [
+            {
+                "Mould_id": "MLD123",
+                "Line_superv": "Dharmendar - Dharmendar",
+                "no_help": "001",
+                "no_opr": "001",
+                "machine_id": "Test - 01",
+                "part_code": {
+                    "72090133": {
+                        "Job_no": "-",
+                        "Job_dt": "22/08/2026",
+                        "ok_qty": 60,
+                        "rej_qty": 0,
+                        "Lumps": 0,
+                        "uid": "2026-08-22_A_Test - 01_MLD123_MLDPRT0123_1200-1300",
+                        "rej_category": {}
+                    }
+                },
+                "type": "simple",
+                "total_downtime": 0.0,
+                "dt_category": {}
+            }
+        ]
+    },
+    {
+        "shop_floor": "SW0102",
+        "shift": "Shift A",
+        "prd_start_time": "2026-08-22T11:00:00.000Z",
+        "prd_end_time": "2026-08-22T12:00:00.000Z",
+        "Section": "63",
+        "data": [
+            {
+                "Mould_id": "TW01",
+                "Line_superv": "Dharmendar - Dharmendar",
+                "no_help": "001",
+                "no_opr": "001",
+                "machine_id": "Test - 02",
+                "part_code": {
+                    "9871651680-THERMOWELDING": {
+                        "Job_no": "-",
+                        "Job_dt": "22/08/2026",
+                        "ok_qty": 100,
+                        "rej_qty": 0,
+                        "Lumps": 0,
+                        "uid": "2026-08-22_A_Test - 02_TW01_9871651680_1100-1200",
+                        "rej_category": {}
+                    }
+                },
+                "type": "simple",
+                "total_downtime": 0.0,
+                "dt_category": {}
+            }
+        ]
+    }
+]
