@@ -73,14 +73,13 @@ def get_live_machine_status(prod_date: str, time_block: str):
         cur.close()
         conn.close()
 
-# If adding to an existing router, you can skip the APIRouter declaration
 @router.get("/api/pending_finalization")
 def get_pending_finalizations():
     """Fetches all batches that have hourly logs but are missing from batch_master."""
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # SQL Logic: Find batch_ids in hourly_log where a matching batch_id in batch_master is NULL
+        # 🚨 FIX: Added LEFT JOIN with machine_master to get the EXACT process name!
         query = """
             SELECT 
                 h.batch_id,
@@ -91,9 +90,11 @@ def get_pending_finalizations():
                 MAX(h.operator_code) as operator,
                 SUM(h.ok_parts) as total_ok,
                 SUM(h.ng_parts) as total_ng,
-                COUNT(h.id) as hours_logged
+                COUNT(h.id) as hours_logged,
+                MAX(UPPER(m.machine_process)) as process_name
             FROM production_hourly_log h
             LEFT JOIN batch_master b ON h.batch_id = b.batch_id
+            LEFT JOIN machine_master m ON h.machine_code = m.machine_code
             WHERE b.batch_id IS NULL AND h.is_no_plan = false
             GROUP BY h.batch_id
             ORDER BY MAX(h.production_date) DESC, MAX(h.shift) ASC
@@ -112,7 +113,8 @@ def get_pending_finalizations():
                 "operator": r[5],
                 "total_ok": int(r[6] or 0),
                 "total_ng": int(r[7] or 0),
-                "hours_logged": int(r[8] or 0)
+                "hours_logged": int(r[8] or 0),
+                "process": r[9] or "UNKNOWN" # 🚨 Sending the true process to the frontend
             })
             
         return {"records": pending_batches}
@@ -122,7 +124,7 @@ def get_pending_finalizations():
     finally:
         cur.close()
         conn.close()
-        
+
 @router.get("/api/get_rm_consumption_report")
 def get_rm_consumption_report(start_date: str = Query(""), end_date: str = Query("")):
     """Fetches RM consumption records with optional date filtering."""

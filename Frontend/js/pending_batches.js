@@ -46,12 +46,13 @@ function renderTable(rows) {
 
     let html = '';
     rows.forEach(r => {
-        // Smart routing: determine if it goes to Moulding or Assembly based on the machine name
-        let targetPage = "moulding_stage.html";
         
-        // If the machine name contains ASSY, STATION, or TW, send to stage1.html
-        if (r.machine.includes("ASSY") || r.machine.includes("STATION") || r.machine.includes("TW")) {
-            targetPage = "production_entry_stage_1.html"; 
+        // 🚨 BULLETPROOF ROUTING: Default to Stage 1 for Assembly, Welding, Pasting, etc.
+        let targetPage = "production-entry-stage-1"; 
+        
+        // Only send to Moulding if the database explicitly says it's a Moulding machine!
+        if (r.process === "MOULDING") {
+            targetPage = "moulding-stage"; 
         }
 
         // Creates a URL that pre-loads the correct machine on the entry page
