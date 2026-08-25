@@ -1432,7 +1432,7 @@ async function finalizeBatch() {
         let hasSavedRun = false;
         for (let j = 0; j < splitCounts[i]; j++) {
             let btn = document.getElementById(`btn_submit_${i}_${j}`);
-            if (btn && btn.innerText.includes("Saved")) {
+            if (btn && (btn.innerText.includes("Saved") || btn.innerText.includes("Logged"))) {
                 hasSavedRun = true;
                 break;
             }

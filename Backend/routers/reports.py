@@ -74,52 +74,98 @@ def get_live_machine_status(prod_date: str, time_block: str):
         conn.close()
 
 @router.get("/api/pending_finalization")
-def get_pending_finalizations():
-    """Fetches all batches that have hourly logs but are missing from batch_master."""
+def get_pending_finalizations(from_date: Optional[str] = None, to_date: Optional[str] = None):
+    """
+    Acts as a Strict Compliance Checklist.
+    Cross-references ALL active machines against the selected dates/shifts to find any 
+    machine that lacks a finalized batch (even if 0 hours have been logged).
+    """
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # 🚨 FIX: Added LEFT JOIN with machine_master to get the EXACT process name!
+        # Prevent massive database lookups by defaulting to today if cleared
+        if not from_date:
+            from_date = datetime.now().strftime("%Y-%m-%d")
+        if not to_date:
+            to_date = datetime.now().strftime("%Y-%m-%d")
+
         query = """
+            WITH date_range AS (
+                SELECT generate_series(%s::date, %s::date, '1 day'::interval)::date AS prod_date
+            ),
+            shifts AS (
+                SELECT 'A' AS shift_name UNION ALL SELECT 'B'
+            ),
+            
+            -- Step 1: Create the Master Matrix (Every Date x Every Shift x Every Active Machine)
+            matrix AS (
+                SELECT d.prod_date, s.shift_name, m.machine_code, m.machine_process
+                FROM date_range d
+                CROSS JOIN shifts s
+                CROSS JOIN machine_master m
+                WHERE m.is_active = true
+            ),
+            
+            -- Step 2: Grab all production logs within the date range
+            logged_data AS (
+                SELECT 
+                    h.production_date, 
+                    h.shift, 
+                    h.machine_code,
+                    COUNT(h.id) as hours_logged,
+                    SUM(h.ok_parts) as total_ok,
+                    SUM(h.ng_parts) as total_ng,
+                    STRING_AGG(DISTINCT h.part_number, ', ') as parts_run,
+                    MAX(h.operator_code) as operator,
+                    COUNT(b.batch_id) as finalized_batches
+                FROM production_hourly_log h
+                LEFT JOIN batch_master b ON h.batch_id = b.batch_id
+                WHERE h.production_date >= %s::date AND h.production_date <= %s::date
+                GROUP BY h.production_date, h.shift, h.machine_code
+            )
+            
+            -- Step 3: Match the logs to the matrix, keeping ONLY those with 0 finalized batches
             SELECT 
-                h.batch_id,
-                MAX(h.production_date) as prod_date,
-                MAX(h.shift) as shift_name,
-                MAX(h.machine_code) as machine,
-                MAX(h.part_number) as part,
-                MAX(h.operator_code) as operator,
-                SUM(h.ok_parts) as total_ok,
-                SUM(h.ng_parts) as total_ng,
-                COUNT(h.id) as hours_logged,
-                MAX(UPPER(m.machine_process)) as process_name
-            FROM production_hourly_log h
-            LEFT JOIN batch_master b ON h.batch_id = b.batch_id
-            LEFT JOIN machine_master m ON h.machine_code = m.machine_code
-            WHERE b.batch_id IS NULL AND h.is_no_plan = false
-            GROUP BY h.batch_id
-            ORDER BY MAX(h.production_date) DESC, MAX(h.shift) ASC
+                mx.prod_date,
+                mx.shift_name,
+                mx.machine_code,
+                COALESCE(ld.parts_run, '-') as parts_run,
+                COALESCE(ld.operator, '-') as operator,
+                COALESCE(ld.total_ok, 0) as total_ok,
+                COALESCE(ld.total_ng, 0) as total_ng,
+                COALESCE(ld.hours_logged, 0) as hours_logged,
+                UPPER(mx.machine_process) as process_name
+            FROM matrix mx
+            LEFT JOIN logged_data ld 
+                ON mx.prod_date = ld.production_date 
+                AND mx.shift_name = ld.shift 
+                AND mx.machine_code = ld.machine_code
+            WHERE COALESCE(ld.finalized_batches, 0) = 0
+            ORDER BY mx.prod_date DESC, mx.shift_name ASC, mx.machine_code ASC
         """
-        cur.execute(query)
+        
+        # We pass the dates twice: once for the Matrix generation, and once for filtering the logs
+        cur.execute(query, (from_date, to_date, from_date, to_date))
         rows = cur.fetchall()
         
         pending_batches = []
         for r in rows:
             pending_batches.append({
-                "batch_id": r[0],
-                "date": str(r[1]),
-                "shift": r[2],
-                "machine": r[3],
-                "part": r[4],
-                "operator": r[5],
-                "total_ok": int(r[6] or 0),
-                "total_ng": int(r[7] or 0),
-                "hours_logged": int(r[8] or 0),
-                "process": r[9] or "UNKNOWN" # 🚨 Sending the true process to the frontend
+                "date": str(r[0]),
+                "shift": r[1],
+                "machine": r[2],
+                "part": r[3],
+                "operator": r[4],
+                "total_ok": int(r[5]),
+                "total_ng": int(r[6]),
+                "hours_logged": int(r[7]),
+                "process": r[8] or "UNKNOWN" 
             })
             
         return {"records": pending_batches}
         
     except Exception as e:
+        print(f"Error fetching pending finalizations: {e}")
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         cur.close()

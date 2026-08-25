@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("role-display").innerText = role;
     document.getElementById("user-avatar").innerText = username.charAt(0).toUpperCase();
 
+    // 🚨 NEW: Set default dates to today's date automatically
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("filter_from").value = today;
+    document.getElementById("filter_to").value = today;
+
     loadPendingBatches();
 });
 
@@ -17,13 +22,29 @@ function logout() {
     window.location.href = "/";
 }
 
+// --- Filter Logic ---
+function clearFilters() {
+    document.getElementById("filter_from").value = "";
+    document.getElementById("filter_to").value = "";
+    loadPendingBatches();
+}
+
 // --- Fetch Data ---
 async function loadPendingBatches() {
     const tbody = document.getElementById('table-pending');
     tbody.innerHTML = `<tr><td colspan="8" class="loading-cell">Loading data...</td></tr>`;
 
+    // 🚨 NEW: Grab the dates from the UI
+    const fromDate = document.getElementById("filter_from").value;
+    const toDate = document.getElementById("filter_to").value;
+    
+    // 🚨 NEW: Build the dynamic URL with the dates
+    let url = '/api/pending_finalization?';
+    if (fromDate) url += `from_date=${fromDate}&`;
+    if (toDate) url += `to_date=${toDate}`;
+
     try {
-        const response = await fetch('/api/pending_finalization');
+        const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to load data");
         
         const data = await response.json();
