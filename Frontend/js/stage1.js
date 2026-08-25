@@ -1644,20 +1644,16 @@ window.onload = async () => {
 
     // 🚨 SMART LOGICAL SHIFT CALCULATION 🚨
     if (currentHour >= 0 && currentHour < 7) {
-        // Between Midnight and 7 AM: The logical shift belongs to YESTERDAY'S Shift B.
         logicalDate.setDate(logicalDate.getDate() - 1);
         currentShift = "B";
     } 
     else if (currentHour >= 19) {
-        // Between 7 PM and Midnight: The logical shift is TODAY'S Shift B.
         currentShift = "B";
     } 
     else {
-        // Between 7 AM and 7 PM: The logical shift is TODAY'S Shift A.
         currentShift = "A";
     }
 
-    // Format the date string properly avoiding timezone shifting bugs
     const offsetDate = new Date(logicalDate.getTime() - (logicalDate.getTimezoneOffset() * 60000));
     const logicalDateStr = offsetDate.toISOString().split('T')[0];
     
@@ -1667,22 +1663,33 @@ window.onload = async () => {
     if (dateInput) dateInput.value = logicalDateStr;
     if (shiftInput) shiftInput.value = currentShift;
 
-    // Load master data
+    // Load master data (which populates the machine lists)
     await fetchMasterData();
 
-    // Check if URL parameters override the defaults
+    // --- 🚨 SMART URL REDIRECT LOGIC ---
     const urlParams = new URLSearchParams(window.location.search);
     const urlMachine = urlParams.get('machine');
     const urlDate = urlParams.get('date');
     const urlShift = urlParams.get('shift');
 
     if (urlMachine && urlDate && urlShift) {
-        let machineSelect = document.getElementById("machine");
         
+        // 1. Find the incoming machine in our master list to determine its process
+        const matchedMachine = machineList.find(m => (m.code === urlMachine) || (m.machine_code === urlMachine));
+        
+        if (matchedMachine) {
+            // 2. Automatically switch to the correct process tab (e.g., "ASSEMBLY_SPM")
+            const machineProcess = matchedMachine.process || matchedMachine.machine_process;
+            selectProcess(machineProcess);
+        }
+
+        // 3. Set the variables from the URL
+        let machineSelect = document.getElementById("machine");
         if (machineSelect) machineSelect.value = urlMachine;
         if (dateInput) dateInput.value = urlDate;
         if (shiftInput) shiftInput.value = urlShift;
 
+        // 4. Trigger the auto-fill! This will fetch the logs and pre-fill the Supervisor, Operator, Mould, and Shots!
         checkActiveMachineState();
     }
 };

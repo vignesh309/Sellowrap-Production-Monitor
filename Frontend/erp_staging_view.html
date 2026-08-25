@@ -47,6 +47,24 @@
             </button>
         </div>
 
+        <!-- 🚨 NEW: DATE FILTER BAR -->
+        <div class="card" style="margin-bottom: 20px; padding: 15px 25px; display: flex; gap: 20px; align-items: flex-end;">
+            <div>
+                <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase;">From Date</label>
+                <input type="date" id="filter_from" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); color: white; width: 160px; color-scheme: dark;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase;">To Date</label>
+                <input type="date" id="filter_to" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); color: white; width: 160px; color-scheme: dark;">
+            </div>
+            <button class="hub-btn" onclick="loadStagingData()" style="margin: 0; background: rgba(0, 229, 255, 0.1);">
+                🔍 Filter Records
+            </button>
+            <button class="hub-btn" onclick="clearFilters()" style="margin: 0; border-color: var(--text-muted); color: var(--text-muted);">
+                ✕ Clear
+            </button>
+        </div>
+
         <!-- PENDING TABLE -->
         <div class="card" style="margin-bottom: 30px;">
             <h3 class="sub-title" style="color: var(--status-yellow); border-color: rgba(255, 177, 66, 0.3);">⏳ Pending Push</h3>
@@ -68,6 +86,8 @@
                     </tbody>
                 </table>
             </div>
+            <!-- 🚨 PENDING PAGINATION -->
+            <div id="pagination-pending" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;"></div>
         </div>
 
         <!-- HISTORY TABLE -->
@@ -90,6 +110,8 @@
                     </tbody>
                 </table>
             </div>
+            <!-- 🚨 PUSHED PAGINATION -->
+            <div id="pagination-pushed" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;"></div>
         </div>
 
     </div>

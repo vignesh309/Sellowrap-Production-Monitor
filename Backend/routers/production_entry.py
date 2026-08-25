@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
+import json
 from database import get_conn
 from schemas import Stage1BlockSubmit, FinalizeBatchPayload, ActiveMachineState
 from datetime import datetime, timedelta
@@ -389,11 +390,6 @@ def get_live_iot_count(date: str, machine_code: str, shift: str = "A"):
         cur.close()
         conn.close()
 
-import json
-from fastapi import APIRouter, HTTPException
-from database import get_conn
-# ... (keep your existing imports and Pydantic models)
-
 @router.post("/api/submit_stage1_block")
 def submit_stage1_block(payload: Stage1BlockSubmit):
     check_license()
@@ -445,17 +441,17 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         # 2. ERP STAGING TRANSLATION (HOURLY ROWS)
         # ==========================================
         
-        # A. Create the perfectly unique Time-Based ID for FINSYS (Your brilliant idea!)
-        # Looks like: "2026-08-22_A_IM09-80T-3_socket_10400587720_0700-0800"
+        # A. Create the perfectly unique Time-Based ID for FINSYS
         clean_start = payload.start_time.replace(':', '')
         clean_end = payload.end_time.replace(':', '')
         erp_unique_id = f"{payload.batch_id}_{clean_start}-{clean_end}"
 
-        # B. Group and Translate Rejections to JSON (For this specific hour only!)
+        # B. Group and Translate Rejections to JSON (🚨 UPDATED: Uses reason_code)
         cur.execute("""
-            SELECT COALESCE(e.finsys_code, r.reason_name), SUM(r.quantity)
+            SELECT COALESCE(e.finsys_code, m.reason_code), SUM(r.quantity)
             FROM production_rejections r
-            LEFT JOIN erp_mapping_master e ON e.internal_name = r.reason_name AND e.category = 'rejection_reason_code'
+            LEFT JOIN rejection_reason_master m ON r.reason_name = m.reason_name
+            LEFT JOIN erp_mapping_master e ON e.internal_name = m.reason_code AND e.category = 'rejection_reason_code'
             WHERE r.log_id = %s
             GROUP BY 1
         """, (log_id,))
@@ -471,11 +467,12 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         cycle_res = cur.fetchone()
         cycle_time = float(cycle_res[0]) if cycle_res and cycle_res[0] else 0.0
 
-        # D. Calculate Downtime Minutes & Create JSON (For this specific hour only!)
+        # D. Calculate Downtime Minutes & Create JSON (🚨 UPDATED: Uses reason_code)
         cur.execute("""
-            SELECT COALESCE(e.finsys_code, s.reason_name), SUM(s.quantity)
+            SELECT COALESCE(e.finsys_code, m.reason_code), SUM(s.quantity)
             FROM production_shortfalls s
-            LEFT JOIN erp_mapping_master e ON e.internal_name = s.reason_name AND e.category = 'short_reason_code'
+            LEFT JOIN shortfall_reason_master m ON s.reason_name = m.reason_name
+            LEFT JOIN erp_mapping_master e ON e.internal_name = m.reason_code AND e.category = 'short_reason_code'
             WHERE s.log_id = %s
             GROUP BY 1
         """, (log_id,))
@@ -500,7 +497,11 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
 
         mac_erp = get_erp_code('machine_code', payload.machine_code)
         mld_erp = get_erp_code('mold_no', payload.mould_code)
-        sup_erp = get_erp_code('emp_code', payload.supervisor_code)
+        
+        # 🚨 FIX: Removed the duplicate line. It will now properly extract "Dharmendar" and map to "001"
+        clean_supervisor = payload.supervisor_code.split(' - ')[0].strip() if payload.supervisor_code else "001"
+        sup_erp = get_erp_code('emp_code', clean_supervisor)
+        
         shift_erp = get_erp_code('SHIFT', payload.shift)
         
         # Dynamically find the machine's actual process
@@ -514,30 +515,34 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         part_erp = get_erp_code('part_no', part_composite)
 
         # F. Upsert Staging Row using the NEW Hourly ID
+        
+        # 1. Always delete the old row first
         cur.execute("DELETE FROM erp_production_staging WHERE batch_id = %s", (erp_unique_id,))
         
-        cur.execute("""
-            INSERT INTO erp_production_staging (
-                batch_id, shop_floor, section_code, shift_name,
-                prd_start_time, prd_end_time, machine_erp_code, mould_erp_code,
-                supervisor_erp_code, operator_count, helper_count, part_erp_code,
-                job_no, job_dt, ok_qty, rej_qty, lumps, rejections_json,
-                dt_type, total_downtime_mins, downtime_json, is_pushed
-            ) VALUES (
-                %s, %s, %s, %s,
-                %s, %s, %s, %s,
-                %s, %s, %s, %s,
-                %s, %s, %s, %s, %s, %s,
-                %s, %s, %s, false
-            )
-        """, (
-            erp_unique_id,  # 🚨 Injects your unique time-based ID
-            "SW0102", process_erp, shift_erp,
-            f"{payload.production_date} {payload.start_time}", f"{payload.production_date} {payload.end_time}", 
-            mac_erp, mld_erp, sup_erp, "001", "001", part_erp,
-            "-", payload.production_date, payload.ok_parts, payload.ng_parts, 0, rej_json,
-            "simple", total_dt_mins, dt_json
-        ))
+        # 2. ONLY insert into ERP staging if physical parts were produced!
+        if payload.ok_parts > 0 or payload.ng_parts > 0:
+            cur.execute("""
+                INSERT INTO erp_production_staging (
+                    batch_id, shop_floor, section_code, shift_name,
+                    prd_start_time, prd_end_time, machine_erp_code, mould_erp_code,
+                    supervisor_erp_code, operator_count, helper_count, part_erp_code,
+                    job_no, job_dt, ok_qty, rej_qty, lumps, rejections_json,
+                    dt_type, total_downtime_mins, downtime_json, is_pushed
+                ) VALUES (
+                    %s, %s, %s, %s,
+                    %s, %s, %s, %s,
+                    %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, false
+                )
+            """, (
+                erp_unique_id, 
+                "SW0103", process_erp, shift_erp, 
+                f"{payload.production_date} {payload.start_time}", f"{payload.production_date} {payload.end_time}", 
+                mac_erp, mld_erp, sup_erp, "001", "001", part_erp,
+                "-", payload.production_date, payload.ok_parts, payload.ng_parts, 0, rej_json,
+                "simple", total_dt_mins, dt_json
+            ))
 
         conn.commit()
         return {"message": "Block saved successfully", "log_id": log_id}

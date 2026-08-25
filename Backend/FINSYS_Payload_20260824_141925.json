@@ -1,0 +1,36 @@
+[
+    {
+        "shop_floor": "SW0102",
+        "shift": "Shift A",
+        "prd_start_time": "2026-08-24T07:00:00.000Z",
+        "prd_end_time": "2026-08-24T08:00:00.000Z",
+        "Section": "61",
+        "data": [
+            {
+                "Mould_id": "69160023",
+                "Line_superv": "Dharmendar - Dharmendar",
+                "no_help": "001",
+                "no_opr": "001",
+                "machine_id": "61/06",
+                "part_code": {
+                    "72050020": {
+                        "Job_no": "-",
+                        "Job_dt": "24/08/2026",
+                        "ok_qty": 40,
+                        "rej_qty": 10,
+                        "Lumps": 0,
+                        "uid": "2026-08-24_A_Test - 01_MLD123_MLDPRT0123_0700-0800",
+                        "rej_category": {
+                            "Start Up": 10
+                        }
+                    }
+                },
+                "type": "simple",
+                "total_downtime": 10.0,
+                "dt_category": {
+                    "No D/T (No Demand/Target)": 10.0
+                }
+            }
+        ]
+    }
+]

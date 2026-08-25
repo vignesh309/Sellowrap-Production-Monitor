@@ -1,0 +1,71 @@
+[
+    {
+        "shop_floor": "SW0103",
+        "shift": "Shift A",
+        "prd_start_time": "2026-08-25T09:00:00.000Z",
+        "prd_end_time": "2026-08-25T10:00:00.000Z",
+        "Section": "61",
+        "data": [
+            {
+                "Mould_id": "SHAKLE BUSH",
+                "Line_superv": "001",
+                "no_help": "001",
+                "no_opr": "001",
+                "machine_id": "61/06",
+                "part_code": {
+                    "0401AMJ00120N-MOULDING": {
+                        "Job_no": "-",
+                        "Job_dt": "25/08/2026",
+                        "ok_qty": 134,
+                        "rej_qty": 3,
+                        "Lumps": 0,
+                        "uid": "2026-08-25_A_Test - 01_SHAKLE BUSH_0401AMJ00120N_0900-1000",
+                        "rej_category": {
+                            "001": 1,
+                            "WELD-01": 1,
+                            "WELD-06": 1
+                        }
+                    }
+                },
+                "type": "simple",
+                "total_downtime": 0.43,
+                "dt_category": {
+                    "004": 0.43
+                }
+            }
+        ]
+    },
+    {
+        "shop_floor": "SW0103",
+        "shift": "Shift B",
+        "prd_start_time": "2026-08-24T06:00:00.000Z",
+        "prd_end_time": "2026-08-24T07:00:00.000Z",
+        "Section": "61",
+        "data": [
+            {
+                "Mould_id": "10297970",
+                "Line_superv": "Nandhakumar",
+                "no_help": "001",
+                "no_opr": "001",
+                "machine_id": "IM06-80T-1",
+                "part_code": {
+                    "10297970-MOULDING": {
+                        "Job_no": "-",
+                        "Job_dt": "24/08/2026",
+                        "ok_qty": 60,
+                        "rej_qty": 0,
+                        "Lumps": 0,
+                        "uid": "2026-08-24_B_IM06-80T-1_10297970_10297970_0600-0700",
+                        "rej_category": {}
+                    }
+                },
+                "type": "simple",
+                "total_downtime": 50.16,
+                "dt_category": {
+                    "SF-07": 17.16,
+                    "SF-09": 33.0
+                }
+            }
+        ]
+    }
+]

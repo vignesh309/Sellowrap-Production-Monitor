@@ -73,7 +73,56 @@ def get_live_machine_status(prod_date: str, time_block: str):
         cur.close()
         conn.close()
 
-
+# If adding to an existing router, you can skip the APIRouter declaration
+@router.get("/api/pending_finalization")
+def get_pending_finalizations():
+    """Fetches all batches that have hourly logs but are missing from batch_master."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        # SQL Logic: Find batch_ids in hourly_log where a matching batch_id in batch_master is NULL
+        query = """
+            SELECT 
+                h.batch_id,
+                MAX(h.production_date) as prod_date,
+                MAX(h.shift) as shift_name,
+                MAX(h.machine_code) as machine,
+                MAX(h.part_number) as part,
+                MAX(h.operator_code) as operator,
+                SUM(h.ok_parts) as total_ok,
+                SUM(h.ng_parts) as total_ng,
+                COUNT(h.id) as hours_logged
+            FROM production_hourly_log h
+            LEFT JOIN batch_master b ON h.batch_id = b.batch_id
+            WHERE b.batch_id IS NULL AND h.is_no_plan = false
+            GROUP BY h.batch_id
+            ORDER BY MAX(h.production_date) DESC, MAX(h.shift) ASC
+        """
+        cur.execute(query)
+        rows = cur.fetchall()
+        
+        pending_batches = []
+        for r in rows:
+            pending_batches.append({
+                "batch_id": r[0],
+                "date": str(r[1]),
+                "shift": r[2],
+                "machine": r[3],
+                "part": r[4],
+                "operator": r[5],
+                "total_ok": int(r[6] or 0),
+                "total_ng": int(r[7] or 0),
+                "hours_logged": int(r[8] or 0)
+            })
+            
+        return {"records": pending_batches}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+        
 @router.get("/api/get_rm_consumption_report")
 def get_rm_consumption_report(start_date: str = Query(""), end_date: str = Query("")):
     """Fetches RM consumption records with optional date filtering."""
@@ -1987,3 +2036,4 @@ def get_oeeteep_process_summary(
     finally:
         cur.close()
         conn.close()
+

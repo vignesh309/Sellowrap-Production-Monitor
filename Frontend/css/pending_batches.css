@@ -19,7 +19,7 @@ body {
     margin: 0;
 }
 
-/* NAVBAR (Shared styles from your other pages) */
+/* NAVBAR */
 .navbar { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-solid); padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
 .brand { display: flex; align-items: center; gap: 15px; }
 .brand img { height: 50px; border-radius: 4px; background: #ffffff; }
@@ -39,28 +39,7 @@ body {
 
 /* MAIN LAYOUT */
 .main-container { max-width: 1400px; margin: 40px auto; padding: 0 20px; }
-
 .canvas-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-
-.btn-push {
-    background: rgba(0, 240, 118, 0.15);
-    border: 1px solid var(--status-green);
-    color: var(--status-green);
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-.btn-push:hover:not(:disabled) {
-    background: var(--status-green);
-    color: #000;
-    box-shadow: 0 4px 15px rgba(0, 240, 118, 0.4);
-    transform: translateY(-2px);
-}
-.btn-push:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* CARDS & TABLES */
 .card { background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
@@ -73,21 +52,5 @@ tbody tr:hover { background-color: rgba(0, 229, 255, 0.03); }
 
 .loading-cell { text-align: center; padding: 20px; color: var(--text-muted); font-style: italic; }
 
-.status-pill {
-    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase;
-}
+.status-pill { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
 .status-pending { background: rgba(255, 177, 66, 0.15); color: var(--status-yellow); border: 1px solid var(--status-yellow); }
-
-/* PAGINATION CONTROLS */
-.page-btn {
-    background: var(--bg-input);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: bold;
-    transition: 0.2s;
-}
-.page-btn:hover { background: rgba(0, 229, 255, 0.1); border-color: var(--accent-cyan); color: var(--accent-cyan); }

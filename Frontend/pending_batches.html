@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Batch Tracker</title>
+    <link rel="stylesheet" href="/static/css/pending_batches.css">
+</head>
+<body>
+
+    <!-- ENTERPRISE NAVBAR -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>PENDING BATCH TRACKER</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="main-container">
+        
+        <!-- HEADER ACTIONS -->
+        <div class="canvas-header">
+            <div>
+                <h2 style="margin: 0; color: var(--text-main);">Unclosed Shifts</h2>
+                <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 13px;">Review and finalize batches that were left open by operators.</p>
+            </div>
+            <button class="hub-btn" onclick="loadPendingBatches()" style="margin: 0;">
+                🔄 Refresh List
+            </button>
+        </div>
+
+        <!-- TABLE CARD -->
+        <div class="card">
+            <h3 class="sub-title" style="color: var(--status-yellow); border-color: rgba(255, 177, 66, 0.3);">⏳ Requires Finalization</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Shift</th>
+                            <th>Machine</th>
+                            <th>Part No</th>
+                            <th>Operator</th>
+                            <th>Hours Logged</th>
+                            <th>Est. OK Qty</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-pending">
+                        <tr><td colspan="8" class="loading-cell">Loading pending batches...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/js/pending_batches.js"></script>
+</body>
+</html>

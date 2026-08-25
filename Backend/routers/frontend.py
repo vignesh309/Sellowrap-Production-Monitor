@@ -80,6 +80,10 @@ def erp_integration_master_page():
 def erp_staging_view_page():
     return FileResponse(get_html_path("erp_staging_view.html"))
 
+@router.get("/pending-finalizations", response_class=HTMLResponse)
+def pending_finalizations_page():
+    return FileResponse(get_html_path("pending_batches.html"))
+
 @router.get("/batch-ledger-page", response_class=HTMLResponse)
 def batch_ledger_page():
     return FileResponse(get_html_path("batch_ledger.html"))

@@ -201,18 +201,30 @@ def auto_sync_erp_mappings():
         conn.close()
 
 @router.get("/staging_data")
-def get_erp_staging_data():
-    """Fetches all rows from the staging table, separated by push status."""
+def get_erp_staging_data(from_date: str = None, to_date: str = None):
+    """Fetches staging table data, separated by push status, with optional date filtering."""
     conn = get_conn()
     cur = conn.cursor()
     try:
-        cur.execute("""
+        # 🚨 NEW: Dynamic query building for Date Filters
+        query = """
             SELECT id, batch_id, shift_name, prd_start_time, prd_end_time, machine_erp_code, 
                    part_erp_code, ok_qty, rej_qty, total_downtime_mins, is_pushed, pushed_at, api_error_log
             FROM erp_production_staging
-            ORDER BY created_at DESC
-        """)
+            WHERE 1=1
+        """
+        params = []
         
+        if from_date:
+            query += " AND DATE(prd_start_time) >= %s"
+            params.append(from_date)
+        if to_date:
+            query += " AND DATE(prd_start_time) <= %s"
+            params.append(to_date)
+            
+        query += " ORDER BY created_at DESC"
+        
+        cur.execute(query, tuple(params))
         columns = [desc[0] for desc in cur.description]
         rows = cur.fetchall()
         
@@ -221,12 +233,10 @@ def get_erp_staging_data():
         
         for row in rows:
             data_dict = dict(zip(columns, row))
-            # Format datetimes for JSON serialization
             if data_dict['prd_start_time']: data_dict['prd_start_time'] = str(data_dict['prd_start_time'])
             if data_dict['prd_end_time']: data_dict['prd_end_time'] = str(data_dict['prd_end_time'])
             if data_dict['pushed_at']: data_dict['pushed_at'] = str(data_dict['pushed_at'])
             
-            # Cast decimals to floats for JSON
             if data_dict['total_downtime_mins'] is not None:
                 data_dict['total_downtime_mins'] = float(data_dict['total_downtime_mins'])
             
