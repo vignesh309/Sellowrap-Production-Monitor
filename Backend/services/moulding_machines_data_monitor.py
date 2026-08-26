@@ -419,7 +419,7 @@ class ToyoMachine:
                             alarm_code = fields[4].strip()
                             
                             # 🚨 NEW: Ignore specific nuisance alarms to prevent database bloat
-                            if alarm_code in ["160", "108", "138", "106", "193"]:
+                            if alarm_code in ["160", "108", "138", "106", "193", "264"]:
                                 continue
 
                             alarm_data = {

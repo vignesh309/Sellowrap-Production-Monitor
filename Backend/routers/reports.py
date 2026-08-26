@@ -1166,7 +1166,7 @@ def get_oee_summary(
                     split_part(batch_id, '_', 4) as b_process,
                     batch_id,
                     (target_shots * COALESCE(active_cavities, 1)) as target_qty,
-                    actual_shots,
+                    (actual_shots * COALESCE(active_cavities, 1)) as actual_qty,
                     operator_code,
                     supervisor_code,
                     ((EXTRACT(EPOCH FROM end_time) - EXTRACT(EPOCH FROM start_time) + 
@@ -1178,7 +1178,7 @@ def get_oee_summary(
                     b_date, b_shift, b_machine, b_part,
                     MAX(b_process) as process_name,
                     SUM(target_qty) as target_qty,
-                    SUM(actual_shots) as total_qty,
+                    SUM(actual_qty) as total_qty,
                     SUM(logged_mins) as total_logged_mins,
                     MAX(operator_code) as operator,
                     MAX(supervisor_code) as supervisor,

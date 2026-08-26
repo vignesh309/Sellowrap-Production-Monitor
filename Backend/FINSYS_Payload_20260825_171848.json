@@ -1,0 +1,32 @@
+[
+    {
+        "shop_floor": "SW0103",
+        "shift": "Shift A",
+        "prd_start_time": "2026-08-25T16:00:00.000Z",
+        "prd_end_time": "2026-08-25T17:00:00.000Z",
+        "Section": "61",
+        "data": [
+            {
+                "Mould_id": "10297970",
+                "Line_superv": "Nandhakumar",
+                "no_help": "001",
+                "no_opr": "001",
+                "machine_id": "IM06-80T-1",
+                "part_code": {
+                    "10297970-MOULDING": {
+                        "Job_no": "-",
+                        "Job_dt": "25/08/2026",
+                        "ok_qty": 366,
+                        "rej_qty": 0,
+                        "Lumps": 0,
+                        "uid": "2026-08-25_A_IM06-80T-1_10297970_10297970_1600-1700",
+                        "rej_category": {}
+                    }
+                },
+                "type": "simple",
+                "total_downtime": 0.0,
+                "dt_category": {}
+            }
+        ]
+    }
+]

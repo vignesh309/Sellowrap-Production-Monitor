@@ -1482,7 +1482,7 @@ async function finalizeBatch() {
         let hasSavedRun = false;
         for (let j = 0; j < splitCounts[i]; j++) {
             let btn = document.getElementById(`btn_submit_${i}_${j}`);
-            if (btn && btn.innerText.includes("Saved")) {
+            if (btn && (btn.innerText.includes("Saved") || btn.innerText.includes("Logged"))) {
                 hasSavedRun = true;
                 break;
             }
@@ -1500,7 +1500,13 @@ async function finalizeBatch() {
     if (!confirm(confirmMessage)) return;
 
     let totalActual = parseInt(document.getElementById("grand-actual").innerText) || 0;
-    if (totalActual === 0) { alert("You cannot generate a batch with 0 production."); return; }
+    
+    // 🚨 FIX: Allow 0 production for "No Plan" shifts, but ask for confirmation first just to be safe!
+    if (totalActual === 0) { 
+        if (!confirm("⚠️ Total production is 0.\n\nAre you sure you want to finalize this as an entirely idle/empty shift?")) {
+            return; 
+        }
+    }
 
     let operatorCode = document.getElementById("operator").value;
     if (!operatorCode) { alert("Please select an Operator before finalizing."); return; }
