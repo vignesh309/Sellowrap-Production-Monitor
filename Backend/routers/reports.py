@@ -8,6 +8,19 @@ import math
 
 router = APIRouter()
 
+@router.get("/api/get_processes")
+def get_processes():
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT process FROM process_master ORDER BY process ASC")
+        processes = [row[0] for row in cur.fetchall()]
+        return {"processes": processes}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
 
 @router.get("/api/get_live_machine_status")
 def get_live_machine_status(prod_date: str, time_block: str):
@@ -1148,7 +1161,7 @@ def get_moulding_machine_alarms(
 def get_oee_summary(
     start_date: str = Query(""),
     end_date: str = Query(""),
-    machine: str = Query(""),
+    process_name: str = Query(""),
     shift: str = Query("")
 ):
     """Fetches True OEE Summary by calculating dynamic shift time and precise cycle-time downtime."""
@@ -1272,8 +1285,10 @@ def get_oee_summary(
             LEFT JOIN RejectionAgg ra 
                 ON sa.b_date = ra.b_date AND sa.b_shift = ra.b_shift AND sa.b_machine = ra.b_machine AND sa.b_part = ra.b_part
             LEFT JOIN part_master pm ON sa.b_part = pm.part_no
-            LEFT JOIN part_routing prt ON sa.b_part = prt.part_no
             LEFT JOIN machine_master mm ON sa.b_machine = mm.machine_code
+            LEFT JOIN part_routing prt 
+                ON sa.b_part = prt.part_no 
+                AND prt.process_name = mm.machine_process
             WHERE 1=1
         """
         params = []
@@ -1284,9 +1299,9 @@ def get_oee_summary(
         if end_date:
             query += " AND sa.b_date <= %s"
             params.append(end_date)
-        if machine:
-            query += " AND sa.b_machine = %s"
-            params.append(machine)
+        if process_name:
+            query += " AND mm.machine_process = %s"
+            params.append(process_name)
         if shift:
             query += " AND sa.b_shift = %s"
             params.append(shift)

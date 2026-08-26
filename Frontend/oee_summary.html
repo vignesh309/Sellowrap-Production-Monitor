@@ -66,13 +66,10 @@
             <option value="B">Shift B</option>
           </select>
 
-          <select id="machineFilter" class="filter-select">
-            <option value="">All Machines</option>
-            <option value="DEF-01">DEF-01</option>
-            <option value="IMM-250">IMM-250</option>
-            <option value="IMM-400">IMM-400</option>
-            <option value="TW-01">TW-01</option>
-            <option value="TW-10">TW-10</option>
+          <!-- 🚨 REPLACED MACHINE WITH PROCESS -->
+          <select id="processFilter" class="filter-select">
+            <option value="">All Processes</option>
+            <!-- Options loaded dynamically -->
           </select>
 
           <button class="btn-primary" onclick="loadOEEReport()">

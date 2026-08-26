@@ -49,7 +49,10 @@ body {
 /* Table Layout */
 .table-container { 
     height: calc(100vh - 94px); /* Viewport height minus header */
-    padding: 15px;
+    
+    /* 🚨 FIX 1: Set top padding to 0 so the sticky header touches the absolute top */
+    padding: 0 15px 15px 15px;
+    
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
     overflow-y: auto;
@@ -59,13 +62,15 @@ body {
 table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 6px; 
+    border-spacing: 0 4px; /* Slightly reduced gap between rows */
     text-align: left;
 }
 
 thead th {
-    font-size: 24px;
-    padding: 20px;
+    /* 🚨 FIX 2: Reduced header font size and padding */
+    font-size: 18px; 
+    padding: 14px 15px; 
+    
     background-color: var(--bg-panel);
     border-bottom: 4px solid var(--accent-cyan);
     color: var(--accent-cyan);
@@ -77,8 +82,10 @@ thead th {
 }
 
 tbody td {
-    font-size: 28px; 
-    padding: 22px 20px;
+    /* 🚨 FIX 3: Reduced row font size and padding to fit more rows */
+    font-size: 20px;  
+    padding: 12px 15px; 
+    
     font-weight: bold;
     background-color: rgba(30, 34, 60, 0.6); 
     border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -87,12 +94,14 @@ tbody td {
 tbody tr:nth-child(even) td { background-color: rgba(30, 34, 60, 0.3); }
 
 .text-right { text-align: right; }
-.qty-total { font-size: 32px; color: #fff; }
-.qty-ok { font-size: 32px; color: var(--status-green); }
-.qty-ng { font-size: 32px; color: var(--status-red); }
+
+/* 🚨 FIX 4: Scaled down the large production numbers */
+.qty-total { font-size: 24px; color: #fff; }
+.qty-ok { font-size: 24px; color: var(--status-green); }
+.qty-ng { font-size: 24px; color: var(--status-red); }
 
 .empty-state { 
-    font-size: 32px; 
+    font-size: 28px; /* Slightly smaller empty state */
     text-align: center;
     padding-top: 20vh; 
     color: var(--text-muted);

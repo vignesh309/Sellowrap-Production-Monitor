@@ -137,5 +137,5 @@ function openTVMode() {
     }
 
     // 🚨 CHANGED: Using '_self' ensures the TV remote's back button works perfectly!
-    window.open(`/shift-summary-tv?date=${dateVal}&shift=${shiftVal}`, '_self');
+    window.open(`/shift-summary-tvscreen?date=${dateVal}&shift=${shiftVal}`, '_self');
 }

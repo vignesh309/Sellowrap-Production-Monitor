@@ -16,12 +16,30 @@ window.onload = () => {
     document.getElementById("startDate").value = todayStr;
     document.getElementById("endDate").value = todayStr;
 
+    loadProcesses();
     loadOEEReport();
 };
 
 function logout() {
     localStorage.clear();
     window.location.href = "/";
+}
+
+async function loadProcesses() {
+    try {
+        const response = await fetch('/api/get_processes');
+        const data = await response.json();
+        const processSelect = document.getElementById("processFilter");
+        
+        data.processes.forEach(proc => {
+            let option = document.createElement("option");
+            option.value = proc;
+            option.text = proc;
+            processSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Failed to load processes:", error);
+    }
 }
 
 // ==========================================
@@ -41,15 +59,15 @@ async function loadOEEReport() {
 
     const startDate = document.getElementById("startDate").value;
     const endDate = document.getElementById("endDate").value;
-    const machine = document.getElementById("machineFilter").value;
     const shift = document.getElementById("shiftFilter").value;
+    const processName = document.getElementById("processFilter").value;
 
     try {
         const params = new URLSearchParams();
         if (startDate) params.append('start_date', startDate);
         if (endDate) params.append('end_date', endDate);
-        if (machine) params.append('machine', machine);
         if (shift) params.append('shift', shift);
+        if (processName) params.append('process_name', processName);
 
         const response = await fetch(`/api/get_oee_summary?${params.toString()}`);
         if (!response.ok) throw new Error("Failed to fetch OEE data.");
