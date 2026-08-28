@@ -2,9 +2,9 @@
 let currentMode = "EXPLORE";
 let currentReasonData = {}; 
 let fullMasterList = []; 
+let selectedProcesses = []; // Array to hold accumulated tags
 
-// 🚨 UPDATED: Added oee_impact and valid_processes to form tracking
-const formInputs = ["reason_code", "reason_name", "category", "oee_impact", "valid_processes", "is_active"];
+const formInputs = ["reason_code", "reason_name", "category", "oee_impact", "process_dropdown", "is_active"];
 const btnNew = document.getElementById("btn_new");
 const btnEdit = document.getElementById("btn_edit");
 const btnSave = document.getElementById("btn_save");
@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setMode("EXPLORE");
     refreshMasterList();
+    loadProcessDropdown();
 });
 
 function logout() {
@@ -40,7 +41,78 @@ function logout() {
 }
 
 // ==========================================
-// 2. MASTER DATA FUNCTIONS & STATE
+// 2. TAG/CHIP UI LOGIC
+// ==========================================
+async function loadProcessDropdown() {
+    try {
+        const response = await fetch('/api/get_processes');
+        if (!response.ok) throw new Error("Failed to fetch processes");
+        
+        const data = await response.json();
+        const processSelect = document.getElementById("process_dropdown");
+        
+        // Keep the placeholder, add the database options
+        processSelect.innerHTML = '<option value="">-- Choose Process --</option>'; 
+        
+        data.processes.forEach(proc => {
+            let option = document.createElement("option");
+            option.value = proc;
+            option.text = proc;
+            processSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Failed to load processes:", error);
+    }
+}
+
+function addProcess() {
+    const dropdown = document.getElementById("process_dropdown");
+    const val = dropdown.value;
+    
+    if (!val) return;
+    if (selectedProcesses.includes(val)) {
+        alert("This process is already added!");
+        return;
+    }
+    
+    selectedProcesses.push(val);
+    renderProcessTags();
+    dropdown.value = ""; // Reset dropdown after adding
+}
+
+function removeProcess(val) {
+    if (currentMode === "EXPLORE") return; // Safety lock
+    selectedProcesses = selectedProcesses.filter(p => p !== val);
+    renderProcessTags();
+}
+
+function renderProcessTags() {
+    const container = document.getElementById("selected_processes_container");
+    container.innerHTML = "";
+    const isExplore = currentMode === "EXPLORE";
+
+    if (selectedProcesses.length === 0) {
+        container.innerHTML = `<span class="empty-tag-msg">No processes added yet.</span>`;
+        return;
+    }
+
+    selectedProcesses.forEach(proc => {
+        const tag = document.createElement("div");
+        tag.className = "process-tag";
+        
+        // Hide the remove button if we are just exploring/viewing
+        let removeBtnHTML = "";
+        if (!isExplore) {
+            removeBtnHTML = `<button class="tag-remove" onclick="removeProcess('${proc}')" title="Remove">✕</button>`;
+        }
+
+        tag.innerHTML = `<span>${proc}</span> ${removeBtnHTML}`;
+        container.appendChild(tag);
+    });
+}
+
+// ==========================================
+// 3. MASTER DATA FUNCTIONS & STATE
 // ==========================================
 function setMode(mode) {
     currentMode = mode;
@@ -60,11 +132,14 @@ function setMode(mode) {
     btnEdit.disabled = !isExplore || !document.getElementById("reason_code").value;
     btnSave.disabled = isExplore;
     btnDelete.disabled = !isExplore || !document.getElementById("reason_code").value;
+    
+    document.getElementById("btn_add_process").disabled = isExplore; // Lock/Unlock ADD button
+    renderProcessTags(); // Re-render tags to hide/show the 'x' buttons
 
     if (isNew) {
         clearForm();
         document.getElementById("is_active").value = "true"; 
-        document.getElementById("oee_impact").value = "Availability"; // Default fallback for Shortfalls
+        document.getElementById("oee_impact").value = "Availability";
     }
 }
 
@@ -74,14 +149,15 @@ function clearForm() {
         if (el) el.value = "";
     });
     currentReasonData = {};
+    selectedProcesses = []; // Clear array
+    renderProcessTags();    // Clear UI
 }
 
 // ==========================================
-// 3. API / DATA FETCHING LOGIC
+// 4. API / DATA FETCHING LOGIC
 // ==========================================
 async function refreshMasterList() {
     try {
-        // 🚨 Pointing to shortfall API
         const response = await fetch('/api/shortfall_list');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
@@ -122,8 +198,9 @@ function renderOverviewTable() {
         const statusClass = r.is_active ? "chip-active" : "chip-inactive";
         const statusText = r.is_active ? "Active" : "Inactive";
         
-        // 🚨 SAFELY PARSE ARRAY FOR TABLE
-        const processesDisplay = Array.isArray(r.valid_processes) ? r.valid_processes.join(", ") : (r.valid_processes || "-");
+        const processesDisplay = Array.isArray(r.valid_processes) && r.valid_processes.length > 0 
+            ? r.valid_processes.join(", ") 
+            : "-";
 
         tr.onclick = () => {
             document.getElementById("search_reason_id").value = r.reason_code;
@@ -147,7 +224,6 @@ async function searchReason() {
     if (!reasonCode) { alert("Please enter a Reason Code to search."); return; }
 
     try {
-        // 🚨 Pointing to shortfall API
         const response = await fetch(`/api/shortfall/${encodeURIComponent(reasonCode)}`);
         if (!response.ok) throw new Error("Reason not found");
         
@@ -168,33 +244,30 @@ function populateForm(data) {
     document.getElementById("oee_impact").value = data.oee_impact || "Availability";
     document.getElementById("is_active").value = data.is_active === true ? "true" : "false";
     
-    // Safely parse the valid_processes array back into a string for the text box
-    let processes = data.valid_processes || "";
-    if (Array.isArray(processes)) {
-        processes = processes.join(", ");
+    // Safely load the processes array
+    let processes = data.valid_processes || [];
+    if (!Array.isArray(processes)) {
+        processes = processes.split(',').map(s => s.trim()).filter(Boolean); 
     }
-    document.getElementById("valid_processes").value = processes;
-
-    setMode("EXPLORE");
+    
+    selectedProcesses = processes;
+    
+    setMode("EXPLORE"); // This will automatically lock fields and render the tags
 }
 
 // ==========================================
-// 4. CRUD ACTIONS
+// 5. CRUD ACTIONS
 // ==========================================
 function startNewReason() { setMode("NEW"); }
 function enableEditMode() { setMode("EDIT"); }
 
 async function saveReason() {
-    // Convert comma-separated text into a clean Array for the backend
-    let rawProcesses = document.getElementById("valid_processes").value.trim();
-    let processesArray = rawProcesses ? rawProcesses.split(',').map(s => s.trim().toUpperCase()) : [];
-
     let payload = {
         reason_code: document.getElementById("reason_code").value.trim(),
         reason_name: document.getElementById("reason_name").value.trim(),
         category: document.getElementById("category").value.trim(),
         oee_impact: document.getElementById("oee_impact").value,
-        valid_processes: processesArray, 
+        valid_processes: selectedProcesses, // Directly pass the tags array
         is_active: document.getElementById("is_active").value === "true"
     };
 
@@ -215,7 +288,6 @@ async function saveReason() {
     btnSave.disabled = true;
 
     try {
-        // 🚨 Pointing to shortfall API
         const response = await fetch('/api/shortfall/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -250,7 +322,6 @@ async function deleteReason() {
     }
 
     try {
-        // 🚨 Pointing to shortfall API
         const response = await fetch(`/api/shortfall/${encodeURIComponent(reasonCode)}`, { method: 'DELETE' });
         
         if (!response.ok) {

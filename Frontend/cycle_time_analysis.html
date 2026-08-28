@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics: Cycle Time Variance</title>
+    <link rel="stylesheet" href="/static/css/cycle_time_analysis.css">
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>Manufacturing Analytics</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">A</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Admin01</span>
+                    <span id="role-display" class="user-role">ADMIN</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <!-- SEARCH HEADER -->
+            <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 class="section-title" style="margin: 0; border: none;">Cycle Time Variance & Proposal Report</h2>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="search-container">
+                <div class="filter-group">
+                    <label>From Date:</label>
+                    <input type="date" id="start_date">
+                </div>
+                <div class="filter-group">
+                    <label>To Date:</label>
+                    <input type="date" id="end_date">
+                </div>
+                <div class="filter-group">
+                    <label>Machine Filter:</label>
+                    <select id="machine_filter">
+                        <option value="">All Moulding Machines</option>
+                        <!-- Options populated dynamically -->
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn-primary" onclick="loadCycleTimeData()">
+                        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor; margin-right: 5px; vertical-align: middle;">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"></path>
+                            <path d="M7 12h2v5H7zm4-3h2v8h-2zm4-4h2v12h-2z"></path>
+                        </svg>
+                        Analyze Data
+                    </button>
+                    <button class="btn-success" onclick="exportToExcel()">
+                        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor; margin-right: 5px; vertical-align: middle;">
+                            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-3v3h-2v-3H8v-2h3v-3h2v3h3v2zm-3-7V3.5L18.5 9H13z"></path>
+                        </svg>
+                        Export Excel
+                    </button>
+                </div>
+            </div>
+
+            <!-- DATA TABLE -->
+            <div class="table-section" style="margin-top: 20px;">
+                <div class="table-container" style="max-height: 600px;">
+                    <table class="master-table" style="width: 100%; white-space: nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Machine Code</th>
+                                <th>Part No</th>
+                                <th>Process</th>
+                                <th class="text-right">Min CT (s)</th>
+                                <th class="text-right">Max CT (s)</th>
+                                <th class="text-right highlight-col">Avg CT (s)</th>
+                                <th class="text-right highlight-col">Std CT (s)</th>
+                                <th class="text-center">Variance %</th>
+                                <th class="text-right highlight-proposed">Proposed CT (Median)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cycle_table_body">
+                            <tr><td colspan="9" style="text-align: center; color: gray; font-style: italic; padding: 30px;">Select date range and click Analyze to view cycle time variances.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/cycle_time_analysis.js"></script>
+</body>
+</html>

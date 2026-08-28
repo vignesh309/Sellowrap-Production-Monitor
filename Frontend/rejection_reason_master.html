@@ -67,7 +67,7 @@
             </div>
 
             <!-- CORE DETAILS FORM GRID -->
-            <h3 class="sub-title">1. Shortfall Configuration</h3>
+            <h3 class="sub-title">1. Rejection Configuration</h3>
             <div class="form-grid">
                 <div>
                     <label>Reason Code</label>
@@ -75,35 +75,27 @@
                 </div>
                 <div>
                     <label>Reason Name</label>
-                    <input type="text" id="reason_name" placeholder="e.g. Machine Breakdown" disabled>
+                    <input type="text" id="reason_name" placeholder="e.g. Flash, Short Shot" disabled>
                 </div>
                 <div>
                     <label>Category</label>
-                    <input list="category_list" id="category" placeholder="e.g. Maintenance" disabled autocomplete="off">
+                    <input list="category_list" id="category" placeholder="e.g. Quality" disabled autocomplete="off">
                     <datalist id="category_list">
-                        <option value="Machine Breakdown"></option>
-                        <option value="Material Shortage"></option>
-                        <option value="Manpower Shortage"></option>
-                        <option value="Setup / Changeover"></option>
-                        <option value="Utility Failure"></option>
+                        <option value="Machine Issue"></option>
+                        <option value="Material Issue"></option>
+                        <option value="Process Issue"></option>
                         <option value="Tooling Issue"></option>
+                        <option value="Operator Error"></option>
                     </datalist>
                 </div>
                 
-                <!-- 🚨 NEW: OEE Impact Dropdown -->
                 <div>
                     <label>OEE Impact</label>
                     <select id="oee_impact" disabled>
                         <option value="Availability">Availability</option>
                         <option value="Performance">Performance</option>
-                        <option value="Quality">Quality</option>
+                        <option value="Quality" selected>Quality</option>
                     </select>
-                </div>
-
-                <!-- 🚨 NEW: Valid Processes Input -->
-                <div>
-                    <label>Valid Processes</label>
-                    <input type="text" id="valid_processes" placeholder="MOULDING, ASSEMBLY" disabled title="Separate multiple processes with commas">
                 </div>
 
                 <div>
@@ -115,10 +107,27 @@
                 </div>
             </div>
 
+            <!-- 🚨 NEW: DEDICATED VALID PROCESSES SECTION -->
+            <h3 class="sub-title">2. Valid Processes Mapping</h3>
+            <div class="process-selection-area">
+                <div style="display: flex; gap: 10px; align-items: end; margin-bottom: 15px;">
+                    <div style="flex: 1; max-width: 300px;">
+                        <label>Select Process</label>
+                        <select id="process_dropdown" disabled>
+                            <option value="">-- Choose Process --</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" id="btn_add_process" onclick="addProcess()" disabled style="height: 38px;">➕ ADD</button>
+                </div>
+                <div id="selected_processes_container" class="tags-container">
+                    <span class="empty-tag-msg">No processes added yet.</span>
+                </div>
+            </div>
+
             <!-- MASTER LIST OVERVIEW -->
             <div class="table-section" style="margin-top: 30px; margin-bottom: 40px;">
                 <div class="table-header">
-                    <h3 class="sub-title" style="margin: 0; border: none;">2. Master List Overview</h3>
+                    <h3 class="sub-title" style="margin: 0; border: none;">3. Master List Overview</h3>
                 </div>
                 <div class="table-container" style="max-height: 400px;">
                     <table class="master-table" style="width: 100%; white-space: nowrap;">
@@ -127,13 +136,12 @@
                                 <th>Reason Code</th>
                                 <th>Reason Name</th>
                                 <th>Category</th>
-                                <th>OEE Impact</th> <!-- 🚨 NEW -->
-                                <th>Valid Processes</th> <!-- 🚨 NEW -->
+                                <th>OEE Impact</th> 
+                                <th>Valid Processes</th> 
                                 <th style="text-align: center;">Status</th>
                             </tr>
                         </thead>
                         <tbody id="overview_table_body">
-                            <!-- Updated colspan to 6 to match new columns -->
                             <tr><td colspan="6" style="text-align: center; color: gray;">Loading master list...</td></tr>
                         </tbody>
                     </table>

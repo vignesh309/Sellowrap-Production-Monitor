@@ -2100,3 +2100,290 @@ def get_oeeteep_process_summary(
         cur.close()
         conn.close()
 
+@router.get("/api/cycle_time_variance")
+def get_cycle_time_variance(
+    start_date: str = Query(""),
+    end_date: str = Query(""),
+    machine: str = Query("")
+):
+    """Fetches IoT cycle time data, joins it with production logs, and calculates variance."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        # 🚨 Note: Using the specific august table you mentioned. 
+        # In the future, this can be dynamically generated in Python based on the month.
+        query = """
+            WITH ShiftBounds AS (
+                SELECT 
+                    machine_code,
+                    part_number,
+                    'MOULDING' as process_name,
+                    (production_date + start_time) as actual_start,
+                    (production_date + end_time + 
+                        (CASE WHEN end_time < start_time THEN INTERVAL '1 day' ELSE INTERVAL '0' END)
+                    ) as actual_end
+                FROM production_hourly_log
+                WHERE production_date >= %s AND production_date <= %s
+                  AND is_no_plan = false
+            ),
+            MatchedIoT AS (
+                SELECT 
+                    sb.machine_code,
+                    sb.part_number,
+                    sb.process_name,
+                    iot.cycle_time
+                FROM ShiftBounds sb
+                JOIN moulding_machines_monitor1_aug_2026 iot
+                  ON iot.machine_id = sb.machine_code
+                 AND iot.monitor_timestamp >= sb.actual_start
+                 AND iot.monitor_timestamp < sb.actual_end
+            )
+            SELECT 
+                m.machine_code,
+                m.part_number,
+                m.process_name,
+                MIN(m.cycle_time) as min_ct,
+                MAX(m.cycle_time) as max_ct,
+                AVG(m.cycle_time) as avg_ct,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY m.cycle_time) as median_ct,
+                COALESCE(pr.hourly_target, 0) as hourly_target,
+                COALESCE(pr.cycle_time, 0) as routing_ct_mins
+            FROM MatchedIoT m
+            LEFT JOIN part_routing pr 
+              ON pr.part_no = m.part_number 
+             AND pr.process_name = 'MOULDING'
+            WHERE 1=1
+        """
+        params = [start_date, end_date]
+
+        if machine:
+            query += " AND m.machine_code = %s"
+            params.append(machine)
+
+        query += " GROUP BY m.machine_code, m.part_number, m.process_name, pr.hourly_target, pr.cycle_time"
+        query += " ORDER BY m.machine_code ASC"
+
+        cur.execute(query, tuple(params))
+        rows = cur.fetchall()
+
+        records = []
+        for r in rows:
+            machine_code = r[0]
+            part_no = r[1]
+            process = r[2]
+            min_ct = float(r[3]) if r[3] else 0.0
+            max_ct = float(r[4]) if r[4] else 0.0
+            avg_ct = float(r[5]) if r[5] else 0.0
+            median_ct = float(r[6]) if r[6] else 0.0
+            
+            hourly_target = int(r[7])
+            routing_ct_mins = float(r[8])
+
+            # 🚨 Convert Standard CT to SECONDS mathematically
+            std_ct_sec = 0.0
+            if hourly_target > 0:
+                std_ct_sec = 3600.0 / hourly_target
+            elif routing_ct_mins > 0:
+                std_ct_sec = routing_ct_mins * 60.0
+
+            # Calculate Variance % 
+            variance_pct = 0.0
+            if std_ct_sec > 0 and avg_ct > 0:
+                variance_pct = ((avg_ct - std_ct_sec) / std_ct_sec) * 100
+
+            records.append({
+                "machine_code": machine_code,
+                "part_no": part_no,
+                "process_name": process,
+                "min_ct": round(min_ct, 1),
+                "max_ct": round(max_ct, 1),
+                "avg_ct": round(avg_ct, 1),
+                "std_ct": round(std_ct_sec, 1),
+                "median_ct": round(median_ct, 1),
+                "variance_pct": round(variance_pct, 1)
+            })
+
+        return {"records": records}
+    except Exception as e:
+        print("Cycle Time Variance Error:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+@router.get("/api/machine_list")
+def get_machine_list():
+    """Fetches active machines for dropdowns."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT machine_code, machine_name FROM machine_master WHERE is_active = true ORDER BY machine_code ASC")
+        machines = [{"machine_code": row[0], "machine_name": row[1]} for row in cur.fetchall()]
+        return {"machines": machines}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+@router.get("/api/machinewise_oee_report")
+def get_machinewise_oee_report(
+    start_date: str = Query(""),
+    end_date: str = Query(""),
+    machine: str = Query("")
+):
+    """Calculates Machine-wise OEE and Downtime Breakdown dynamically per machine."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        query = """
+        WITH BaseLogs AS (
+            SELECT 
+                log.id as log_id,
+                split_part(log.batch_id, '_', 3) as machine_code,
+                log.target_shots * COALESCE(log.active_cavities, 1) as target_qty,
+                log.actual_shots * COALESCE(log.active_cavities, 1) as actual_qty,
+                ((EXTRACT(EPOCH FROM log.end_time) - EXTRACT(EPOCH FROM log.start_time) + CASE WHEN log.end_time < log.start_time THEN 86400 ELSE 0 END) / 60.0) as logged_mins,
+                CASE WHEN pr.cycle_time > 0 THEN pr.cycle_time 
+                     WHEN pr.hourly_target > 0 THEN 60.0 / pr.hourly_target 
+                     ELSE 0 END as ct_mins,
+                CASE WHEN log.is_no_plan = true THEN 1 ELSE 0 END as is_no_plan
+            FROM production_hourly_log log
+            LEFT JOIN part_routing pr ON pr.part_no = split_part(log.batch_id, '_', 5) AND pr.process_name = split_part(log.batch_id, '_', 4)
+            WHERE split_part(log.batch_id, '_', 1) >= %s AND split_part(log.batch_id, '_', 1) <= %s
+        ),
+        AggLogs AS (
+            SELECT 
+                b.log_id,
+                b.machine_code,
+                b.target_qty,
+                b.actual_qty,
+                b.logged_mins,
+                b.is_no_plan,
+                CASE WHEN b.ct_mins > 0 THEN b.ct_mins 
+                     WHEN b.target_qty > 0 THEN b.logged_mins / b.target_qty
+                     ELSE 0 END as final_ct_mins,
+                COALESCE((SELECT SUM(quantity) FROM production_rejections r WHERE r.log_id = b.log_id), 0) as ng_qty,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Mould Changeover'), 0) as dt_mould,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Planning / Management'), 0) as dt_plan,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Machine Breakdown'), 0) as dt_machine,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Tooling Issue'), 0) as dt_tooling,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Material Shortage'), 0) as dt_material,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Utility Failure'), 0) as dt_utility,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Operator Efficiency'), 0) as dt_operator,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Manpower Shortage'), 0) as dt_manpower,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Process & Quality'), 0) as dt_process,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Planned Maintenance'), 0) as dt_maint,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Break Time'), 0) as dt_break
+            FROM BaseLogs b
+        )
+        SELECT 
+            machine_code,
+            SUM(target_qty),
+            SUM(actual_qty),
+            SUM(ng_qty),
+            SUM(logged_mins),
+            SUM(CASE WHEN is_no_plan = 1 THEN logged_mins ELSE 0 END),
+            SUM(dt_mould * final_ct_mins),
+            SUM(dt_plan * final_ct_mins),
+            SUM(dt_machine * final_ct_mins),
+            SUM(dt_tooling * final_ct_mins),
+            SUM(dt_material * final_ct_mins),
+            SUM(dt_utility * final_ct_mins),
+            SUM(dt_operator * final_ct_mins),
+            SUM(dt_manpower * final_ct_mins),
+            SUM(dt_process * final_ct_mins),
+            SUM(dt_maint * final_ct_mins),
+            SUM(dt_break * final_ct_mins)
+        FROM AggLogs
+        WHERE 1=1
+        """
+        
+        params = [start_date, end_date]
+        if machine and machine != "ALL":
+            query += " AND machine_code = %s"
+            params.append(machine)
+            
+        query += " GROUP BY machine_code ORDER BY machine_code ASC"
+
+        cur.execute(query, tuple(params))
+        rows = cur.fetchall()
+
+        records = []
+        for row in rows:
+            tgt = float(row[1])
+            act = float(row[2])
+            ng = float(row[3])
+            logged_mins = float(row[4])
+            no_plan_mins = float(row[5])
+            
+            # Planned Downtime (Now includes Break Time)
+            dt_mould = float(row[6])
+            dt_plan = float(row[7])
+            dt_maint = float(row[15])
+            dt_break = float(row[16]) # 🚨 NEW: Break Time
+            planned_dt_mins = dt_mould + dt_plan + dt_maint + dt_break
+            
+            # Unplanned Downtime
+            dt_machine = float(row[8])
+            dt_tooling = float(row[9])
+            dt_material = float(row[10])
+            dt_utility = float(row[11])
+            dt_operator = float(row[12])
+            dt_manpower = float(row[13])
+            dt_process = float(row[14])
+            unplanned_dt_mins = dt_machine + dt_tooling + dt_material + dt_utility + dt_operator + dt_manpower + dt_process
+            
+            # Core Timing Math
+            run_time = logged_mins - planned_dt_mins - no_plan_mins
+            if run_time < 0: run_time = 0
+            
+            operating_time = run_time - unplanned_dt_mins
+            if operating_time < 0: operating_time = 0
+            
+            # OEE Percentages
+            avail_pct = (operating_time / run_time * 100) if run_time > 0 else 0.0
+            perf_pct = (act / tgt * 100) if tgt > 0 else 0.0
+            if perf_pct > 100: perf_pct = 100.0
+            qual_pct = ((act - ng) / act * 100) if act > 0 else 0.0
+            oee_pct = (avail_pct / 100) * (perf_pct / 100) * (qual_pct / 100) * 100
+            
+            # Format Planned Prod Time String (Formerly Run Time)
+            h = int(run_time // 60)
+            m = int(run_time % 60)
+
+            # 🚨 NEW: Format Actual Operating Time String
+            op_h = int(operating_time // 60)
+            op_m = int(operating_time % 60)
+            
+            records.append({
+                "machine": row[0],
+                "oee": round(oee_pct, 2),
+                "availability": round(avail_pct, 2),
+                "performance": round(perf_pct, 2),
+                "quality": round(qual_pct, 2),
+                "target": int(tgt),
+                "actual": int(act),
+                "rejection": int(ng),
+                "planned_prod_time": f"{h}h {m}m", # 🚨 UPDATED KEY
+                "actual_op_time": f"{op_h}h {op_m}m", # 🚨 NEW KEY
+                "mould_changeover": round(dt_mould, 2),
+                "planning_management": round(dt_plan, 2),
+                "machine_breakdown": round(dt_machine, 2),
+                "tooling_issue": round(dt_tooling, 2),
+                "material_shortage": round(dt_material, 2),
+                "utility_failure": round(dt_utility, 2),
+                "operator_efficiency": round(dt_operator, 2),
+                "manpower_shortage": round(dt_manpower, 2),
+                "process_quality": round(dt_process, 2),
+                "planned_maintenance": round(dt_maint, 2),
+                "break_time": round(dt_break, 2) # 🚨 NEW
+            })
+
+        return {"records": records}
+    except Exception as e:
+        print("Machinewise OEE Error:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()

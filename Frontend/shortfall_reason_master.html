@@ -78,16 +78,19 @@
                     <label>Category</label>
                     <input list="category_list" id="category" placeholder="e.g. Material" disabled autocomplete="off">
                     <datalist id="category_list">
+                        <option value="Planning / Management"></option>
+                        <option value="Process & Quality"></option>
+                        <option value="Planned Maintenance & General"></option>
+                        <option value="Mould Changeover"></option>
+                        <option value="Shift Changeover"></option>
                         <option value="Machine Breakdown"></option>
-                        <option value="Material Shortage"></option>
                         <option value="Manpower Shortage"></option>
-                        <option value="Setup / Changeover"></option>
+                        <option value="Operator Efficiency"></option>
+                        <option value="Material Shortage"></option>
                         <option value="Utility Failure"></option>
                         <option value="Tooling Issue"></option>
                     </datalist>
                 </div>
-                
-                <!-- 🚨 NEW: OEE Impact Dropdown -->
                 <div>
                     <label>OEE Impact</label>
                     <select id="oee_impact" disabled>
@@ -96,13 +99,6 @@
                         <option value="Quality">Quality</option>
                     </select>
                 </div>
-
-                <!-- 🚨 NEW: Valid Processes Input -->
-                <div>
-                    <label>Valid Processes</label>
-                    <input type="text" id="valid_processes" placeholder="MOULDING, THERMOWELDING" disabled title="Separate multiple processes with commas">
-                </div>
-
                 <div>
                     <label>Status</label>
                     <select id="is_active" disabled>
@@ -112,10 +108,27 @@
                 </div>
             </div>
 
+            <!-- 🚨 NEW: DEDICATED VALID PROCESSES SECTION -->
+            <h3 class="sub-title">2. Valid Processes Mapping</h3>
+            <div class="process-selection-area">
+                <div style="display: flex; gap: 10px; align-items: end; margin-bottom: 15px;">
+                    <div style="flex: 1; max-width: 300px;">
+                        <label>Select Process</label>
+                        <select id="process_dropdown" disabled>
+                            <option value="">-- Choose Process --</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" id="btn_add_process" onclick="addProcess()" disabled style="height: 38px;">➕ ADD</button>
+                </div>
+                <div id="selected_processes_container" class="tags-container">
+                    <span class="empty-tag-msg">No processes added yet.</span>
+                </div>
+            </div>
+
             <!-- MASTER LIST OVERVIEW -->
             <div class="table-section" style="margin-top: 30px; margin-bottom: 40px;">
                 <div class="table-header">
-                    <h3 class="sub-title" style="margin: 0; border: none;">2. Master List Overview</h3>
+                    <h3 class="sub-title" style="margin: 0; border: none;">3. Master List Overview</h3>
                 </div>
                 <div class="table-container" style="max-height: 400px;">
                     <table class="master-table" style="width: 100%; white-space: nowrap;">

@@ -1,0 +1,161 @@
+:root {
+    --bg-main: #14172b;
+    --bg-panel: #1e223c;
+    --bg-input: #262a47;
+    --border-color: #5180e6;
+    --text-main: #ffffff;
+    --text-muted: #c1deff;
+    --accent-cyan: #00e5ff;
+    --status-green: #00f076;
+    --status-red: #ff2a7a;
+}
+
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; }
+
+.navbar { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-color); padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; }
+.brand { display: flex; align-items: center; gap: 15px; }
+.brand img { height: 50px; border-radius: 4px; background: #ffffff; }
+.brand h2 { margin: 0; color: var(--accent-cyan); font-size: 20px; font-weight: 600; }
+.nav-utils { display: flex; align-items: center; }
+/* --- USER IDENTITY & BUTTONS --- */
+.hub-btn { 
+    background: rgba(0, 229, 255, 0.08); 
+    border: 1px solid var(--accent-cyan); 
+    color: var(--accent-cyan); 
+    padding: 8px 16px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    font-size: 13px;
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    margin-right: 20px;
+    transition: 0.3s;
+}
+
+.hub-btn:hover {
+    background: var(--accent-cyan);
+    color: #000;
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+}
+
+.hub-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+.logout-btn {
+    background: transparent;
+    border: none;
+    color: var(--status-red);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover { 
+    background: rgba(255, 42, 122, 0.1); 
+    color: #ff5494; 
+}
+
+.logout-btn svg { width: 20px; height: 20px; fill: currentColor; }
+.user-profile { display: flex; align-items: center; gap: 12px; padding-right: 20px; margin-right: 20px; border-right: 1px solid rgba(81, 128, 230, 0.4); }
+.avatar { width: 50px; height: 50px; border-radius: 5px; background: linear-gradient(135deg, var(--accent-cyan) 0%, #0072ff 100%); display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: #fff; }
+.user-info { display: flex; flex-direction: column; }
+.user-name { font-weight: bold; font-size: 15px; color: #fff; }
+.user-role { font-size: 11px; color: var(--text-muted); }
+
+.container { max-width: 98%; box-sizing: border-box; margin: 30px auto; padding: 0 20px; }
+.card { background: var(--bg-panel); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+.search-container { display: flex; flex-wrap: wrap; gap: 20px; background: rgba(0,0,0,0.15); padding: 20px; border-radius: 12px; border: 1px solid rgba(81, 128, 230, 0.2); align-items: end; }
+.filter-group { display: flex; flex-direction: column; gap: 8px; }
+.filter-group label { margin: 0; color: var(--text-muted); font-size: 12px; font-weight: bold; text-transform: uppercase; }
+input[type="date"], select { padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main); font-size: 14px; outline: none; min-width: 180px; }
+.filter-actions { display: flex; gap: 10px; margin-left: auto; }
+.btn-primary { padding: 10px 20px; background: linear-gradient(135deg, var(--accent-cyan) 0%, #0072ff 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; height: 42px; }
+.btn-success { padding: 10px 20px; background: rgba(0, 240, 118, 0.15); border: 1px solid var(--status-green); color: var(--status-green); border-radius: 8px; cursor: pointer; font-weight: bold; height: 42px; }
+
+.table-section { 
+    background: rgba(0,0,0,0.1); 
+    border: 1px solid rgba(81, 128, 230, 0.2); 
+    border-radius: 12px; 
+    padding: 20px; 
+}
+/* 🚨 Allow horizontal scrolling inside the table */
+.table-container { 
+    overflow-x: auto; 
+    border-radius: 8px; 
+    border: 1px solid rgba(81, 128, 230, 0.2); 
+}
+/* Custom Scrollbar for horizontal scrolling */
+.table-container::-webkit-scrollbar { height: 10px; width: 10px; }
+.table-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+.table-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+/* 🚨 Table Layout Fixes */
+.vertical-table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0;
+    font-size: 14px; 
+    white-space: nowrap; 
+}
+.vertical-table th, .vertical-table td { 
+    padding: 12px 20px; 
+    border-bottom: 1px solid rgba(81, 128, 230, 0.3); 
+    border-right: 1px solid rgba(81, 128, 230, 0.3); 
+}
+.vertical-table th:last-child, .vertical-table td:last-child { border-right: none; }
+.vertical-table tbody tr:last-child td { border-bottom: none; }
+.vertical-table th { 
+    background: var(--bg-input); 
+    color: var(--accent-cyan); 
+    font-weight: 800; 
+    font-size: 14px; 
+    position: sticky; 
+    top: 0; 
+    z-index: 10; 
+}
+/* 🚨 Fixed Min-Widths instead of Percentages */
+.attr-col { 
+    min-width: 250px; /* Fixed width for the label column */
+    background: var(--bg-input); 
+    font-weight: bold; 
+}
+.val-col { 
+    min-width: 130px; /* Fixed width for each machine column */
+    text-align: center; 
+    font-size: 14px; 
+}
+.val-cell { 
+    text-align: center; 
+    font-weight: bold; 
+    color: #fff; 
+}
+/* 🚨 Make the first column sticky when scrolling horizontally */
+.vertical-table tbody td:first-child, 
+.vertical-table thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background: var(--bg-panel); /* Solid background prevents text overlap */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+}
+.vertical-table thead th:first-child {
+    z-index: 20; /* Header top-left corner stays above everything */
+    background: var(--bg-input);
+}
+/* Section Headers */
+.section-row td { 
+    background: rgba(81, 128, 230, 0.15) !important; 
+    color: var(--text-muted); 
+    font-size: 12px; 
+    text-transform: uppercase; 
+    font-weight: bold; 
+    letter-spacing: 1px; 
+    padding: 8px 20px;
+}

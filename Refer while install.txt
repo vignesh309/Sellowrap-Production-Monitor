@@ -22,6 +22,7 @@ Sellowrap Production Monitor Version 2
 │   ├── .env
 │   ├── config.py
 │   ├── database.py
+│   ├── FINSYS_Payload_20260825_171848.json
 │   ├── main.py
 │   ├── routers
 │   │   ├── __init__.py
@@ -39,6 +40,7 @@ Sellowrap Production Monitor Version 2
 │   │   ├── moulding_machines_data_monitor.py
 │   │   ├── mqtt_listener.py
 │   │   ├── telegram_notifier.py
+│   │   ├── test_erp_push.py
 │   │   └── __pycache__
 │   ├── Start_Server.bat
 │   ├── summary_worker.py
@@ -47,6 +49,7 @@ Sellowrap Production Monitor Version 2
 │
 ├── Frontend
 │   ├── batch_ledger.html
+│   ├── cycle_time_analysis.html
 │   ├── detailed_rejections_report.html
 │   ├── detailed_shortfalls_report.html
 │   ├── employee_master.html
@@ -58,6 +61,7 @@ Sellowrap Production Monitor Version 2
 │   ├── iot_summary.html
 │   ├── login.html
 │   ├── loss_analysis.html
+│   ├── machinewise_oee_report.html
 │   ├── machine_master.html
 │   ├── manifest.json
 │   ├── moulding_machines_alarms.html
@@ -66,10 +70,11 @@ Sellowrap Production Monitor Version 2
 │   ├── moulding_stage_hourly_status.html
 │   ├── oeeteep_dashboard.html
 │   ├── oee_summary.html
+│   ├── partwise_report.html
 │   ├── Plant_kpi_performance
 │   │   └── non_hazardous_waste_generation_report.html
 │   ├── part_master.html
-│   ├── partwise_report.html
+│   ├── pending_batches.html
 │   ├── production_entry_stage_1.html
 │   ├── production_hourly_report.html
 │   ├── production_hourly_status.html
@@ -82,6 +87,7 @@ Sellowrap Production Monitor Version 2
 │   ├── teep_summary_idle_machines.html
 │   ├── css
 │   │   ├── batch_ledger.css
+│   │   ├── cycle_time_analysis.css
 │   │   ├── detailed_rejections_report.css
 │   │   ├── detailed_shortfalls_report.css
 │   │   ├── employee_master.css
@@ -89,6 +95,7 @@ Sellowrap Production Monitor Version 2
 │   │   ├── erp_staging_view.css
 │   │   ├── iot_report.css
 │   │   ├── iot_summary.css
+│   │   ├── machinewise_oee_report.css
 │   │   ├── machine_master.css
 │   │   ├── moulding_machines_alarms.css
 │   │   ├── moulding_machines_history.css
@@ -96,8 +103,9 @@ Sellowrap Production Monitor Version 2
 │   │   ├── moulding_stage_hourly_status.css
 │   │   ├── non_hazardous_waste_generation_report.css
 │   │   ├── oee_summary.css
-│   │   ├── partwise_report.css
 │   │   ├── part_master.css
+│   │   ├── partwise_report.css
+│   │   ├── pending_batches.css
 │   │   ├── production_hourly_report.css
 │   │   ├── production_hourly_status.css
 │   │   ├── productionstatus.css
@@ -109,6 +117,7 @@ Sellowrap Production Monitor Version 2
 │   │   └── teep_summary.css
 │   ├── js
 │   │   ├── batch_ledger.js
+│   │   ├── cycle_time_analysis.js
 │   │   ├── detailed_rejections_report.js
 │   │   ├── detailed_shortfalls_report.js
 │   │   ├── employee_master.js
@@ -117,6 +126,7 @@ Sellowrap Production Monitor Version 2
 │   │   ├── iot_report.js
 │   │   ├── iot_summary.js
 │   │   ├── loss_analysis.js
+│   │   ├── machinewise_oee_report.js
 │   │   ├── machine_master.js
 │   │   ├── moulding_machines_alarms.js
 │   │   ├── moulding_machines_history.js
@@ -125,8 +135,9 @@ Sellowrap Production Monitor Version 2
 │   │   ├── non_hazardous_waste_generation_report.js
 │   │   ├── oeeteep_dashboard.js
 │   │   ├── oee_summary.js
-│   │   ├── partwise_report.js
 │   │   ├── part_master.js
+│   │   ├── partwise_report.js
+│   │   ├── pending_batches.js
 │   │   ├── production_hourly_report.js
 │   │   ├── production_hourly_status.js
 │   │   ├── productionstatus.js

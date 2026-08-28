@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics: Machine OEE Report</title>
+    <link rel="stylesheet" href="/static/css/machinewise_oee_report.css">
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>Manufacturing Analytics</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">A</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Admin01</span>
+                    <span id="role-display" class="user-role">ADMIN</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            
+            <div class="explore-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 class="section-title" style="margin: 0; border: none;">Machine OEE Breakdown Report</h2>
+            </div>
+
+            <div class="search-container">
+                <div class="filter-group">
+                    <label>From Date:</label>
+                    <input type="date" id="start_date">
+                </div>
+                <div class="filter-group">
+                    <label>To Date:</label>
+                    <input type="date" id="end_date">
+                </div>
+                <div class="filter-group">
+                    <label>Machine Selection:</label>
+                    <select id="machine_filter">
+                        <option value="ALL">All Machines (Plant Summary)</option>
+                        <!-- Options populated dynamically -->
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn-primary" onclick="generateReport()">Generate Report</button>
+                    <button class="btn-success" onclick="exportToExcel()">Export Excel</button>
+                </div>
+            </div>
+
+            <div class="table-section" style="margin-top: 20px;">
+                <div class="table-container">
+                    <table class="vertical-table" id="oee_report_table">
+                        <thead>
+                            <tr id="table_header_row">
+                                <th class="attr-col">Metric / Category</th>
+                                <!-- Dynamic Machine Columns Will Be Injected Here -->
+                                <th class="val-col" id="col_placeholder">Select criteria to load</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table_body">
+                            <!-- KPIs -->
+                            <tr class="section-row"><td colspan="2">OEE Metrics</td></tr>
+                            <tr data-key="oee"><td>OEE</td><td class="val-cell">-</td></tr>
+                            <tr data-key="availability"><td>Availability</td><td class="val-cell">-</td></tr>
+                            <tr data-key="performance"><td>Performance</td><td class="val-cell">-</td></tr>
+                            <tr data-key="quality"><td>Quality</td><td class="val-cell">-</td></tr>
+                            
+                            <!-- Production Data -->
+                            <tr class="section-row"><td colspan="2">Production Totals</td></tr>
+                            <tr data-key="target"><td>Target</td><td class="val-cell">-</td></tr>
+                            <tr data-key="actual"><td>Actual</td><td class="val-cell">-</td></tr>
+                            <tr data-key="rejection"><td>Rejection</td><td class="val-cell">-</td></tr>
+                            <tr data-key="planned_prod_time"><td>Planned Prod. Time</td><td class="val-cell">-</td></tr>
+                            <tr data-key="actual_op_time"><td>Actual Op. Time</td><td class="val-cell">-</td></tr>
+                            
+                            <!-- Downtime Categories -->
+                            <tr class="section-row"><td colspan="2">Downtime Breakdown (Mins)</td></tr>
+                            <tr data-key="mould_changeover"><td>Mould Changeover</td><td class="val-cell">-</td></tr>
+                            <tr data-key="planning_management"><td>Planning / Management</td><td class="val-cell">-</td></tr>
+                            <tr data-key="machine_breakdown"><td>Machine Breakdown</td><td class="val-cell">-</td></tr>
+                            <tr data-key="tooling_issue"><td>Tooling Issue</td><td class="val-cell">-</td></tr>
+                            <tr data-key="material_shortage"><td>Material Shortage</td><td class="val-cell">-</td></tr>
+                            <tr data-key="utility_failure"><td>Utility Failure</td><td class="val-cell">-</td></tr>
+                            <tr data-key="operator_efficiency"><td>Operator Efficiency</td><td class="val-cell">-</td></tr>
+                            <tr data-key="manpower_shortage"><td>Manpower Shortage</td><td class="val-cell">-</td></tr>
+                            <tr data-key="process_quality"><td>Process & Quality</td><td class="val-cell">-</td></tr>
+                            <tr data-key="planned_maintenance"><td>Planned Maintenance</td><td class="val-cell">-</td></tr>
+                            <tr data-key="break_time"><td>Break Time</td><td class="val-cell">-</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/machinewise_oee_report.js"></script>
+</body>
+</html>

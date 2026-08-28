@@ -101,7 +101,7 @@ input:disabled, select:disabled {
 
 .form-grid { 
     display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-    gap: 15px; align-items: end; background: rgba(0,0,0,0.1); 
+    gap: 15px; align-items: start; background: rgba(0,0,0,0.1); 
     padding: 20px; border-radius: 12px; border: 1px solid rgba(81, 128, 230, 0.2);
 }
 
@@ -111,6 +111,105 @@ input:disabled, select:disabled {
     font-size: 14px; transition: 0.3s; height: 38px;
 }
 .btn-primary:hover { box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4); transform: translateY(-1px); }
+
+/* =========================================
+   MULTI-SELECT STYLING
+   ========================================= */
+select[multiple] {
+    height: 110px; /* Overrides the default single-line height */
+    padding: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-input);
+}
+
+/* Custom Webkit Scrollbar for the dropdown */
+select[multiple]::-webkit-scrollbar { width: 6px; }
+select[multiple]::-webkit-scrollbar-track { background: var(--bg-input); border-radius: 4px; }
+select[multiple]::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+/* Style the individual options */
+select[multiple] option {
+    padding: 8px 12px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 13px;
+}
+
+/* Hover effect */
+select[multiple] option:hover {
+    background-color: rgba(0, 229, 255, 0.1);
+}
+
+/* Selected state (Blue/Cyan Gradient to match your buttons) */
+select[multiple] option:checked {
+    background: linear-gradient(135deg, var(--accent-cyan) 0%, #0072ff 100%);
+    color: white;
+}
+
+/* =========================================
+   PROCESS TAGS UI
+   ========================================= */
+.process-selection-area {
+    background: rgba(0,0,0,0.1); 
+    padding: 20px; 
+    border-radius: 12px; 
+    border: 1px solid rgba(81, 128, 230, 0.2);
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 44px;
+    padding: 12px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    border: 1px dashed rgba(81, 128, 230, 0.3);
+}
+
+.empty-tag-msg {
+    color: var(--text-muted); 
+    font-size: 13px; 
+    font-style: italic;
+    margin: auto 0;
+}
+
+.process-tag {
+    background: linear-gradient(135deg, rgba(0, 229, 255, 0.15) 0%, rgba(0, 114, 255, 0.15) 100%);
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tag-remove {
+    background: rgba(255, 42, 122, 0.2);
+    color: var(--status-red);
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: 0.2s;
+    padding: 0;
+}
+
+.tag-remove:hover {
+    background: var(--status-red);
+    color: #fff;
+}
 
 /* =========================================
    CRUD TOOLBAR

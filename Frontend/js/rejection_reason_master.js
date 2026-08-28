@@ -1,10 +1,11 @@
 // --- STATE MANAGEMENT ---
 let currentMode = "EXPLORE";
 let currentReasonData = {}; 
-let fullMasterList = []; // Holds all data for the overview table
+let fullMasterList = []; 
+let selectedProcesses = []; // 🚨 NEW: Array to hold accumulated tags
 
-// DOM Elements
-const formInputs = ["reason_code", "reason_name", "category", "oee_impact", "is_active"];
+// 🚨 UPDATED: Added process_dropdown to form tracking
+const formInputs = ["reason_code", "reason_name", "category", "oee_impact", "process_dropdown", "is_active"];
 const btnNew = document.getElementById("btn_new");
 const btnEdit = document.getElementById("btn_edit");
 const btnSave = document.getElementById("btn_save");
@@ -34,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize Page State
     setMode("EXPLORE");
     refreshMasterList();
+    loadProcessDropdown(); // 🚨 NEW: Fetch processes on load
 });
 
 function logout() {
@@ -42,7 +44,79 @@ function logout() {
 }
 
 // ==========================================
-// 2. MASTER DATA FUNCTIONS & STATE
+// 2. TAG/CHIP UI LOGIC
+// ==========================================
+async function loadProcessDropdown() {
+    try {
+        const response = await fetch('/api/get_processes');
+        if (!response.ok) throw new Error("Failed to fetch processes");
+        
+        const data = await response.json();
+        const processSelect = document.getElementById("process_dropdown");
+        
+        processSelect.innerHTML = '<option value="">-- Choose Process --</option>'; 
+        
+        data.processes.forEach(proc => {
+            let option = document.createElement("option");
+            option.value = proc;
+            option.text = proc;
+            processSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Failed to load processes:", error);
+    }
+}
+
+function addProcess() {
+    const dropdown = document.getElementById("process_dropdown");
+    const val = dropdown.value;
+    
+    if (!val) return;
+    if (selectedProcesses.includes(val)) {
+        alert("This process is already added!");
+        return;
+    }
+    
+    selectedProcesses.push(val);
+    renderProcessTags();
+    dropdown.value = ""; // Reset dropdown after adding
+}
+
+function removeProcess(val) {
+    if (currentMode === "EXPLORE") return; // Safety lock
+    selectedProcesses = selectedProcesses.filter(p => p !== val);
+    renderProcessTags();
+}
+
+function renderProcessTags() {
+    const container = document.getElementById("selected_processes_container");
+    if (!container) return; // Safety check in case HTML isn't updated yet
+    
+    container.innerHTML = "";
+    const isExplore = currentMode === "EXPLORE";
+
+    if (selectedProcesses.length === 0) {
+        container.innerHTML = `<span class="empty-tag-msg">No processes added yet.</span>`;
+        return;
+    }
+
+    selectedProcesses.forEach(proc => {
+        const tag = document.createElement("div");
+        tag.className = "process-tag";
+        
+        // Hide the remove button if we are just exploring/viewing
+        let removeBtnHTML = "";
+        if (!isExplore) {
+            removeBtnHTML = `<button class="tag-remove" onclick="removeProcess('${proc}')" title="Remove">✕</button>`;
+        }
+
+        tag.innerHTML = `<span>${proc}</span> ${removeBtnHTML}`;
+        container.appendChild(tag);
+    });
+}
+
+// ==========================================
+// 3. MASTER DATA FUNCTIONS & STATE
 // ==========================================
 function setMode(mode) {
     currentMode = mode;
@@ -57,7 +131,8 @@ function setMode(mode) {
 
     // Reason Code should be completely locked down during an EDIT
     if (mode === "EDIT") {
-        document.getElementById("reason_code").disabled = true;
+        const codeInput = document.getElementById("reason_code");
+        if(codeInput) codeInput.disabled = true;
     }
 
     // Manage Buttons
@@ -65,6 +140,11 @@ function setMode(mode) {
     btnEdit.disabled = !isExplore || !document.getElementById("reason_code").value;
     btnSave.disabled = isExplore;
     btnDelete.disabled = !isExplore || !document.getElementById("reason_code").value;
+
+    const btnAddProcess = document.getElementById("btn_add_process");
+    if (btnAddProcess) btnAddProcess.disabled = isExplore; // Lock/Unlock ADD button
+    
+    renderProcessTags(); // Re-render tags to hide/show the 'x' buttons
 
     if (isNew) {
         clearForm();
@@ -79,24 +159,22 @@ function clearForm() {
         if (el) el.value = "";
     });
     currentReasonData = {};
+    selectedProcesses = []; // 🚨 NEW: Clear array
+    renderProcessTags();    // 🚨 NEW: Clear UI
 }
 
 // ==========================================
-// 3. API / DATA FETCHING LOGIC
+// 4. API / DATA FETCHING LOGIC
 // ==========================================
 async function refreshMasterList() {
     try {
         const response = await fetch('/api/rejection_list');
         
-        // 🚨 ADD THIS CHECK: Ensure the server didn't throw an error (like a 500 or 404)
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        // 🚨 ADD THIS LINE: You must parse the JSON response from FastAPI
         const data = await response.json(); 
-        
-        // Assign the actual database data to your global state variable
         fullMasterList = data;
         
         updateSearchDatalist();
@@ -110,6 +188,8 @@ async function refreshMasterList() {
 function updateSearchDatalist() {
     const dataList = document.getElementById("reason_list");
     const searchInput = document.getElementById("search_reason_id");
+    if (!dataList || !searchInput) return;
+
     const currentVal = searchInput.value;
     
     dataList.innerHTML = '';
@@ -122,10 +202,12 @@ function updateSearchDatalist() {
 
 function renderOverviewTable() {
     const tbody = document.getElementById("overview_table_body");
+    if(!tbody) return;
+
     tbody.innerHTML = "";
 
     if (fullMasterList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: gray;">No reasons configured.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: gray;">No reasons configured.</td></tr>`;
         return;
     }
 
@@ -133,6 +215,11 @@ function renderOverviewTable() {
         const tr = document.createElement("tr");
         const statusClass = r.is_active ? "chip-active" : "chip-inactive";
         const statusText = r.is_active ? "Active" : "Inactive";
+        
+        // 🚨 NEW: Safely parse processes for the table display
+        const processesDisplay = Array.isArray(r.valid_processes) && r.valid_processes.length > 0 
+            ? r.valid_processes.join(", ") 
+            : "-";
 
         // Click row to quick-load it into the form
         tr.onclick = () => {
@@ -145,6 +232,7 @@ function renderOverviewTable() {
             <td>${r.reason_name}</td>
             <td>${r.category}</td>
             <td>${r.oee_impact}</td>
+            <td>${processesDisplay}</td> <!-- 🚨 NEW -->
             <td style="text-align: center;"><span class="status-chip ${statusClass}">${statusText}</span></td>
         `;
         tbody.appendChild(tr);
@@ -156,7 +244,6 @@ async function searchReason() {
     if (!reasonCode) { alert("Please enter a Reason Code to search."); return; }
 
     try {
-        // ACTUAL IMPLEMENTATION:
         const response = await fetch(`/api/rejection/${encodeURIComponent(reasonCode)}`);
         if (!response.ok) throw new Error("Reason not found");
         currentReasonData = await response.json();
@@ -177,11 +264,19 @@ function populateForm(data) {
     document.getElementById("oee_impact").value = data.oee_impact || "Quality";
     document.getElementById("is_active").value = data.is_active === true ? "true" : "false";
 
-    setMode("EXPLORE");
+    // 🚨 NEW: Safely load the processes array
+    let processes = data.valid_processes || [];
+    if (!Array.isArray(processes)) {
+        processes = processes.split(',').map(s => s.trim()).filter(Boolean); 
+    }
+    
+    selectedProcesses = processes;
+
+    setMode("EXPLORE"); // This will automatically lock fields and render the tags!
 }
 
 // ==========================================
-// 4. CRUD ACTIONS
+// 5. CRUD ACTIONS
 // ==========================================
 function startNewReason() { setMode("NEW"); }
 function enableEditMode() { setMode("EDIT"); }
@@ -192,6 +287,7 @@ async function saveReason() {
         reason_name: document.getElementById("reason_name").value.trim(),
         category: document.getElementById("category").value.trim(),
         oee_impact: document.getElementById("oee_impact").value,
+        valid_processes: selectedProcesses, // 🚨 NEW: Directly pass the tags array
         is_active: document.getElementById("is_active").value === "true"
     };
 
@@ -218,7 +314,6 @@ async function saveReason() {
              body: JSON.stringify(payload)
         });
         
-        // 🚨 UPDATED: Now it extracts the exact error from Python!
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.detail || "Failed to save reason");
@@ -231,7 +326,6 @@ async function saveReason() {
         refreshMasterList(); 
 
     } catch (error) {
-        // Now if Python fails, the alert will tell you EXACTLY why!
         alert(`❌ Server Error: ${error.message}`);
     } finally {
         btnSave.disabled = false;
@@ -248,7 +342,6 @@ async function deleteReason() {
     }
 
     try {
-        // ACTUAL IMPLEMENTATION:
         const response = await fetch(`/api/rejection/${encodeURIComponent(reasonCode)}`, { method: 'DELETE' });
         if (!response.ok) throw new Error("Failed to delete reason");
 

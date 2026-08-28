@@ -16,14 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const role = localStorage.getItem("userRole");
     const fullName = localStorage.getItem("userFullName");
 
-    // Hard Redirect only if completely missing (not logged in at all)
     if (!role || !fullName || role === "undefined" || fullName === "undefined") {
         console.warn("Invalid session data. Redirecting to login.");
         window.location.href = "/";
         return; 
     }
 
-    // Safely Update the Navbar UI
     const displayUser = document.getElementById("user-display");
     const displayRole = document.getElementById("role-display");
     const displayAvatar = document.getElementById("user-avatar");
@@ -35,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize the Page Data
     setMode("EXPLORE");
     refreshPartDropdown();
+    loadProcessDropdown(); // 🚨 NEW: Trigger the process fetch on load
 });
 
 // ==========================================
@@ -59,6 +58,26 @@ async function refreshPartDropdown() {
         }
     } catch (error) {
         console.error("Failed to load part dropdown:", error);
+    }
+}
+
+// NEW FUNCTION: Fetch processes from your existing endpoint
+async function loadProcessDropdown() {
+    try {
+        const response = await fetch('/api/get_processes');
+        if (!response.ok) throw new Error("Failed to fetch processes");
+        
+        const data = await response.json();
+        const processList = document.getElementById("process_list_options");
+        processList.innerHTML = ''; // Clear existing
+        
+        data.processes.forEach(proc => {
+            let option = document.createElement("option");
+            option.value = proc;
+            processList.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Failed to load processes for dropdown:", error);
     }
 }
 
@@ -310,7 +329,7 @@ function checkProcessType(inputElement) {
     const processVal = inputElement.value.toUpperCase(); // Grab the value and convert to uppercase
     
     // Check if the process matches any of the three allowed processes
-    const isMoldProcess = ["MOULDING", "PRESSCUT", "THERMOWELDING"].includes(processVal);
+    const isMoldProcess = ["MOULDING", "PRESS CUT", "THERMOWELDING"].includes(processVal);
 
     const moldNo = row.querySelector('.mold-no');
     const moldName = row.querySelector('.mold-name');
