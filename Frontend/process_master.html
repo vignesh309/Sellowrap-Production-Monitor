@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Data: Process Explorer</title>
+    <link rel="stylesheet" href="/static/css/process_master.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>Master Data Management</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">V</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+
+            <div class="explore-header"
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 class="section-title" style="margin: 0; border: none;">Process Line Master</h2>
+
+                <div class="search-container" style="display: flex; gap: 10px; align-items: center;">
+                    <label style="margin: 0;">Search Process ID:</label>
+                    <input list="process_list" id="search_process_id" placeholder="-- Select Process ID --"
+                        style="width: 250px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-input); color: var(--text-main);">
+
+                    <datalist id="process_list"></datalist>
+                    <button class="btn-primary" onclick="searchProcess()" style="margin: 0;">Load Data</button>
+                </div>
+            </div>
+
+            <div class="crud-toolbar">
+                <button id="btn_new" class="btn-action btn-new" onclick="startNewProcess()">➕ NEW</button>
+                <button id="btn_edit" class="btn-action btn-edit" onclick="enableEditMode()">✏️ EDIT</button>
+                <button id="btn_save" class="btn-action btn-save" onclick="saveProcess()" disabled>💾 SAVE</button>
+                <button id="btn_delete" class="btn-action btn-delete" onclick="deleteProcess()">🗑️ DELETE</button>
+            </div>
+
+            <h3 class="sub-title">1. Process Mapping Specifications</h3>
+            <div class="form-grid">
+                <div>
+                    <label>Process ID</label>
+                    <input type="number" id="process_id" placeholder="e.g. 1" disabled>
+                </div>
+                <div>
+                    <label>Process Name</label>
+                    <input type="text" id="process_name" placeholder="e.g. MOULDING" disabled>
+                </div>
+
+                <div>
+                    <label>Production Line Assignment</label>
+                    <select id="production_line" disabled>
+                        <option value="">-- Unassigned --</option>
+                        <option value="Line 1">Line 1</option>
+                        <option value="Line 2">Line 2</option>
+                        <option value="Line 3">Line 3</option>
+                        <option value="Line 4">Line 4</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/static/js/process_master.js"></script>
+
+</body>
+</html>

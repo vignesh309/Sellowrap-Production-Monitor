@@ -100,6 +100,17 @@ class ActiveMachineState(BaseModel):
     supervisor_code: str
 
 # ==========================================
+# Process Master Schema
+# ==========================================
+
+class ProcessLine(BaseModel):
+    id: int
+    production_line: str
+
+class ProcessLinePayload(BaseModel):
+    updates: List[ProcessLine]
+
+# ==========================================
 # Employee Master Schema
 # ==========================================
 

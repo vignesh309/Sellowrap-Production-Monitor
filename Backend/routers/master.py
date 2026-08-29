@@ -1,13 +1,102 @@
 from fastapi import APIRouter, HTTPException
 from config import CHAT_ID
 from database import get_conn
-from schemas import PartMasterPayload, MachinePayload, EmployeeModel, OTPVerifyModel, RejectionReasonPayload, ShortfallReasonPayload
+from schemas import PartMasterPayload, MachinePayload, EmployeeModel, OTPVerifyModel, RejectionReasonPayload, ShortfallReasonPayload, ProcessLine, ProcessLinePayload
 import random
 from services.telegram_notifier import send_telegram_message
 
 router = APIRouter()
 
 admin_otp_store = {}
+
+@router.get("/api/process_init")
+def process_init():
+    """Fetches all processes to populate the search dropdown list."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT id, process FROM process_master ORDER BY id ASC")
+        processes = [{"id": row[0], "process": row[1]} for row in cur.fetchall()]
+        return {"processes": processes}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+@router.get("/api/process/{process_id}")
+def get_single_process(process_id: int):
+    """Fetches a single process for editing."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT id, process, production_line FROM process_master WHERE id = %s", (process_id,))
+        row = cur.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Process not found")
+        
+        return {
+            "id": row[0],
+            "process": row[1],
+            "production_line": row[2] if row[2] else ""
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+@router.post("/api/process/save")
+def save_process(payload: dict):
+    """Inserts a new process or updates an existing one."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        p_id = int(payload.get("id"))
+        p_name = payload.get("process_name")
+        p_line = payload.get("production_line")
+        
+        # Check if the ID already exists
+        cur.execute("SELECT id FROM process_master WHERE id = %s", (p_id,))
+        exists = cur.fetchone()
+        
+        if exists:
+            # Update existing record
+            cur.execute(
+                "UPDATE process_master SET process = %s, production_line = %s WHERE id = %s",
+                (p_name, p_line, p_id)
+            )
+        else:
+            # Insert new record
+            cur.execute(
+                "INSERT INTO process_master (id, process, production_line) VALUES (%s, %s, %s)",
+                (p_id, p_name, p_line)
+            )
+            
+        conn.commit()
+        return {"message": "Process saved successfully!"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+@router.delete("/api/process/{process_id}")
+def delete_process(process_id: int):
+    """Deletes a process from the master table."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM process_master WHERE id = %s", (process_id,))
+        conn.commit()
+        return {"message": "Process deleted successfully"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
 
 # ==========================================
 # MACHINE MASTER ROUTES

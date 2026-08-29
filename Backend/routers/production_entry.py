@@ -398,6 +398,27 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
     
     try:
         # ==========================================
+        # 0. TIME COLLISION FAILSAFE
+        # ==========================================
+        cur.execute("""
+            SELECT id, part_number, batch_id 
+            FROM production_hourly_log 
+            WHERE machine_code = %s 
+              AND production_date = %s 
+              AND start_time = %s 
+              AND end_time = %s
+        """, (payload.machine_code, payload.production_date, payload.start_time, payload.end_time))
+
+        existing_log = cur.fetchone()
+
+        # Block the save if a collision is found
+        if existing_log:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Time conflict! {payload.machine_code} already has a log from {payload.start_time} to {payload.end_time} (Part: {existing_log[1]}). Please edit or delete the existing log first."
+            )
+
+        # ==========================================
         # 1. SAVE HOURLY DATA (Your Existing Logic)
         # ==========================================
         cur.execute("""
@@ -446,7 +467,7 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         clean_end = payload.end_time.replace(':', '')
         erp_unique_id = f"{payload.batch_id}_{clean_start}-{clean_end}"
 
-        # B. Group and Translate Rejections to JSON (🚨 UPDATED: Uses reason_code)
+        # B. Group and Translate Rejections to JSON
         cur.execute("""
             SELECT COALESCE(e.finsys_code, m.reason_code), SUM(r.quantity)
             FROM production_rejections r
@@ -467,7 +488,7 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         cycle_res = cur.fetchone()
         cycle_time = float(cycle_res[0]) if cycle_res and cycle_res[0] else 0.0
 
-        # D. Calculate Downtime Minutes & Create JSON (🚨 UPDATED: Uses reason_code)
+        # D. Calculate Downtime Minutes & Create JSON
         cur.execute("""
             SELECT COALESCE(e.finsys_code, m.reason_code), SUM(s.quantity)
             FROM production_shortfalls s
@@ -498,7 +519,6 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         mac_erp = get_erp_code('machine_code', payload.machine_code)
         mld_erp = get_erp_code('mold_no', payload.mould_code)
         
-        # 🚨 FIX: Removed the duplicate line. It will now properly extract "Dharmendar" and map to "001"
         clean_supervisor = payload.supervisor_code.split(' - ')[0].strip() if payload.supervisor_code else "001"
         sup_erp = get_erp_code('emp_code', clean_supervisor)
         
@@ -547,9 +567,12 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         conn.commit()
         return {"message": "Block saved successfully", "log_id": log_id}
 
+    except HTTPException:
+        # Re-raise HTTP exceptions (like our 400 collision error) so FastAPI handles them properly
+        raise
     except Exception as e:
         conn.rollback()
-        print(f"Submission Error: {str(e)}") # Prints error to server terminal
+        print(f"Submission Error: {str(e)}") 
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         cur.close()

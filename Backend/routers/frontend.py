@@ -52,6 +52,10 @@ def moulding_stage_hourly_status_page():
     return FileResponse(get_html_path("moulding_stage_hourly_status.html"))
 
 
+@router.get("/process-master", response_class=HTMLResponse)
+def process_master_page():
+    return FileResponse(get_html_path("process_master.html"))
+
 @router.get("/machine_master", response_class=HTMLResponse)
 def machine_master_page():
     return FileResponse(get_html_path("machine_master.html"))

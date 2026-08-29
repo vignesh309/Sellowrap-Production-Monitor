@@ -193,6 +193,17 @@ SELECT column_name, data_type, is_nullable, column_default
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE table_name = 'production_shortfalls';
 
+** To find repetitive rows **
+SELECT id, machine_code, production_date, start_time, end_time, created_at
+FROM (
+    SELECT id, machine_code, production_date, start_time, end_time, created_at,
+           ROW_NUMBER() OVER(
+               PARTITION BY machine_code, production_date, start_time, end_time 
+               ORDER BY created_at ASC, id ASC
+           ) as row_num
+    FROM production_hourly_log
+) as ranked_logs
+WHERE row_num > 1;
 
 ** GITHUB Commands **
 
@@ -216,3 +227,4 @@ To force pull the code from repository:
 git fetch --all
 git reset --hard origin/main
 git pull origin main
+
