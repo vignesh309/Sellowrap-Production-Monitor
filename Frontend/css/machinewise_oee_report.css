@@ -159,3 +159,110 @@ input[type="date"], select { padding: 10px 15px; border-radius: 8px; border: 1px
     letter-spacing: 1px; 
     padding: 8px 20px;
 }
+
+/* 🚨 Custom Multi-Select Tag Input Styles */
+.custom-multiselect-container {
+    position: relative;
+    width: 100%;
+}
+
+.tags-input-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+    min-height: 42px;
+    max-height: 120px; /* 🚨 Limits expansion */
+    overflow-y: auto;  /* 🚨 Adds a neat scrollbar if tags overflow */
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: text;
+    align-items: center;
+}
+
+/* Custom scrollbar for the tags box to match the dark theme */
+.tags-input-box::-webkit-scrollbar { width: 6px; }
+.tags-input-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+.tags-input-box::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 3px; }
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.machine-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.machine-tag .remove-tag {
+    cursor: pointer;
+    color: var(--status-red);
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.machine-tag .remove-tag:hover {
+    color: #ff5494;
+}
+
+#machine_search {
+    flex-grow: 1;
+    border: none;
+    background: transparent;
+    color: var(--text-main);
+    outline: none;
+    font-size: 14px;
+    min-width: 120px;
+    padding: 0;
+}
+
+.custom-dropdown-list {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-top: 5px;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+}
+
+.custom-dropdown-list.show {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: rgba(0, 229, 255, 0.15);
+    color: var(--text-main);
+}
+
+.dropdown-item.selected {
+    display: none; /* Hide already selected items from the list */
+}

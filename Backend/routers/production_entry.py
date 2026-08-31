@@ -500,10 +500,14 @@ def submit_stage1_block(payload: Stage1BlockSubmit):
         
         dt_dict = {}
         total_dt_mins = 0.0
+        cavities = payload.active_cavities if payload.active_cavities else 1
         
         for row in cur.fetchall():
             reason_code = str(row[0])
             missing_shots = int(row[1])
+            # 🚨 FIX: Multiply missing shots by cavities to get missing parts first!
+            missing_parts = missing_shots * cavities
+            dt_mins = round((missing_parts * cycle_time), 2)
             dt_mins = round((missing_shots * cycle_time), 2)
             dt_dict[reason_code] = dt_mins
             total_dt_mins += dt_mins

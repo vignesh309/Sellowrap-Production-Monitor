@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("start_date").value = todayStr;
     document.getElementById("end_date").value = todayStr;
 
-    loadMachineDropdown();
+    // Load initial data
+    loadMachineData();
 });
 
 function logout() {
@@ -26,29 +27,189 @@ function logout() {
     window.location.href = "/";
 }
 
-async function loadMachineDropdown() {
+// Global variable to store the raw machine data
+let allMachinesData = [];
+
+async function loadMachineData() {
     try {
         const response = await fetch('/api/machine_list');
         if (!response.ok) throw new Error("Failed to load machines");
         
         const data = await response.json();
-        const select = document.getElementById("machine_filter");
+        allMachinesData = data.machines; 
         
-        data.machines.forEach(m => {
-            let option = document.createElement("option");
-            option.value = m.machine_code;
-            option.text = m.machine_name;
-            select.appendChild(option);
+        populateLineDropdown();
+        populateProcessDropdown("ALL"); 
+        populateMachineDropdown("ALL", "ALL"); 
+
+        // 🚨 EVENT: When Line changes, update Process AND Machine dropdowns
+        document.getElementById("line_filter").addEventListener("change", function() {
+            const selectedLine = this.value;
+            populateProcessDropdown(selectedLine);
+            populateMachineDropdown(selectedLine, "ALL"); // Reset machine list
         });
+
+        // 🚨 EVENT: When Process changes, update Machine dropdown
+        document.getElementById("process_filter").addEventListener("change", function() {
+            const selectedLine = document.getElementById("line_filter").value;
+            populateMachineDropdown(selectedLine, this.value);
+        });
+
     } catch (error) {
         console.error("Machine Dropdown Error:", error);
     }
 }
 
+function populateLineDropdown() {
+    const lineSelect = document.getElementById("line_filter");
+    const uniqueLines = new Set();
+    
+    allMachinesData.forEach(m => {
+        if (m.production_line) uniqueLines.add(m.production_line);
+    });
+
+    uniqueLines.forEach(line => {
+        let option = document.createElement("option");
+        option.value = line;
+        option.text = line;
+        lineSelect.appendChild(option);
+    });
+}
+
+function populateProcessDropdown(selectedLine) {
+    const processSelect = document.getElementById("process_filter");
+    processSelect.innerHTML = '<option value="ALL">All Processes</option>'; // Reset
+    
+    const uniqueProcesses = new Set();
+    allMachinesData.forEach(m => {
+        // If "ALL" lines is selected, or if the machine's line matches the selection
+        if (selectedLine === "ALL" || m.production_line === selectedLine) {
+            if (m.machine_process) uniqueProcesses.add(m.machine_process);
+        }
+    });
+
+    uniqueProcesses.forEach(processName => {
+        let option = document.createElement("option");
+        option.value = processName;
+        option.text = processName;
+        processSelect.appendChild(option);
+    });
+}
+
+let selectedMachinesArray = [];
+
+function populateMachineDropdown(selectedLine, selectedProcess) {
+    const listContainer = document.getElementById("machine_dropdown_list");
+    listContainer.innerHTML = ''; 
+    
+    // Filter the machines down based on Line and Process
+    let filtered = allMachinesData;
+    
+    if (selectedLine !== "ALL") {
+        filtered = filtered.filter(m => m.production_line === selectedLine);
+    }
+    if (selectedProcess !== "ALL") {
+        filtered = filtered.filter(m => m.machine_process === selectedProcess);
+    }
+    
+    // 🚨 AUTO-SELECT ALL FILTERED MACHINES 
+    // This instantly creates tags for every machine in the current filter criteria
+    selectedMachinesArray = filtered.map(m => ({ code: m.machine_code, name: m.machine_name }));
+    
+    // Build the dropdown options (they will initially be hidden since they are all selected)
+    filtered.forEach(m => {
+        let div = document.createElement("div");
+        div.className = "dropdown-item";
+        div.innerText = m.machine_name;
+        div.setAttribute("data-code", m.machine_code);
+        div.onclick = function() {
+            addMachineTag(m.machine_code, m.machine_name);
+        };
+        listContainer.appendChild(div);
+    });
+
+    // Render the tags to the UI immediately
+    renderTags();
+}
+
+// --- NEW TAG MANAGEMENT LOGIC ---
+
+function toggleMachineDropdown(event) {
+    document.getElementById("machine_dropdown_list").classList.add("show");
+    document.getElementById("machine_search").focus();
+}
+
+function filterMachineList() {
+    const input = document.getElementById("machine_search").value.toLowerCase();
+    const items = document.querySelectorAll("#machine_dropdown_list .dropdown-item");
+    
+    items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        // Hide if it doesn't match search OR if it's already selected
+        if (text.includes(input) && !item.classList.contains("selected")) {
+            item.style.display = "block";
+        } else {
+            item.style.display = "none";
+        }
+    });
+}
+
+function addMachineTag(code, name) {
+    if (!selectedMachinesArray.some(m => m.code === code)) {
+        selectedMachinesArray.push({ code, name });
+        renderTags();
+    }
+    document.getElementById("machine_search").value = "";
+    filterMachineList(); 
+    document.getElementById("machine_dropdown_list").classList.remove("show");
+}
+
+function removeMachineTag(code) {
+    selectedMachinesArray = selectedMachinesArray.filter(m => m.code !== code);
+    renderTags();
+    filterMachineList(); // Re-evaluate what should be visible in dropdown
+}
+
+function renderTags() {
+    const container = document.getElementById("selected_machines_container");
+    container.innerHTML = "";
+    
+    selectedMachinesArray.forEach(m => {
+        const tag = document.createElement("div");
+        tag.className = "machine-tag";
+        tag.innerHTML = `${m.name} <span class="remove-tag" onclick="removeMachineTag('${m.code}')">×</span>`;
+        container.appendChild(tag);
+    });
+
+    // Mark DOM items as selected so they hide from the list
+    document.querySelectorAll(".dropdown-item").forEach(item => {
+        if (selectedMachinesArray.some(selected => selected.code === item.getAttribute("data-code"))) {
+            item.classList.add("selected");
+        } else {
+            item.classList.remove("selected");
+            item.style.display = "block"; 
+        }
+    });
+}
+
+// Close dropdown if user clicks outside of it
+document.addEventListener("click", function(event) {
+    const container = document.querySelector(".custom-multiselect-container");
+    if (!container.contains(event.target)) {
+        document.getElementById("machine_dropdown_list").classList.remove("show");
+    }
+});
+
 async function generateReport() {
     const startDate = document.getElementById("start_date").value;
     const endDate = document.getElementById("end_date").value;
-    const machine = document.getElementById("machine_filter").value;
+    
+    // Extract from our custom array (if empty, prevent sending "ALL" blindly)
+    if (selectedMachinesArray.length === 0) {
+        alert("Please select at least one machine to generate a report.");
+        return;
+    }
+    const machine = selectedMachinesArray.map(m => m.code).join(',');
 
     if (!startDate || !endDate) {
         alert("Please select both a Start and End Date.");

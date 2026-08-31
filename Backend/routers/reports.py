@@ -2220,12 +2220,29 @@ def get_cycle_time_variance(
 
 @router.get("/api/machine_list")
 def get_machine_list():
-    """Fetches active machines for dropdowns."""
+    """Fetches active machines, processes, and lines for 3-tier cascading dropdowns."""
     conn = get_conn()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT machine_code, machine_name FROM machine_master WHERE is_active = true ORDER BY machine_code ASC")
-        machines = [{"machine_code": row[0], "machine_name": row[1]} for row in cur.fetchall()]
+        # 🚨 NEW: LEFT JOIN links the machine's process to the process_master table to find the line
+        cur.execute("""
+            SELECT m.machine_code, m.machine_name, m.machine_process, p.production_line 
+            FROM machine_master m
+            LEFT JOIN process_master p ON m.machine_process = p.process
+            WHERE m.is_active = true 
+            ORDER BY m.machine_code ASC
+        """)
+        
+        machines = [
+            {
+                "machine_code": row[0], 
+                "machine_name": row[1], 
+                "machine_process": row[2],
+                "production_line": row[3] if row[3] else "Unassigned" # Handles missing maps safely
+            } 
+            for row in cur.fetchall()
+        ]
+        
         return {"machines": machines}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -2249,7 +2266,10 @@ def get_machinewise_oee_report(
                 log.id as log_id,
                 split_part(log.batch_id, '_', 3) as machine_code,
                 
-                -- 🚨 Extracting and multiplying quantities directly from the log
+                -- 🚨 Extract active cavities to correctly calculate downtime minutes later
+                COALESCE(log.active_cavities, 1) as active_cavities,
+                
+                -- Extracting and multiplying quantities directly from the log
                 log.target_shots * COALESCE(log.active_cavities, 1) as target_qty,
                 log.actual_shots * COALESCE(log.active_cavities, 1) as actual_qty,
                 log.ng_parts as ng_qty,
@@ -2267,6 +2287,7 @@ def get_machinewise_oee_report(
             SELECT 
                 b.log_id,
                 b.machine_code,
+                b.active_cavities, -- 🚨 Pass cavities down to the final select
                 b.target_qty,
                 b.actual_qty,
                 b.ng_qty,
@@ -2290,30 +2311,34 @@ def get_machinewise_oee_report(
         )
         SELECT 
             machine_code,
-            SUM(target_qty), -- 🚨 Dynamically sums all part variations
+            SUM(target_qty), 
             SUM(actual_qty),
             SUM(ng_qty),
             SUM(logged_mins),
             SUM(CASE WHEN is_no_plan = 1 THEN logged_mins ELSE 0 END),
-            SUM(dt_mould * final_ct_mins),
-            SUM(dt_plan * final_ct_mins),
-            SUM(dt_machine * final_ct_mins),
-            SUM(dt_tooling * final_ct_mins),
-            SUM(dt_material * final_ct_mins),
-            SUM(dt_utility * final_ct_mins),
-            SUM(dt_operator * final_ct_mins),
-            SUM(dt_manpower * final_ct_mins),
-            SUM(dt_process * final_ct_mins),
-            SUM(dt_maint * final_ct_mins),
-            SUM(dt_break * final_ct_mins)
+            
+            -- 🚨 Missing shots multiplied by cavities before calculating minutes
+            SUM(dt_mould * active_cavities * final_ct_mins),
+            SUM(dt_plan * active_cavities * final_ct_mins),
+            SUM(dt_machine * active_cavities * final_ct_mins),
+            SUM(dt_tooling * active_cavities * final_ct_mins),
+            SUM(dt_material * active_cavities * final_ct_mins),
+            SUM(dt_utility * active_cavities * final_ct_mins),
+            SUM(dt_operator * active_cavities * final_ct_mins),
+            SUM(dt_manpower * active_cavities * final_ct_mins),
+            SUM(dt_process * active_cavities * final_ct_mins),
+            SUM(dt_maint * active_cavities * final_ct_mins),
+            SUM(dt_break * active_cavities * final_ct_mins)
         FROM AggLogs
         WHERE 1=1
         """
         
         params = [start_date, end_date]
         if machine and machine != "ALL":
-            query += " AND machine_code = %s"
-            params.append(machine)
+            # Split the comma-separated string into a tuple for the SQL 'IN' clause
+            machine_list = tuple(machine.split(','))
+            query += " AND machine_code IN %s"
+            params.append(machine_list)
             
         query += " GROUP BY machine_code ORDER BY machine_code ASC"
 
@@ -2374,8 +2399,25 @@ def get_machinewise_oee_report(
             planned_prod_time = total_range_mins - no_plan_mins
             if planned_prod_time < 0: planned_prod_time = 0
             
-            operating_time = (logged_mins - no_plan_mins) - planned_dt_mins - unplanned_dt_mins
+            # Time actually intended for production
+            logged_prod_mins = logged_mins - no_plan_mins
+            if logged_prod_mins < 0: logged_prod_mins = 0
+            
+            operating_time = logged_prod_mins - planned_dt_mins - unplanned_dt_mins
             if operating_time < 0: operating_time = 0
+            
+            # 🚨 RECALCULATE TARGET QUANTITY (Adjusted for Downtime)
+            total_dt_mins = planned_dt_mins + unplanned_dt_mins
+            
+            # Calculate parts per minute for this specific block
+            target_per_min = (tgt / logged_prod_mins) if logged_prod_mins > 0 else 0
+            
+            # Subtract the theoretical parts that would have been made during the downtime
+            adj_tgt = tgt - (total_dt_mins * target_per_min)
+            if adj_tgt < 0: adj_tgt = 0
+            
+            # Overwrite the original target with the new adjusted target
+            tgt = adj_tgt
             
             # 🚨 2. Calculate percentages based on the total available calendar time
             pct_planned = round((planned_prod_time / total_range_mins * 100), 1) if total_range_mins > 0 else 0.0

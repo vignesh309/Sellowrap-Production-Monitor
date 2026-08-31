@@ -40,21 +40,48 @@
             </div>
 
             <div class="search-container">
-                <div class="filter-group">
-                    <label>From Date:</label>
-                    <input type="date" id="start_date">
+                <!-- Top Row: Dates & Cascading Filters -->
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <div class="filter-group">
+                        <label>From Date:</label>
+                        <input type="date" id="start_date">
+                    </div>
+                    <div class="filter-group">
+                        <label>To Date:</label>
+                        <input type="date" id="end_date">
+                    </div>
+                    <div class="filter-group">
+                        <label>Line Selection:</label>
+                        <select id="line_filter">
+                            <option value="ALL">All Lines</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Process Selection:</label>
+                        <select id="process_filter">
+                            <option value="ALL">All Processes</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label>To Date:</label>
-                    <input type="date" id="end_date">
+
+                <!-- 🚨 Bottom Row: Custom Tag-Based Machine Selection -->
+                <div class="filter-group" style="margin-bottom: 15px; width: 100%;">
+                    <label>Machine Selection: <small style="color: var(--text-muted); font-weight: normal;">(Matching machines are auto-selected. Click 'x' to exclude machines)</small></label>
+                    
+                    <div class="custom-multiselect-container">
+                        <div class="tags-input-box" id="tags_input_box" onclick="toggleMachineDropdown(event)">
+                            <div id="selected_machines_container" class="tags-container">
+                                <!-- Selected machine tags will appear here dynamically -->
+                            </div>
+                            <input type="text" id="machine_search" placeholder="Select machines..." onkeyup="filterMachineList()" autocomplete="off">
+                        </div>
+                        
+                        <div class="custom-dropdown-list" id="machine_dropdown_list">
+                            <!-- Dropdown options injected via JS -->
+                        </div>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label>Machine Selection:</label>
-                    <select id="machine_filter">
-                        <option value="ALL">All Machines (Plant Summary)</option>
-                        <!-- Options populated dynamically -->
-                    </select>
-                </div>
+
                 <div class="filter-actions">
                     <button class="btn-primary" onclick="generateReport()">Generate Report</button>
                     <button class="btn-success" onclick="exportToExcel()">Export Excel</button>

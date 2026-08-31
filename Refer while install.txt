@@ -16,6 +16,17 @@ ALTER INDEX IF EXISTS ix_part_master_id RENAME TO ix_rm_master_id;
 -- 5. Rename the Auto-Increment Sequence for the ID
 ALTER SEQUENCE IF EXISTS part_master_id_seq RENAME TO rm_master_id_seq;
 
+SQL command to select multiple id search
+
+SELECT * 
+FROM production_shortfalls -- Replace this with your actual table name
+WHERE log_id IN (
+    17008, 17009, 17010, 
+    17057, 17058, 17059, 
+    17256, 17257, 17258, 17259, 17260, 17261
+)
+ORDER BY id;
+
 Current Folder Structure
 Sellowrap Production Monitor Version 2
 ├── Backend
