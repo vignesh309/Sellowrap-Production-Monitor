@@ -4,6 +4,8 @@ let pushedRecords = [];
 const ROWS_PER_PAGE = 200;
 let currentPendingPage = 1;
 let currentPushedPage = 1;
+// NEW: Track selected rows globally
+let selectedBatchIds = new Set();
 
 // --- Identity & Access Logic ---
 document.addEventListener("DOMContentLoaded", () => {
@@ -56,7 +58,8 @@ async function loadStagingData() {
         
         currentPendingPage = 1;
         currentPushedPage = 1;
-        
+        selectedBatchIds.clear(); // NEW: Clear selections on fresh load
+
         renderPendingPage();
         renderPushedPage();
         
@@ -85,8 +88,14 @@ function renderPendingPage() {
 
     let html = '';
     paginatedItems.forEach(r => {
+        // Check if this row's ID is in our Set
+        const isChecked = selectedBatchIds.has(r.batch_id) ? 'checked' : '';
+        
         html += `
             <tr>
+                <td style="text-align: center;">
+                    <input type="checkbox" style="cursor: pointer;" value="${r.batch_id}" ${isChecked} onchange="toggleRowSelection(this)">
+                </td>
                 <td style="font-weight: bold; font-size: 12px; color: var(--text-muted);">${r.batch_id}</td>
                 <td style="color: var(--accent-cyan); font-weight: bold;">${r.machine_erp_code || '-'}</td>
                 <td style="color: var(--text-main);">${r.part_erp_code || '-'}</td>
@@ -97,6 +106,9 @@ function renderPendingPage() {
             </tr>
         `;
     });
+    tbody.innerHTML = html;
+    
+    updateSelectAllState(); // NEW: Sync header checkbox
     tbody.innerHTML = html;
     
     renderPaginationControls(pendingRecords.length, currentPendingPage, 'pagination-pending', (newPage) => {
@@ -174,9 +186,55 @@ function renderPaginationControls(totalItems, currentPage, containerId, pageChan
     }
 }
 
-// --- MOCK PUSH (JSON GENERATOR) ---
+// --- Checkbox Logic ---
+function toggleRowSelection(checkbox) {
+    if (checkbox.checked) {
+        selectedBatchIds.add(checkbox.value);
+    } else {
+        selectedBatchIds.delete(checkbox.value);
+    }
+    updateSelectAllState();
+}
+
+function toggleSelectAll() {
+    const selectAll = document.getElementById("selectAllCheckbox").checked;
+    const start = (currentPendingPage - 1) * ROWS_PER_PAGE;
+    const end = start + ROWS_PER_PAGE;
+    const paginatedItems = pendingRecords.slice(start, end);
+
+    // Select/Deselect all visible items on the CURRENT page
+    paginatedItems.forEach(r => {
+        if (selectAll) selectedBatchIds.add(r.batch_id);
+        else selectedBatchIds.delete(r.batch_id);
+    });
+    
+    renderPendingPage();
+}
+
+function updateSelectAllState() {
+    const selectAllCb = document.getElementById("selectAllCheckbox");
+    if (!selectAllCb) return;
+    
+    const start = (currentPendingPage - 1) * ROWS_PER_PAGE;
+    const end = start + ROWS_PER_PAGE;
+    const paginatedItems = pendingRecords.slice(start, end);
+
+    if (paginatedItems.length === 0) {
+        selectAllCb.checked = false;
+        return;
+    }
+    // Check if every item on the current page is in the Set
+    selectAllCb.checked = paginatedItems.every(r => selectedBatchIds.has(r.batch_id));
+}
+
+// --- UPDATED MOCK PUSH ---
 async function pushPayload() {
-    if (!confirm("Are you sure you want to generate the JSON payload and mark these records as pushed?")) return;
+    if (selectedBatchIds.size === 0) {
+        alert("⚠️ Please select at least one record to push.");
+        return;
+    }
+
+    if (!confirm(`Are you sure you want to push ${selectedBatchIds.size} selected record(s) to ERP?`)) return;
 
     const btn = document.getElementById("btn_push");
     const originalText = btn.innerHTML;
@@ -184,8 +242,13 @@ async function pushPayload() {
     btn.disabled = true;
 
     try {
-        // NOTE: This pushes ALL pending records in the database, ignoring the local date filter.
-        const response = await fetch('/api/erp_mapping/push_mock', { method: 'POST' });
+        const payload = { batch_ids: Array.from(selectedBatchIds) };
+
+        const response = await fetch('/api/erp_mapping/push_mock', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
         
         if (!response.ok) {
             const err = await response.json();
@@ -194,6 +257,8 @@ async function pushPayload() {
 
         const data = await response.json();
         alert(`✅ ${data.message}`);
+        
+        selectedBatchIds.clear(); // Clear selections on success
         loadStagingData();
 
     } catch (error) {

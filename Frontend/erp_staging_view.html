@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ERP Staging Monitor</title>
     <link rel="stylesheet" href="/static/css/erp_staging_view.css">
 </head>
+
 <body>
 
     <!-- ENTERPRISE NAVBAR -->
@@ -16,7 +18,9 @@
         </div>
         <div class="nav-utils">
             <button class="hub-btn" onclick="window.location.href='/hub'">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
                 Return to Hub
             </button>
             <div class="user-profile">
@@ -27,7 +31,11 @@
                 </div>
             </div>
             <button class="logout-btn" onclick="logout()">
-                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
                 Log Out
             </button>
         </div>
@@ -35,12 +43,13 @@
 
     <!-- MAIN DASHBOARD -->
     <div class="main-container">
-        
+
         <!-- HEADER ACTIONS -->
         <div class="canvas-header">
             <div>
                 <h2 style="margin: 0; color: var(--text-main);">Staging Queue</h2>
-                <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 13px;">Review production data before pushing to FINSYS ERP.</p>
+                <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 13px;">Review production data before
+                    pushing to FINSYS ERP.</p>
             </div>
             <button id="btn_push" class="btn-push" onclick="pushPayload()">
                 🚀 Push Payload to ERP
@@ -48,30 +57,42 @@
         </div>
 
         <!-- 🚨 NEW: DATE FILTER BAR -->
-        <div class="card" style="margin-bottom: 20px; padding: 15px 25px; display: flex; gap: 20px; align-items: flex-end;">
+        <div class="card"
+            style="margin-bottom: 20px; padding: 15px 25px; display: flex; gap: 20px; align-items: flex-end;">
             <div>
-                <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase;">From Date</label>
-                <input type="date" id="filter_from" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); color: white; width: 160px; color-scheme: dark;">
+                <label
+                    style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase;">From
+                    Date</label>
+                <input type="date" id="filter_from"
+                    style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); color: white; width: 160px; color-scheme: dark;">
             </div>
             <div>
-                <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase;">To Date</label>
-                <input type="date" id="filter_to" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); color: white; width: 160px; color-scheme: dark;">
+                <label
+                    style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase;">To
+                    Date</label>
+                <input type="date" id="filter_to"
+                    style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); color: white; width: 160px; color-scheme: dark;">
             </div>
             <button class="hub-btn" onclick="loadStagingData()" style="margin: 0; background: rgba(0, 229, 255, 0.1);">
                 🔍 Filter Records
             </button>
-            <button class="hub-btn" onclick="clearFilters()" style="margin: 0; border-color: var(--text-muted); color: var(--text-muted);">
+            <button class="hub-btn" onclick="clearFilters()"
+                style="margin: 0; border-color: var(--text-muted); color: var(--text-muted);">
                 ✕ Clear
             </button>
         </div>
 
         <!-- PENDING TABLE -->
         <div class="card" style="margin-bottom: 30px;">
-            <h3 class="sub-title" style="color: var(--status-yellow); border-color: rgba(255, 177, 66, 0.3);">⏳ Pending Push</h3>
+            <h3 class="sub-title" style="color: var(--status-yellow); border-color: rgba(255, 177, 66, 0.3);">⏳ Pending
+                Push</h3>
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
                         <tr>
+                            <th style="width: 40px; text-align: center;">
+                                <input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll()">
+                            </th>
                             <th>Batch ID</th>
                             <th>Machine (ERP)</th>
                             <th>Part (ERP)</th>
@@ -82,17 +103,21 @@
                         </tr>
                     </thead>
                     <tbody id="table-pending">
-                        <tr><td colspan="7" class="loading-cell">Loading pending records...</td></tr>
+                        <tr>
+                            <td colspan="7" class="loading-cell">Loading pending records...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
             <!-- 🚨 PENDING PAGINATION -->
-            <div id="pagination-pending" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;"></div>
+            <div id="pagination-pending" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;">
+            </div>
         </div>
 
         <!-- HISTORY TABLE -->
         <div class="card">
-            <h3 class="sub-title" style="color: var(--status-green); border-color: rgba(0, 240, 118, 0.3);">✅ Successfully Pushed History</h3>
+            <h3 class="sub-title" style="color: var(--status-green); border-color: rgba(0, 240, 118, 0.3);">✅
+                Successfully Pushed History</h3>
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
@@ -106,16 +131,20 @@
                         </tr>
                     </thead>
                     <tbody id="table-pushed">
-                        <tr><td colspan="6" class="loading-cell">Loading history...</td></tr>
+                        <tr>
+                            <td colspan="6" class="loading-cell">Loading history...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
             <!-- 🚨 PUSHED PAGINATION -->
-            <div id="pagination-pushed" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;"></div>
+            <div id="pagination-pushed" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;">
+            </div>
         </div>
 
     </div>
 
     <script src="/static/js/erp_staging_view.js"></script>
 </body>
+
 </html>

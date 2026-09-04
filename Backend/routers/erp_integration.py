@@ -5,6 +5,7 @@ from database import get_conn
 from pydantic import BaseModel
 from datetime import datetime
 from fastapi.responses import JSONResponse
+from schemas import PushPayloadRequest
 
 router = APIRouter(
     prefix="/api/erp_mapping",
@@ -254,26 +255,33 @@ def get_erp_staging_data(from_date: str = None, to_date: str = None):
         conn.close()
 
 @router.post("/push_mock")
-def mock_erp_push():
-    """Fetches pending rows, formats them exactly to FINSYS specs, and SAVES them locally."""
+def mock_erp_push(payload: PushPayloadRequest):
+    """Fetches selected pending rows, formats them exactly to FINSYS specs, and SAVES them locally."""
+    
+    if not payload.batch_ids:
+        raise HTTPException(status_code=400, detail="No records selected for push.")
+        
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # 🚨 FIX: Added 'batch_id' to the SELECT query!
+        # 1. Prepare the tuple for the SQL IN clause
+        batch_ids_tuple = tuple(payload.batch_ids)
+
+        # 🚨 FIX: Added 'batch_id' to the SELECT query and filter by the selected batch_ids!
         cur.execute("""
             SELECT batch_id, shop_floor, shift_name, prd_start_time, prd_end_time, section_code, 
                    mould_erp_code, supervisor_erp_code, helper_count, operator_count, 
                    machine_erp_code, part_erp_code, job_no, job_dt, ok_qty, rej_qty, lumps, 
                    rejections_json, dt_type, total_downtime_mins, downtime_json
             FROM erp_production_staging
-            WHERE is_pushed = false
-        """)
+            WHERE is_pushed = false AND batch_id IN %s
+        """, (batch_ids_tuple,))
         
         columns = [desc[0] for desc in cur.description]
         pending_rows = cur.fetchall()
         
         if not pending_rows:
-            return JSONResponse(status_code=400, content={"detail": "No pending records to push."})
+            return JSONResponse(status_code=400, content={"detail": "No valid pending records found for the selection."})
             
         # 🚨 NEW: Grouping dictionary to build the exact nested structure FINSYS expects
         grouped_payload = {}
@@ -358,15 +366,15 @@ def mock_erp_push():
         with open(file_path, "w") as json_file:
             json.dump(final_payload, json_file, indent=4)
             
-        # 2. Update the rows in the database to mark them as pushed
+        # 2. Update ONLY the selected rows in the database to mark them as pushed
         cur.execute("""
             UPDATE erp_production_staging 
             SET is_pushed = true, pushed_at = %s 
-            WHERE is_pushed = false
-        """, (now,))
+            WHERE is_pushed = false AND batch_id IN %s
+        """, (now, batch_ids_tuple))
         conn.commit()
         
-        return {"status": "success", "message": f"Successfully created {filename} formatted for FINSYS!"}
+        return {"status": "success", "message": f"Successfully created {filename} with {len(pending_rows)} records!"}
         
     except Exception as e:
         conn.rollback()

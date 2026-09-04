@@ -139,3 +139,17 @@ class ShortfallReasonPayload(BaseModel):
     oee_impact: str
     valid_processes: List[str]
     is_active: bool
+
+# ==========================================
+# ERP & INTEGRATION SCHEMAS
+# ==========================================
+
+class PushPayloadRequest(BaseModel):
+    batch_ids: List[str]
+
+# ==========================================
+# Production Log Manager Schemas
+# ==========================================
+
+class DeleteLogsPayload(BaseModel):
+    log_ids: List[int]

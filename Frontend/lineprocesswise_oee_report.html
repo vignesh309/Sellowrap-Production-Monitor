@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics: Machine OEE Report</title>
-    <link rel="stylesheet" href="/static/css/machinewise_oee_report.css">
+    <title>Analytics: Line & Process OEE Report</title>
+    <!-- We can reuse the exact same CSS file since the layout is identical -->
+    <link rel="stylesheet" href="/static/css/lineprocesswise_oee_report.css">
 </head>
 
 <body>
-
     <div class="navbar">
         <div class="brand">
             <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
@@ -42,15 +42,15 @@
 
     <div class="container">
         <div class="card">
-
             <div class="explore-header"
                 style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
-                <h2 class="section-title" style="margin: 0; border: none;">Machine OEE Breakdown Report</h2>
+                <h2 class="section-title" style="margin: 0; border: none;">Line & Process OEE Breakdown</h2>
             </div>
 
             <div class="search-container">
-                <!-- Top Row: Dates & Cascading Filters -->
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
+                <!-- Top Row: Dates & View Toggle -->
+                <div
+                    style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; width: 100%; align-items: flex-end;">
                     <div class="filter-group">
                         <label>From Date:</label>
                         <input type="date" id="start_date">
@@ -59,17 +59,21 @@
                         <label>To Date:</label>
                         <input type="date" id="end_date">
                     </div>
-                    <div class="filter-group">
-                        <label>Line Selection:</label>
-                        <select id="line_filter">
-                            <option value="ALL">All Lines</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Process Selection:</label>
-                        <select id="process_filter">
-                            <option value="ALL">All Processes</option>
-                        </select>
+
+                    <!-- NEW: View Mode Toggle -->
+                    <div class="filter-group" style="margin-left: 20px;">
+                        <label>Group View By:</label>
+                        <div
+                            style="display: flex; gap: 15px; background: var(--bg-input); padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <label style="color: white; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                <input type="radio" name="view_mode" value="line" checked onchange="switchViewMode()">
+                                Line View
+                            </label>
+                            <label style="color: white; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                <input type="radio" name="view_mode" value="process" onchange="switchViewMode()">
+                                Process View
+                            </label>
+                        </div>
                     </div>
                     <!-- Display Format Toggles -->
                     <div class="filter-group" style="margin-left: 15px;">
@@ -90,22 +94,18 @@
                     </div>
                 </div>
 
-                <!-- 🚨 Bottom Row: Custom Tag-Based Machine Selection -->
+                <!-- Bottom Row: Dynamic Multi-Select Box -->
                 <div class="filter-group" style="margin-bottom: 15px; width: 100%;">
-                    <label>Machine Selection: <small style="color: var(--text-muted); font-weight: normal;">(Matching
-                            machines are auto-selected. Click 'x' to exclude machines)</small></label>
-
+                    <label id="selection_label">Line Selection: <small
+                            style="color: var(--text-muted); font-weight: normal;">(Remove tags to exclude. Leave blank
+                            for ALL)</small></label>
                     <div class="custom-multiselect-container">
-                        <div class="tags-input-box" id="tags_input_box" onclick="toggleMachineDropdown(event)">
-                            <div id="selected_machines_container" class="tags-container">
-                                <!-- Selected machine tags will appear here dynamically -->
-                            </div>
-                            <input type="text" id="machine_search" placeholder="Select machines..."
-                                onkeyup="filterMachineList()" autocomplete="off">
+                        <div class="tags-input-box" id="tags_box" onclick="toggleDropdown(event)">
+                            <div id="selected_tags_container" class="tags-container"></div>
+                            <input type="text" id="tag_search" placeholder="Search..." onkeyup="filterList()">
                         </div>
-
-                        <div class="custom-dropdown-list" id="machine_dropdown_list">
-                            <!-- Dropdown options injected via JS -->
+                        <div class="custom-dropdown-list" id="dropdown_list">
+                            <!-- Populated dynamically based on Radio choice -->
                         </div>
                     </div>
                 </div>
@@ -116,18 +116,17 @@
                 </div>
             </div>
 
+            <!-- Dynamic Table (Exactly the same HTML structure as your Machine report) -->
             <div class="table-section" style="margin-top: 20px;">
                 <div class="table-container">
                     <table class="vertical-table" id="oee_report_table">
                         <thead>
                             <tr id="table_header_row">
                                 <th class="attr-col">Metric / Category</th>
-                                <!-- Dynamic Machine Columns Will Be Injected Here -->
                                 <th class="val-col" id="col_placeholder">Select criteria to load</th>
                             </tr>
                         </thead>
                         <tbody id="table_body">
-                            <!-- KPIs -->
                             <tr class="section-row">
                                 <td colspan="2">OEE Metrics</td>
                             </tr>
@@ -159,7 +158,7 @@
                                 <td>Rejection Quantity</td>
                                 <td class="val-cell" style="color: var(--status-red);">-</td>
                             </tr>
-                            <!-- Updated Time Totals -->
+
                             <tr data-key="planned_prod_time">
                                 <td>Planned Prod. Time</td>
                                 <td class="val-cell" style="color: var(--accent-cyan);">-</td>
@@ -173,7 +172,6 @@
                                 <td class="val-cell" style="color: var(--status-green);">-</td>
                             </tr>
 
-                            <!-- Downtime Categories -->
                             <tr class="section-row">
                                 <td colspan="2">Downtime Breakdown</td>
                             </tr>
@@ -225,12 +223,10 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </div>
-
     <script src="/static/js/js libraries/xlsx.full.min.js"></script>
-    <script src="/static/js/machinewise_oee_report.js"></script>
+    <script src="/static/js/lineprocesswise_oee_report.js"></script>
 </body>
 
 </html>

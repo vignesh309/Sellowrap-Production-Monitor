@@ -20,6 +20,15 @@ def get_html_path(filename: str):
         raise HTTPException(status_code=404, detail=f"File not found: {filename}")
     return filepath
 
+@router.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    logo_path = os.path.join(FRONTEND_DIR, "img", "Title_Company_logo.png")
+
+    if not os.path.exists(logo_path):
+        raise HTTPException(status_code=404, detail="Favicon not found")
+
+    return FileResponse(logo_path, media_type="image/png")
+
 
 @router.get("/", response_class=HTMLResponse)
 def login_page():
@@ -163,6 +172,14 @@ def cycle_time_analysis_page():
 @router.get("/machinewise-oee-report", response_class=HTMLResponse)
 def machinewise_oee_report_page():
     return FileResponse(get_html_path("machinewise_oee_report.html"))
+
+@router.get("/lineprocesswise-oee-report", response_class=HTMLResponse)
+def lineprocesswise_oee_report_page():
+    return FileResponse(get_html_path("lineprocesswise_oee_report.html"))
+
+@router.get("/production-log-manager", response_class=HTMLResponse)
+def production_log_manager_page():
+    return FileResponse(get_html_path("production_log_manager.html"))
 
 @router.get("/non-hazardous-waste-generation-report", response_class=HTMLResponse)
 def non_hazardous_waste_generation_report_page():

@@ -1219,10 +1219,7 @@ def get_oee_summary(
                           AND b_inner.b_shift = b.b_shift 
                           AND b_inner.b_machine = b.b_machine 
                           AND b_inner.b_part = b.b_part
-                          
-                          -- 🚨 NEW LINE: Exclude Break Time so it grabs the next highest reason
                           AND ps_inner.reason_name != 'Break Time' 
-                          
                         GROUP BY ps_inner.reason_name
                         ORDER BY SUM(ps_inner.quantity) DESC
                         LIMIT 1
@@ -1260,8 +1257,6 @@ def get_oee_summary(
                 sa.b_part,       -- 3
                 COALESCE(pm.part_name, 'Unknown') as part_name,  -- 4
                 COALESCE(pm.customer_name, 'Unknown') as customer_name, -- 5
-        
-                -- 🚨 FIX: Dynamically grab the exact process from machine_master for auto-parts
                 CASE 
                     WHEN sa.b_part = 'AUTO-PART' THEN COALESCE(mm.machine_process, 'Unknown')
                     ELSE COALESCE(bm.process_name, prt.process_name, mm.machine_process, 'Unknown') 
@@ -1330,14 +1325,10 @@ def get_oee_summary(
             major_shortfall = r[16]
             major_ng = r[17]
             
-            total_shift_time = float(r[18])  # Now dynamic! (e.g., 60 mins or 720 mins)
-            cycle_time_sec = float(r[19])
+            total_shift_time = float(r[18])  
+            cycle_time_from_db = float(r[19]) 
             hourly_target = int(r[20])
 
-            cycle_time_from_db = float(r[19]) # This is already in minutes!
-            hourly_target = int(r[20])
-
-            # 🚨 LOGIC 4: Fixed unit assumption (DB stores cycle time in minutes, do NOT divide by 60)
             if cycle_time_from_db > 0:
                 std_cycle_time_mins = cycle_time_from_db
             elif hourly_target > 0:
@@ -1345,18 +1336,26 @@ def get_oee_summary(
             else:
                 std_cycle_time_mins = 0.0
 
-            # 🚨 NEW MATH FALLBACK: Calculate cycle time purely to fix the 60/60 minute issue
             actual_math_mins = std_cycle_time_mins
             if actual_math_mins == 0.0 and target_qty > 0 and total_shift_time > 0:
-                # e.g., 60 total minutes / 40 target shots = 1.5 minutes per shot
                 actual_math_mins = total_shift_time / target_qty
 
-            # 🚨 LOGIC 5: Multiply shortfall quantity by the correct minute value
             planned_dt_mins = planned_dt_qty * actual_math_mins
             unplanned_dt_mins = unplanned_dt_qty * actual_math_mins
 
+            # 🚨 NEW TARGET ADJUSTMENT: Synchronized with Machinewise Report logic!
+            target_per_min = (target_qty / total_shift_time) if total_shift_time > 0 else 0
+            
+            # We ONLY subtract the target that would have been made during Availability & Planned Downtime
+            adj_tgt = target_qty - ((planned_dt_mins + unplanned_dt_mins) * target_per_min)
+            if adj_tgt < 0: adj_tgt = 0
+            target_qty = adj_tgt
+
             planned_prod_time = total_shift_time - planned_dt_mins
+            if planned_prod_time < 0: planned_prod_time = 0
+                
             operating_time = planned_prod_time - unplanned_dt_mins
+            if operating_time < 0: operating_time = 0
 
             # 1. Availability Math
             if planned_prod_time > 0:
@@ -1369,7 +1368,7 @@ def get_oee_summary(
                 perf_pct = (total_qty / target_qty) * 100
             else:
                 perf_pct = 0.0
-            if perf_pct > 100: perf_pct = 100.0  # Cap at 100% standard
+            if perf_pct > 100: perf_pct = 100.0  
 
             # 3. Quality Math
             if total_qty > 0:
@@ -1388,7 +1387,7 @@ def get_oee_summary(
                 "part_name": r[4],
                 "customer_name": r[5],
                 "process_name": r[6],
-                "target_qty": target_qty,
+                "target_qty": int(target_qty), # Showing adjusted target
                 "total_qty": total_qty,
                 "ok_qty": ok_qty,
                 "ng_qty": ng_qty,
@@ -1399,7 +1398,6 @@ def get_oee_summary(
                 "actual_time": round(operating_time),
                 "unplanned_dt_mins": round(unplanned_dt_mins),
                 
-                # 🚨 FIXED: Just output the DB cycle time as-is. It will show "0.60" or "-"
                 "std_cycle_time": round(std_cycle_time_mins, 2) if std_cycle_time_mins > 0 else 0.0,
                 
                 "avail_pct": round(avail_pct, 2),
@@ -1433,22 +1431,22 @@ def get_teep_summary(
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # The SQL query is identical to your OEE query
         query = """
             WITH BatchTargets AS (
                 SELECT 
                     batch_id,
                     MAX(operator_code) as operator,
                     MAX(supervisor_code) as supervisor,
-                    SUM(target_shots * COALESCE(active_cavities, 1)) as target_qty
+                    SUM(target_shots * COALESCE(active_cavities, 1)) as target_qty,
+                    SUM(((EXTRACT(EPOCH FROM end_time) - EXTRACT(EPOCH FROM start_time) + CASE WHEN end_time < start_time THEN 86400 ELSE 0 END) / 60.0)) as logged_mins
                 FROM production_hourly_log
                 GROUP BY batch_id
             ),
             DowntimeAgg AS (
                 SELECT 
                     hl.batch_id,
-                    SUM(CASE WHEN sm.oee_impact = 'None' THEN COALESCE(ps.quantity, 0) ELSE 0 END) as planned_dt_mins,
-                    SUM(CASE WHEN sm.oee_impact = 'Availability' THEN COALESCE(ps.quantity, 0) ELSE 0 END) as unplanned_dt_mins,
+                    SUM(CASE WHEN sm.oee_impact = 'None' THEN COALESCE(ps.quantity, 0) ELSE 0 END) as planned_dt_qty,
+                    SUM(CASE WHEN sm.oee_impact = 'Availability' THEN COALESCE(ps.quantity, 0) ELSE 0 END) as unplanned_dt_qty,
                     MAX(ps.reason_name) as major_shortfall
                 FROM production_shortfalls ps
                 JOIN production_hourly_log hl ON ps.log_id = hl.id
@@ -1481,16 +1479,22 @@ def get_teep_summary(
                 SPLIT_PART(bt.supervisor, ' - ', 1) as supervisor,
                 bm.remarks,
                 
-                COALESCE(dt.planned_dt_mins, 0) as planned_dt_mins,
-                COALESCE(dt.unplanned_dt_mins, 0) as unplanned_dt_mins,
+                COALESCE(dt.planned_dt_qty, 0) as planned_dt_qty,
+                COALESCE(dt.unplanned_dt_qty, 0) as unplanned_dt_qty,
                 COALESCE(dt.major_shortfall, '-') as major_shortfall,
-                COALESCE(ra.major_ng, '-') as major_ng
+                COALESCE(ra.major_ng, '-') as major_ng,
+                
+                -- 🚨 Fetch routing data to convert parts to minutes correctly
+                COALESCE(bt.logged_mins, 720) as total_logged_mins,
+                COALESCE(prt.cycle_time, 0) as cycle_time_sec,
+                COALESCE(prt.hourly_target, 0) as hourly_target
 
             FROM batch_master bm
             LEFT JOIN BatchTargets bt ON bm.batch_id = bt.batch_id
             LEFT JOIN DowntimeAgg dt ON bm.batch_id = dt.batch_id
             LEFT JOIN RejectionAgg ra ON bm.batch_id = ra.batch_id
             LEFT JOIN part_master pm ON split_part(bm.batch_id, '_', 5) = pm.part_no
+            LEFT JOIN part_routing prt ON split_part(bm.batch_id, '_', 5) = prt.part_no AND bm.process_name = prt.process_name
             WHERE 1=1
         """
         params = []
@@ -1520,23 +1524,50 @@ def get_teep_summary(
             ok_qty = int(r[9])
             ng_qty = int(r[10])
             
-            planned_dt_mins = float(r[14])
-            unplanned_dt_mins = float(r[15])
+            planned_dt_qty = int(r[14])
+            unplanned_dt_qty = int(r[15])
             major_shortfall = r[16]
             major_ng = r[17]
 
+            total_logged_mins = float(r[18])
+            cycle_time_from_db = float(r[19]) 
+            hourly_target = int(r[20])
+
+            # 🚨 NEW: Calculate actual math mins to convert DT Quantity to Minutes
+            if cycle_time_from_db > 0:
+                std_cycle_time_mins = cycle_time_from_db
+            elif hourly_target > 0:
+                std_cycle_time_mins = 60.0 / hourly_target
+            else:
+                std_cycle_time_mins = 0.0
+
+            actual_math_mins = std_cycle_time_mins
+            if actual_math_mins == 0.0 and target_qty > 0 and total_logged_mins > 0:
+                actual_math_mins = total_logged_mins / target_qty
+
+            planned_dt_mins = planned_dt_qty * actual_math_mins
+            unplanned_dt_mins = unplanned_dt_qty * actual_math_mins
+
+            # 🚨 TARGET ADJUSTMENT
+            target_per_min = (target_qty / total_logged_mins) if total_logged_mins > 0 else 0
+            adj_tgt = target_qty - ((planned_dt_mins + unplanned_dt_mins) * target_per_min)
+            if adj_tgt < 0: adj_tgt = 0
+            target_qty = adj_tgt
+
             # 🚨 NEW TEEP MATH LOGIC 🚨
             total_shift_time = 720.0 
-            # Operating time deducts all stops, but the base remains 720!
-            operating_time = total_shift_time - planned_dt_mins - unplanned_dt_mins
+            
+            # Operating time deducts all stops from the LOGGED time to find true running time
+            operating_time = total_logged_mins - planned_dt_mins - unplanned_dt_mins
+            if operating_time < 0: operating_time = 0
 
-            # 1. TEEP Availability (Operating Time / TOTAL Time)
+            # 1. TEEP Availability (Operating Time / TOTAL CALENDAR TIME)
             if total_shift_time > 0:
                 avail_pct = (operating_time / total_shift_time) * 100
             else:
                 avail_pct = 0.0
 
-            # 2. Performance (Same as OEE)
+            # 2. Performance (Same as OEE, using Adjusted Target)
             if target_qty > 0:
                 perf_pct = (total_qty / target_qty) * 100
             else:
@@ -1560,7 +1591,7 @@ def get_teep_summary(
                 "part_name": r[4],
                 "customer_name": r[5],
                 "process_name": r[6],
-                "target_qty": target_qty,
+                "target_qty": int(target_qty),
                 "total_qty": total_qty,
                 "ok_qty": ok_qty,
                 "ng_qty": ng_qty,
@@ -2113,13 +2144,25 @@ def get_cycle_time_variance(
     end_date: str = Query(""),
     machine: str = Query("")
 ):
-    """Fetches IoT cycle time data, joins it with production logs, and calculates variance."""
+    """Fetches IoT cycle time data, joins it with production logs, and calculates variance dynamically per month."""
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # 🚨 Note: Using the specific august table you mentioned. 
-        # In the future, this can be dynamically generated in Python based on the month.
-        query = """
+        # 1. Dynamically figure out the table name based on the start_date
+        # Expecting format "YYYY-MM-DD"
+        if start_date:
+            dt_obj = datetime.strptime(start_date, "%Y-%m-%d")
+        else:
+            dt_obj = datetime.now()
+            
+        month_abbr = dt_obj.strftime("%b").lower()  # e.g., 'aug', 'sep', 'oct'
+        year_str = dt_obj.strftime("%Y")            # e.g., '2026'
+        
+        # Constructs: "moulding_machines_monitor1_sep_2026"
+        iot_table_name = f"moulding_machines_monitor1_{month_abbr}_{year_str}"
+
+        # 2. Inject the dynamic table name into the query using an f-string
+        query = f"""
             WITH ShiftBounds AS (
                 SELECT 
                     machine_code,
@@ -2140,10 +2183,11 @@ def get_cycle_time_variance(
                     sb.process_name,
                     iot.cycle_time
                 FROM ShiftBounds sb
-                JOIN moulding_machines_monitor1_aug_2026 iot
+                JOIN {iot_table_name} iot
                   ON iot.machine_id = sb.machine_code
                  AND iot.monitor_timestamp >= sb.actual_start
                  AND iot.monitor_timestamp < sb.actual_end
+                 AND iot.cycle_time > 0
             )
             SELECT 
                 m.machine_code,
@@ -2186,7 +2230,7 @@ def get_cycle_time_variance(
             hourly_target = int(r[7])
             routing_ct_mins = float(r[8])
 
-            # 🚨 Convert Standard CT to SECONDS mathematically
+            # Convert Standard CT to SECONDS mathematically
             std_ct_sec = 0.0
             if hourly_target > 0:
                 std_ct_sec = 3600.0 / hourly_target
@@ -2209,7 +2253,9 @@ def get_cycle_time_variance(
                 "median_ct": round(median_ct, 1),
                 "variance_pct": round(variance_pct, 1)
             })
-
+        # 🚨 NEW: Sort the records by variance_pct in ascending order
+        # Negative (Top) -> Zero (Middle) -> Positive (Bottom)
+        records.sort(key=lambda x: x["variance_pct"])
         return {"records": records}
     except Exception as e:
         print("Cycle Time Variance Error:", str(e))
@@ -2259,7 +2305,16 @@ def get_machinewise_oee_report(
     """Calculates Machine-wise OEE and Downtime Breakdown dynamically per machine."""
     conn = get_conn()
     cur = conn.cursor()
+    
     try:
+        # NEW: Fetch OEE Impact rules from the master table
+        cur.execute("SELECT DISTINCT category, oee_impact FROM shortfall_reason_master WHERE is_active = true")
+        impact_map = {row[0]: row[1] for row in cur.fetchall()}
+        
+        def get_impact(category_name):
+            # Default to Availability if someone creates a category without setting the impact
+            return impact_map.get(category_name, 'Availability')
+            
         query = """
         WITH BaseLogs AS (
             SELECT 
@@ -2374,6 +2429,12 @@ def get_machinewise_oee_report(
             if m > 0 or not parts: parts.append(f"{m}m")
             return " ".join(parts)
 
+        # 🚨 NEW: Helper function to format downtime with percentages
+        def format_dt(mins, total_mins):
+            if mins <= 0: return "0"
+            pct = round((mins / total_mins * 100), 1) if total_mins > 0 else 0.0
+            return f"{format_time(mins)} ({pct}%)"
+
         # 🚨 1. Setup running totals for the "Consolidated Summary" column
         tot_tgt = 0; tot_act = 0; tot_ng = 0
         tot_plan_prod = 0; tot_no_plan = 0; tot_op_time = 0
@@ -2387,36 +2448,48 @@ def get_machinewise_oee_report(
             logged_mins = float(row[4])
             no_plan_mins = float(row[5])
             
-            # Downtimes
-            dt_mould = float(row[6]); dt_plan = float(row[7]); dt_maint = float(row[15]); dt_break = float(row[16]) 
-            planned_dt_mins = dt_mould + dt_plan + dt_maint + dt_break
+            # 1. Extract the raw minutes
+            dt_mould = float(row[6]); dt_plan = float(row[7]); dt_machine = float(row[8]); dt_tooling = float(row[9])
+            dt_material = float(row[10]); dt_utility = float(row[11]); dt_operator = float(row[12]); dt_manpower = float(row[13])
+            dt_process = float(row[14]); dt_maint = float(row[15]); dt_break = float(row[16])
             
-            dt_machine = float(row[8]); dt_tooling = float(row[9]); dt_material = float(row[10]); dt_utility = float(row[11])
-            dt_operator = float(row[12]); dt_manpower = float(row[13]); dt_process = float(row[14])
-            unplanned_dt_mins = dt_machine + dt_tooling + dt_material + dt_utility + dt_operator + dt_manpower + dt_process
+            # 2. Map minutes to their UI categories to dynamically check their OEE Impact
+            dt_dict = {
+                "Mould Changeover": dt_mould,
+                "Planning / Management": dt_plan,
+                "Machine Breakdown": dt_machine,
+                "Tooling Issue": dt_tooling,
+                "Material Shortage": dt_material,
+                "Utility Failure": dt_utility,
+                "Operator Efficiency": dt_operator,
+                "Manpower Shortage": dt_manpower,
+                "Process & Quality": dt_process,
+                "Planned Maintenance": dt_maint,
+                "Break Time": dt_break
+            }
             
+            # 3. Sort the minutes into the correct OEE buckets dynamically
+            avail_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Availability')
+            perf_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Performance')
+
             # Math
             planned_prod_time = total_range_mins - no_plan_mins
             if planned_prod_time < 0: planned_prod_time = 0
-            
-            # Time actually intended for production
+                
             logged_prod_mins = logged_mins - no_plan_mins
             if logged_prod_mins < 0: logged_prod_mins = 0
-            
-            operating_time = logged_prod_mins - planned_dt_mins - unplanned_dt_mins
+                
+            # UPDATE: Operating time is now reduced by BOTH Availability and Performance Losses
+            operating_time = logged_prod_mins - avail_loss_mins - perf_loss_mins
             if operating_time < 0: operating_time = 0
-            
-            # 🚨 RECALCULATE TARGET QUANTITY (Adjusted for Downtime)
-            total_dt_mins = planned_dt_mins + unplanned_dt_mins
-            
-            # Calculate parts per minute for this specific block
+                
+            # RECALCULATE TARGET QUANTITY
             target_per_min = (tgt / logged_prod_mins) if logged_prod_mins > 0 else 0
             
-            # Subtract the theoretical parts that would have been made during the downtime
-            adj_tgt = tgt - (total_dt_mins * target_per_min)
+            # UPDATE: Target is reduced by BOTH Availability and Performance Downtime
+            adj_tgt = tgt - ((avail_loss_mins + perf_loss_mins) * target_per_min)
             if adj_tgt < 0: adj_tgt = 0
             
-            # Overwrite the original target with the new adjusted target
             tgt = adj_tgt
             
             # 🚨 2. Calculate percentages based on the total available calendar time
@@ -2450,12 +2523,18 @@ def get_machinewise_oee_report(
                 "no_plan_time": f"{format_time(no_plan_mins)} ({pct_no_plan}%)",
                 "actual_op_time": f"{format_time(operating_time)} ({pct_actual}%)",
                 
-                "mould_changeover": format_time(dt_mould), "planning_management": format_time(dt_plan),
-                "machine_breakdown": format_time(dt_machine), "tooling_issue": format_time(dt_tooling),
-                "material_shortage": format_time(dt_material), "utility_failure": format_time(dt_utility),
-                "operator_efficiency": format_time(dt_operator), "manpower_shortage": format_time(dt_manpower),
-                "process_quality": format_time(dt_process), "planned_maintenance": format_time(dt_maint),
-                "break_time": format_time(dt_break)
+                # 🚨 UPDATED: Apply format_dt to inject percentages dynamically
+                "mould_changeover": format_dt(dt_mould, total_range_mins),
+                "planning_management": format_dt(dt_plan, total_range_mins),
+                "machine_breakdown": format_dt(dt_machine, total_range_mins),
+                "tooling_issue": format_dt(dt_tooling, total_range_mins),
+                "material_shortage": format_dt(dt_material, total_range_mins),
+                "utility_failure": format_dt(dt_utility, total_range_mins),
+                "operator_efficiency": format_dt(dt_operator, total_range_mins),
+                "manpower_shortage": format_dt(dt_manpower, total_range_mins),
+                "process_quality": format_dt(dt_process, total_range_mins),
+                "planned_maintenance": format_dt(dt_maint, total_range_mins),
+                "break_time": format_dt(dt_break, total_range_mins)
             })
 
         # 🚨 4. Append the Summary column with Plant-Wide Percentages
@@ -2484,17 +2563,283 @@ def get_machinewise_oee_report(
                 "no_plan_time": f"{format_time(tot_no_plan)} ({tot_pct_no_plan}%)",
                 "actual_op_time": f"{format_time(tot_op_time)} ({tot_pct_actual}%)",
                 
-                "mould_changeover": format_time(tot_dt["mould"]), "planning_management": format_time(tot_dt["plan"]),
-                "machine_breakdown": format_time(tot_dt["machine"]), "tooling_issue": format_time(tot_dt["tooling"]),
-                "material_shortage": format_time(tot_dt["material"]), "utility_failure": format_time(tot_dt["utility"]),
-                "operator_efficiency": format_time(tot_dt["operator"]), "manpower_shortage": format_time(tot_dt["manpower"]),
-                "process_quality": format_time(tot_dt["process"]), "planned_maintenance": format_time(tot_dt["maint"]),
-                "break_time": format_time(tot_dt["break"])
+                # 🚨 UPDATED: Apply format_dt for the Plant-wide Consolidated Summary
+                "mould_changeover": format_dt(tot_dt["mould"], tot_calendar_mins), 
+                "planning_management": format_dt(tot_dt["plan"], tot_calendar_mins),
+                "machine_breakdown": format_dt(tot_dt["machine"], tot_calendar_mins), 
+                "tooling_issue": format_dt(tot_dt["tooling"], tot_calendar_mins),
+                "material_shortage": format_dt(tot_dt["material"], tot_calendar_mins), 
+                "utility_failure": format_dt(tot_dt["utility"], tot_calendar_mins),
+                "operator_efficiency": format_dt(tot_dt["operator"], tot_calendar_mins), 
+                "manpower_shortage": format_dt(tot_dt["manpower"], tot_calendar_mins),
+                "process_quality": format_dt(tot_dt["process"], tot_calendar_mins), 
+                "planned_maintenance": format_dt(tot_dt["maint"], tot_calendar_mins),
+                "break_time": format_dt(tot_dt["break"], tot_calendar_mins)
             })
 
         return {"records": records}
     except Exception as e:
         print("Machinewise OEE Error:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+@router.get("/api/lineprocesswise_oee_report")
+def get_lineprocesswise_oee_report(
+    start_date: str = Query(""), 
+    end_date: str = Query(""), 
+    view_mode: str = Query("line"), 
+    entities: str = Query("")
+):
+    """Calculates OEE dynamically grouped by either Line or Process with accurate Availability/Performance scaling."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        # 🚨 NEW: Fetch OEE Impact rules from the master table for dynamic sorting
+        cur.execute("SELECT DISTINCT category, oee_impact FROM shortfall_reason_master WHERE is_active = true")
+        impact_map = {row[0]: row[1] for row in cur.fetchall()}
+        
+        def get_impact(category_name):
+            # Default to Availability if the mapping is missing for any reason
+            return impact_map.get(category_name, 'Availability')
+
+        # Determine the grouping column based on the view_mode
+        if view_mode == "line":
+            group_col_sql = "COALESCE(p.production_line, 'Unknown Line')"
+        else:
+            group_col_sql = "COALESCE(m.machine_process, 'Unknown Process')"
+
+        query = f"""
+        WITH BaseLogs AS (
+            SELECT 
+                log.id as log_id,
+                {group_col_sql} as group_key,
+                COALESCE(log.active_cavities, 1) as active_cavities,
+                log.target_shots * COALESCE(log.active_cavities, 1) as target_qty,
+                log.actual_shots * COALESCE(log.active_cavities, 1) as actual_qty,
+                log.ng_parts as ng_qty,
+                ((EXTRACT(EPOCH FROM log.end_time) - EXTRACT(EPOCH FROM log.start_time) + 
+                  CASE WHEN log.end_time < log.start_time THEN 86400 ELSE 0 END) / 60.0) as logged_mins,
+                CASE WHEN pr.cycle_time > 0 THEN pr.cycle_time
+                     WHEN pr.hourly_target > 0 THEN 60.0 / pr.hourly_target
+                     ELSE 0 END as ct_mins,
+                CASE WHEN log.is_no_plan = true THEN 1 ELSE 0 END as is_no_plan
+            FROM production_hourly_log log
+            LEFT JOIN part_routing pr ON pr.part_no = split_part(log.batch_id, '_', 5) AND pr.process_name = split_part(log.batch_id, '_', 4)
+            LEFT JOIN machine_master m ON log.machine_code = m.machine_code
+            LEFT JOIN process_master p ON m.machine_process = p.process
+            WHERE split_part(log.batch_id, '_', 1) >= %s AND split_part(log.batch_id, '_', 1) <= %s
+        ),
+        AggLogs AS (
+            SELECT 
+                b.log_id,
+                b.group_key,
+                b.active_cavities,
+                b.target_qty,
+                b.actual_qty,
+                b.ng_qty,
+                b.logged_mins,
+                b.is_no_plan,
+                CASE WHEN b.ct_mins > 0 THEN b.ct_mins
+                     WHEN b.target_qty > 0 THEN b.logged_mins / b.target_qty
+                     ELSE 0 END as final_ct_mins,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Mould Changeover'), 0) as dt_mould,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Planning / Management'), 0) as dt_plan,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Machine Breakdown'), 0) as dt_machine,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Tooling Issue'), 0) as dt_tooling,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Material Shortage'), 0) as dt_material,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Utility Failure'), 0) as dt_utility,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Operator Efficiency'), 0) as dt_operator,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Manpower Shortage'), 0) as dt_manpower,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Process & Quality'), 0) as dt_process,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Planned Maintenance'), 0) as dt_maint,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Break Time'), 0) as dt_break
+            FROM BaseLogs b
+        )
+        SELECT 
+            group_key,
+            SUM(target_qty),
+            SUM(actual_qty),
+            SUM(ng_qty),
+            SUM(logged_mins),
+            SUM(CASE WHEN is_no_plan = 1 THEN logged_mins ELSE 0 END),
+            SUM(dt_mould * active_cavities * final_ct_mins),
+            SUM(dt_plan * active_cavities * final_ct_mins),
+            SUM(dt_machine * active_cavities * final_ct_mins),
+            SUM(dt_tooling * active_cavities * final_ct_mins),
+            SUM(dt_material * active_cavities * final_ct_mins),
+            SUM(dt_utility * active_cavities * final_ct_mins),
+            SUM(dt_operator * active_cavities * final_ct_mins),
+            SUM(dt_manpower * active_cavities * final_ct_mins),
+            SUM(dt_process * active_cavities * final_ct_mins),
+            SUM(dt_maint * active_cavities * final_ct_mins),
+            SUM(dt_break * active_cavities * final_ct_mins)
+        FROM AggLogs
+        WHERE 1=1
+        """
+        
+        params = [start_date, end_date]
+        
+        if entities and entities != "ALL":
+            entity_list = tuple(entities.split(','))
+            query += " AND group_key IN %s"
+            params.append(entity_list)
+            
+        query += " GROUP BY group_key ORDER BY group_key ASC"
+        
+        cur.execute(query, tuple(params))
+        rows = cur.fetchall()
+
+        d1 = datetime.strptime(start_date, "%Y-%m-%d")
+        d2 = datetime.strptime(end_date, "%Y-%m-%d")
+        total_days = (d2 - d1).days + 1
+        
+        def format_time(mins):
+            if mins <= 0: return "0"
+            mins = int(mins)
+            y = mins // 525600; mins %= 525600
+            mo = mins // 43200; mins %= 43200
+            w = mins // 10080; mins %= 10080
+            d = mins // 1440; mins %= 1440
+            h = mins // 60
+            m = mins % 60
+            parts = []
+            if y > 0: parts.append(f"{y}y")
+            if mo > 0: parts.append(f"{mo}mo")
+            if w > 0: parts.append(f"{w}w")
+            if d > 0: parts.append(f"{d}d")
+            if h > 0: parts.append(f"{h}h")
+            if m > 0 or not parts: parts.append(f"{m}m")
+            return " ".join(parts)
+            
+        # 🚨 NEW: Helper function to format downtime with percentages
+        def format_dt(mins, total_mins):
+            if mins <= 0: return "0"
+            pct = round((mins / total_mins * 100), 1) if total_mins > 0 else 0.0
+            return f"{format_time(mins)} ({pct}%)"
+            
+        tot_tgt = 0; tot_act = 0; tot_ng = 0
+        tot_plan_prod = 0; tot_no_plan = 0; tot_op_time = 0
+        tot_dt = {k: 0 for k in ["mould", "plan", "machine", "tooling", "material", "utility", "operator", "manpower", "process", "maint", "break"]}
+        
+        records = []
+        for row in rows:
+            cur.execute(f"SELECT COUNT(*) FROM machine_master m LEFT JOIN process_master p ON m.machine_process = p.process WHERE {group_col_sql} = %s AND m.is_active = true", (row[0],))
+            machine_count = cur.fetchone()[0] or 1
+            total_range_mins = (total_days * 24 * 60) * machine_count
+            
+            tgt = float(row[1])
+            act = float(row[2])
+            ng = float(row[3])
+            logged_mins = float(row[4])
+            no_plan_mins = float(row[5])
+            
+            dt_mould = float(row[6]); dt_plan = float(row[7]); dt_machine = float(row[8]); dt_tooling = float(row[9])
+            dt_material = float(row[10]); dt_utility = float(row[11]); dt_operator = float(row[12]); dt_manpower = float(row[13])
+            dt_process = float(row[14]); dt_maint = float(row[15]); dt_break = float(row[16])
+            
+            dt_dict = {
+                "Mould Changeover": dt_mould, "Planning / Management": dt_plan, "Machine Breakdown": dt_machine,
+                "Tooling Issue": dt_tooling, "Material Shortage": dt_material, "Utility Failure": dt_utility,
+                "Operator Efficiency": dt_operator, "Manpower Shortage": dt_manpower, "Process & Quality": dt_process,
+                "Planned Maintenance": dt_maint, "Break Time": dt_break
+            }
+            
+            avail_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Availability')
+            perf_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Performance')
+            
+            planned_prod_time = total_range_mins - no_plan_mins
+            if planned_prod_time < 0: planned_prod_time = 0
+                
+            logged_prod_mins = logged_mins - no_plan_mins
+            if logged_prod_mins < 0: logged_prod_mins = 0
+                
+            operating_time = logged_prod_mins - avail_loss_mins
+            if operating_time < 0: operating_time = 0
+                
+            target_per_min = (tgt / logged_prod_mins) if logged_prod_mins > 0 else 0
+            adj_tgt = tgt - (avail_loss_mins * target_per_min)
+            if adj_tgt < 0: adj_tgt = 0
+            tgt = adj_tgt
+            
+            pct_planned = round((planned_prod_time / total_range_mins * 100), 1) if total_range_mins > 0 else 0.0
+            pct_no_plan = round((no_plan_mins / total_range_mins * 100), 1) if total_range_mins > 0 else 0.0
+            pct_actual = round((operating_time / total_range_mins * 100), 1) if total_range_mins > 0 else 0.0
+            
+            tot_tgt += tgt; tot_act += act; tot_ng += ng
+            tot_plan_prod += planned_prod_time; tot_no_plan += no_plan_mins; tot_op_time += operating_time
+            tot_dt["mould"] += dt_mould; tot_dt["plan"] += dt_plan; tot_dt["machine"] += dt_machine; tot_dt["tooling"] += dt_tooling
+            tot_dt["material"] += dt_material; tot_dt["utility"] += dt_utility; tot_dt["operator"] += dt_operator; tot_dt["manpower"] += dt_manpower
+            tot_dt["process"] += dt_process; tot_dt["maint"] += dt_maint; tot_dt["break"] += dt_break
+            
+            avail_pct = (operating_time / planned_prod_time * 100) if planned_prod_time > 0 else 0.0
+            perf_pct = (act / tgt * 100) if tgt > 0 else 0.0
+            if perf_pct > 100: perf_pct = 100.0
+            qual_pct = ((act - ng) / act * 100) if act > 0 else 0.0
+            oee_pct = (avail_pct / 100) * (perf_pct / 100) * (qual_pct / 100) * 100
+            
+            records.append({
+                "machine": row[0],
+                "oee": round(oee_pct, 2), "availability": round(avail_pct, 2),
+                "performance": round(perf_pct, 2), "quality": round(qual_pct, 2),
+                "target": int(tgt), "actual": int(act), "rejection": int(ng),
+                "planned_prod_time": f"{format_time(planned_prod_time)} ({pct_planned}%)",
+                "no_plan_time": f"{format_time(no_plan_mins)} ({pct_no_plan}%)",
+                "actual_op_time": f"{format_time(operating_time)} ({pct_actual}%)",
+                
+                # 🚨 UPDATED: Apply format_dt to inject percentages dynamically
+                "mould_changeover": format_dt(dt_mould, total_range_mins),
+                "planning_management": format_dt(dt_plan, total_range_mins),
+                "machine_breakdown": format_dt(dt_machine, total_range_mins),
+                "tooling_issue": format_dt(dt_tooling, total_range_mins),
+                "material_shortage": format_dt(dt_material, total_range_mins),
+                "utility_failure": format_dt(dt_utility, total_range_mins),
+                "operator_efficiency": format_dt(dt_operator, total_range_mins),
+                "manpower_shortage": format_dt(dt_manpower, total_range_mins),
+                "process_quality": format_dt(dt_process, total_range_mins),
+                "planned_maintenance": format_dt(dt_maint, total_range_mins),
+                "break_time": format_dt(dt_break, total_range_mins)
+            })
+            
+        if len(records) > 0:
+            overall_avail = (tot_op_time / tot_plan_prod * 100) if tot_plan_prod > 0 else 0.0
+            overall_perf = (tot_act / tot_tgt * 100) if tot_tgt > 0 else 0.0
+            if overall_perf > 100: overall_perf = 100.0
+            overall_qual = ((tot_act - tot_ng) / tot_act * 100) if tot_act > 0 else 0.0
+            overall_oee = (overall_avail / 100) * (overall_perf / 100) * (overall_qual / 100) * 100
+            
+            tot_calendar_mins = tot_plan_prod + tot_no_plan
+            tot_pct_planned = round((tot_plan_prod / tot_calendar_mins * 100), 1) if tot_calendar_mins > 0 else 0.0
+            tot_pct_no_plan = round((tot_no_plan / tot_calendar_mins * 100), 1) if tot_calendar_mins > 0 else 0.0
+            tot_pct_actual = round((tot_op_time / tot_calendar_mins * 100), 1) if tot_calendar_mins > 0 else 0.0
+            
+            records.append({
+                "machine": "Consolidated Summary",
+                "oee": round(overall_oee, 2), "availability": round(overall_avail, 2),
+                "performance": round(overall_perf, 2), "quality": round(overall_qual, 2),
+                "target": int(tot_tgt), "actual": int(tot_act), "rejection": int(tot_ng),
+                "planned_prod_time": f"{format_time(tot_plan_prod)} ({tot_pct_planned}%)",
+                "no_plan_time": f"{format_time(tot_no_plan)} ({tot_pct_no_plan}%)",
+                "actual_op_time": f"{format_time(tot_op_time)} ({tot_pct_actual}%)",
+                
+                # 🚨 UPDATED: Apply format_dt for the Plant-wide Consolidated Summary
+                "mould_changeover": format_dt(tot_dt["mould"], tot_calendar_mins), 
+                "planning_management": format_dt(tot_dt["plan"], tot_calendar_mins),
+                "machine_breakdown": format_dt(tot_dt["machine"], tot_calendar_mins), 
+                "tooling_issue": format_dt(tot_dt["tooling"], tot_calendar_mins),
+                "material_shortage": format_dt(tot_dt["material"], tot_calendar_mins), 
+                "utility_failure": format_dt(tot_dt["utility"], tot_calendar_mins),
+                "operator_efficiency": format_dt(tot_dt["operator"], tot_calendar_mins), 
+                "manpower_shortage": format_dt(tot_dt["manpower"], tot_calendar_mins),
+                "process_quality": format_dt(tot_dt["process"], tot_calendar_mins), 
+                "planned_maintenance": format_dt(tot_dt["maint"], tot_calendar_mins),
+                "break_time": format_dt(tot_dt["break"], tot_calendar_mins)
+            })
+            
+        return {"records": records}
+    except Exception as e:
+        print("Line/Process OEE Error:", str(e))
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         cur.close()

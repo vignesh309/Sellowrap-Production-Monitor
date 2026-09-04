@@ -225,7 +225,9 @@ async function generateReport() {
         const response = await fetch(`/api/machinewise_oee_report?${params.toString()}`);
         if (!response.ok) throw new Error("Failed to fetch OEE data");
 
+        // 🚨 MOVED HERE: This is where we actually get the response from the server!
         const data = await response.json();
+        window.lastRecords = data.records; // Save globally for the checkboxes
         renderDynamicTableColumns(data.records);
 
     } catch (error) {
@@ -238,6 +240,8 @@ function renderDynamicTableColumns(records) {
     const headerRow = document.getElementById("table_header_row");
     const rows = document.querySelectorAll("#table_body tr");
     const sectionRows = document.querySelectorAll("#table_body .section-row");
+    const showTime = document.getElementById("show_time_chk") ? document.getElementById("show_time_chk").checked : true;
+    const showPct = document.getElementById("show_pct_chk") ? document.getElementById("show_pct_chk").checked : true;
 
     // 1. Wipe out existing dynamically generated columns
     const headerCells = headerRow.querySelectorAll("th");
@@ -284,11 +288,31 @@ function renderDynamicTableColumns(records) {
                 const key = row.getAttribute("data-key");
                 let val = r[key] !== undefined ? r[key] : "-";
                 
-                // Format OEE percentages
+                // --- NEW: Format interceptor for Time/Percentage strings ---
+                if (typeof val === 'string' && val.includes('(') && val.includes('%')) {
+                    // Splits "1d 2h (15.5%)" into "1d 2h" and "15.5%"
+                    const parts = val.split(' (');
+                    if (parts.length === 2) {
+                        const timePart = parts[0].trim();
+                        const pctPart = parts[1].replace(')', '').trim();
+
+                        if (showTime && showPct) {
+                            val = val; // Keep original
+                        } else if (showTime && !showPct) {
+                            val = timePart; // Show only "1d 2h"
+                        } else if (!showTime && showPct) {
+                            val = pctPart; // Show only "15.5%"
+                        } else {
+                            val = "-"; // If they uncheck both
+                        }
+                    }
+                }
+                
+                // Add % sign to main OEE KPIs if needed
                 if (["oee", "availability", "performance", "quality"].includes(key) && val !== "-") {
                     val = `${val}%`;
                 }
-
+                
                 const td = document.createElement("td");
                 td.className = "val-cell";
                 td.innerText = val;

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 import json
 from database import get_conn
-from schemas import Stage1BlockSubmit, FinalizeBatchPayload, ActiveMachineState
+from schemas import Stage1BlockSubmit, FinalizeBatchPayload, ActiveMachineState, DeleteLogsPayload
 from datetime import datetime, timedelta
 from fastapi.responses import StreamingResponse
 from io import BytesIO
@@ -1052,6 +1052,121 @@ def get_shift_history(date: str, shift: str, machine: str):
     except Exception as e:
         print(f"ERROR FETCHING SHIFT HISTORY: {str(e)}")
         return {"exists": False}
+    finally:
+        cur.close()
+        conn.close()
+
+@router.get("/api/production_logs")
+def get_production_logs(
+    filter_date: str = Query(""),
+    filter_shift: str = Query("ALL"),
+    filter_machine: str = Query("ALL")
+):
+    """Fetches hourly production logs for the Log Manager dashboard."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        query = """
+            SELECT 
+                id, 
+                production_date, 
+                shift, 
+                machine_code, 
+                part_number, 
+                start_time, 
+                end_time,
+                (target_shots * COALESCE(active_cavities, 1)) as target_qty,
+                (actual_shots * COALESCE(active_cavities, 1)) as actual_qty
+            FROM production_hourly_log
+            WHERE 1=1
+        """
+        params = []
+        
+        if filter_date:
+            query += " AND production_date = %s"
+            params.append(filter_date)
+            
+        if filter_shift and filter_shift != "ALL":
+            query += " AND shift = %s"
+            params.append(filter_shift)
+            
+        if filter_machine and filter_machine != "ALL":
+            query += " AND machine_code = %s"
+            params.append(filter_machine)
+            
+        # Order newest first, limit to 500 to prevent browser lag on broad searches
+        query += " ORDER BY production_date DESC, start_time DESC LIMIT 500"
+        
+        cur.execute(query, tuple(params))
+        rows = cur.fetchall()
+        
+        records = []
+        for r in rows:
+            records.append({
+                "log_id": r[0],
+                "date_shift": f"{r[1]} | Shift {r[2]}",
+                "machine": r[3],
+                "part_no": r[4],
+                "time_block": f"{r[5]} - {r[6]}",
+                "target": int(r[7]),
+                "actual": int(r[8])
+            })
+            
+        return {"records": records}
+        
+    except Exception as e:
+        print("Fetch Logs Error:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
+
+@router.post("/api/production_logs/delete")
+def delete_production_logs(payload: DeleteLogsPayload):
+    """Safely executes a cascading delete across all 4 production tables."""
+    if not payload.log_ids:
+        raise HTTPException(status_code=400, detail="No logs selected for deletion.")
+        
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        # Convert list to tuple for SQL 'IN' clause
+        log_ids_tuple = tuple(payload.log_ids)
+        
+        # 🚨 STEP 0: Fetch the batch_ids BEFORE deleting, so we can clean the ERP table
+        cur.execute(
+            "SELECT batch_id FROM production_hourly_log WHERE id IN %s", 
+            (log_ids_tuple,)
+        )
+        batch_ids = [row[0] for row in cur.fetchall()]
+        
+        if not batch_ids:
+            raise HTTPException(status_code=404, detail="Logs not found in database.")
+
+        # 🚨 STEP 1: Delete Downtimes
+        cur.execute("DELETE FROM production_shortfalls WHERE log_id IN %s", (log_ids_tuple,))
+        
+        # 🚨 STEP 2: Delete Rejections
+        cur.execute("DELETE FROM production_rejections WHERE log_id IN %s", (log_ids_tuple,))
+        
+        # 🚨 STEP 3: Delete ERP Staging Payloads
+        # We loop through and use LIKE so we catch the full FINSYS time-stamped strings
+        for batch_id in batch_ids:
+            cur.execute("DELETE FROM erp_production_staging WHERE batch_id LIKE %s", (f"{batch_id}%",))
+            
+        # 🚨 STEP 4: Delete the Main Hourly Logs
+        cur.execute("DELETE FROM production_hourly_log WHERE id IN %s", (log_ids_tuple,))
+        
+        # Commit the transaction ONLY if all 4 steps succeed
+        conn.commit()
+        
+        return {"message": f"Successfully wiped {len(payload.log_ids)} hourly blocks from all systems."}
+        
+    except Exception as e:
+        conn.rollback() # Cancel all deletes if anything fails
+        print("Delete Log Error:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         cur.close()
         conn.close()
