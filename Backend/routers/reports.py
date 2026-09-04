@@ -1192,6 +1192,7 @@ def get_oee_summary(
                     ((EXTRACT(EPOCH FROM end_time) - EXTRACT(EPOCH FROM start_time) + 
                       CASE WHEN end_time < start_time THEN 86400 ELSE 0 END) / 60.0) as logged_mins
                 FROM production_hourly_log
+                WHERE is_no_plan = false AND split_part(batch_id, '_', 5) != 'NO PLAN'
             ),
             ShiftAgg AS (
                 SELECT 
