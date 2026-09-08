@@ -94,14 +94,17 @@ function renderTable(records) {
     let html = "";
 
     records.forEach(r => {
-        // Format the Variance Chip
+        // Format the Variance Chip based on Optimization Potential
         let varianceChip = `<span class="variance-badge var-perfect">0.0%</span>`;
+        
         if (r.variance_pct > 2.0) {
-            // Slower than standard (+%)
-            varianceChip = `<span class="variance-badge var-slower">+${r.variance_pct.toFixed(1)}%</span>`;
+            // POSITIVE %: Proposed is faster than Standard (Time Saved!) -> BLUE
+            varianceChip = `<span class="variance-badge var-faster">+${r.variance_pct.toFixed(1)}%</span>`;
+            
         } else if (r.variance_pct < -2.0) {
-            // Faster than standard (-%)
-            varianceChip = `<span class="variance-badge var-faster">${r.variance_pct.toFixed(1)}%</span>`;
+            // NEGATIVE %: Proposed is slower than Standard (Time Lost!) -> RED
+            // Note: We don't need a '+' sign here because negative numbers already have a '-'
+            varianceChip = `<span class="variance-badge var-slower">${r.variance_pct.toFixed(1)}%</span>`;
         }
 
         html += `

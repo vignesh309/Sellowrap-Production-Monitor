@@ -2,6 +2,7 @@ const backend = window.location.origin;
 
 // State variables for auto-scroll
 let scrollInterval;
+let scrollTimeout; // 🚨 NEW: We must track the timeout too!
 let isScrollingDown = true;
 let dataRefreshInterval;
 
@@ -92,12 +93,14 @@ async function initializeTVDashboard() {
 }
 
 function startAutoScroll(container) {
+    // 🚨 FIX: Clear BOTH the interval and any pending timeouts before starting over
     clearInterval(scrollInterval);
+    clearTimeout(scrollTimeout);
     container.scrollTop = 0;
     isScrollingDown = true;
     
-    // Wait 4 seconds before starting the scroll so operators can read the top rows
-    setTimeout(() => {
+    // 🚨 FIX: Assign the setTimeout to our tracking variable
+    scrollTimeout = setTimeout(() => {
         scrollInterval = setInterval(() => {
             // If the content fits on the screen, don't scroll at all
             if (container.scrollHeight <= container.clientHeight) return;
@@ -109,13 +112,15 @@ function startAutoScroll(container) {
                 if (Math.ceil(container.scrollTop + container.clientHeight) >= container.scrollHeight) {
                     isScrollingDown = false;
                     clearInterval(scrollInterval);
-                    setTimeout(() => startAutoScroll(container), 4000); // Pause at bottom, then restart
+                    // 🚨 FIX: Track the pause timeout
+                    scrollTimeout = setTimeout(() => startAutoScroll(container), 4000); 
                 }
             } else {
                 container.scrollTop = 0;
                 isScrollingDown = true;
                 clearInterval(scrollInterval);
-                setTimeout(() => startAutoScroll(container), 4000);
+                // 🚨 FIX: Track the pause timeout
+                scrollTimeout = setTimeout(() => startAutoScroll(container), 4000);
             }
         }, 50); // Speed of scroll (lower is faster)
     }, 4000); 

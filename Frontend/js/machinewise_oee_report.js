@@ -323,13 +323,43 @@ function renderDynamicTableColumns(records) {
 }
 
 function exportToExcel() {
-    let table = document.getElementById("oee_report_table");
-    if (!table || table.innerText.includes("Select criteria")) {
-        alert("No data available to export.");
+    const table = document.getElementById("oee_report_table");
+    if (!table) {
+        alert("No data available to export!");
         return;
     }
 
-    let workbook = XLSX.utils.table_to_book(table, { sheet: "Machinewise OEE", raw: true });
-    let dateStr = document.getElementById('start_date').value;
-    XLSX.writeFile(workbook, `Machinewise_OEE_${dateStr}.xlsx`);
+    // 1. Convert the HTML table to a SheetJS workbook
+    const wb = XLSX.utils.table_to_book(table, { raw: true });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+
+    // 2. Iterate through every cell in the generated sheet to clean the data
+    for (const cellAddress in ws) {
+        if (cellAddress[0] === '!') continue; // Skip SheetJS metadata keys like !ref or !merges
+
+        let cell = ws[cellAddress];
+        if (cell.v && typeof cell.v === 'string') {
+            let val = cell.v.trim();
+
+            // Regex to catch standalone percentages like "95.8%" or "(95.8%)"
+            let pctMatch = val.match(/^\(?([\d\.]+)\s*%\)?$/);
+            
+            if (pctMatch) {
+                // Extract the number, strip the '%', and convert to a float
+                cell.v = parseFloat(pctMatch[1]);
+                
+                // 'n' explicitly tells Excel to treat this cell as a true Number for formulas
+                cell.t = 'n'; 
+            } 
+            // Also fix standard numbers (like Target/Actual Qty) that might accidentally export as text strings
+            else if (/^-?[\d\.]+$/.test(val) && !isNaN(parseFloat(val))) {
+                cell.v = parseFloat(val);
+                cell.t = 'n';
+            }
+        }
+    }
+
+    // 3. Generate date-stamped filename and trigger the download
+    const dateStr = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `OEE_Report_${dateStr}.xlsx`);
 }
