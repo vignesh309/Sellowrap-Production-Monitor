@@ -363,3 +363,71 @@ function exportToExcel() {
     const dateStr = new Date().toISOString().split('T')[0];
     XLSX.writeFile(wb, `OEE_Report_${dateStr}.xlsx`);
 }
+// --- NEW: EMAIL REPORT LOGIC ---
+async function emailReport() {
+    const table = document.getElementById("oee_report_table");
+    if (!table || table.innerText.includes("Select criteria to load") || table.innerText.includes("No Data Found")) {
+        alert("No data available to email! Please generate the report first.");
+        return;
+    }
+
+    const emailBtn = document.getElementById("email_btn");
+    const originalText = emailBtn.innerText;
+    emailBtn.innerText = "Sending...";
+    emailBtn.disabled = true;
+
+    try {
+        // 1. Convert the HTML table to a SheetJS workbook (same as Export)
+        const wb = XLSX.utils.table_to_book(table, { raw: true });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+
+        // Clean the data percentages (same as Export)
+        for (const cellAddress in ws) {
+            if (cellAddress[0] === '!') continue;
+            let cell = ws[cellAddress];
+            if (cell.v && typeof cell.v === 'string') {
+                let val = cell.v.trim();
+                let pctMatch = val.match(/^\(?([\d\.]+)\s*%\)?$/);
+                if (pctMatch) {
+                    cell.v = parseFloat(pctMatch[1]);
+                    cell.t = 'n'; 
+                } else if (/^-?[\d\.]+$/.test(val) && !isNaN(parseFloat(val))) {
+                    cell.v = parseFloat(val);
+                    cell.t = 'n';
+                }
+            }
+        }
+
+        // 2. Convert Workbook to a binary Blob (simulating an actual file)
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+        // 3. Package it into a Form to send to Python
+        const dateStr = new Date().toISOString().split('T')[0];
+        const formData = new FormData();
+        formData.append("file", blob, `Machinewise_OEE_${dateStr}.xlsx`);
+        
+        // You can change the default recipient here or let Python handle it
+        formData.append("recipient", "srinivignesh1999@gmail.com");
+
+        // 4. Send to backend
+        const response = await fetch('/api/email_oee_report', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            alert("Email sent successfully!");
+        } else {
+            const errorData = await response.json();
+            alert("Failed to send email: " + (errorData.detail || "Unknown error"));
+        }
+    } catch (error) {
+        console.error("Email Error:", error);
+        alert("An error occurred while sending the email.");
+    } finally {
+        // Reset button state
+        emailBtn.innerText = originalText;
+        emailBtn.disabled = false;
+    }
+}

@@ -12,7 +12,7 @@ from services.telegram_notifier import start_scheduler
 from summary_worker import start_summary_worker
 
 # Import our routers
-from routers import frontend, master, reports, auth, production_entry, fetchdata, erp_integration
+from routers import frontend, master, reports, auth, production_entry, fetchdata, erp_integration, email_notifier
 
 # =========================
 # Lifespan Events (Startup & Shutdown)
@@ -70,7 +70,7 @@ app.include_router(auth.router)
 app.include_router(production_entry.router)
 app.include_router(fetchdata.router)
 app.include_router(erp_integration.router)  # 🚨 NEW: ERP Integration Router
-
+app.include_router(email_notifier.router)  # 🚨 NEW: Email Notifier Router
 # =========================
 # Main Entry
 # =========================

@@ -80,6 +80,30 @@ input[type="date"], select { padding: 10px 15px; border-radius: 8px; border: 1px
 .btn-primary { padding: 10px 20px; background: linear-gradient(135deg, var(--accent-cyan) 0%, #0072ff 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; height: 42px; }
 .btn-success { padding: 10px 20px; background: rgba(0, 240, 118, 0.15); border: 1px solid var(--status-green); color: var(--status-green); border-radius: 8px; cursor: pointer; font-weight: bold; height: 42px; }
 
+/* 🚨 NEW: Email Button Style */
+.btn-warning { 
+    padding: 10px 20px; 
+    background: linear-gradient(135deg, #ffb12a 0%, #f39c12 100%); 
+    color: #000; /* Dark text for contrast against bright orange */
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    height: 42px;
+    transition: box-shadow 0.3s ease;
+}
+
+.btn-warning:hover {
+    box-shadow: 0 0 12px rgba(243, 156, 18, 0.6);
+}
+
+.btn-warning:disabled {
+    background: rgba(243, 156, 18, 0.5);
+    color: rgba(0, 0, 0, 0.5);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
 .table-section { 
     background: rgba(0,0,0,0.1); 
     border: 1px solid rgba(81, 128, 230, 0.2); 

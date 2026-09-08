@@ -23,6 +23,7 @@ FROM production_shortfalls -- Replace this with your actual table name
 WHERE log_id IN (
     17008, 17009, 17010, 
     17057, 17058, 17059, 
+│   │   ├── email_notifier.py
     17256, 17257, 17258, 17259, 17260, 17261
 )
 ORDER BY id;
@@ -46,6 +47,7 @@ Sellowrap Production Monitor Version 2
 │   ├── routers/
 │   │   ├── __init__.py
 │   │   ├── auth.py
+│   │   ├── email_notifier.py
 │   │   ├── erp_integration.py
 │   │   ├── fetchdata.py
 │   │   ├── frontend.py
@@ -87,6 +89,7 @@ Sellowrap Production Monitor Version 2
 │   │   ├── process_master.css
 │   │   ├── production_hourly_report.css
 │   │   ├── production_hourly_status.css
+│   │   ├── production_log_manager.css
 │   │   ├── productionstatus.css
 │   │   ├── rejection_reason_master.css
 │   │   ├── shift_summary.css
@@ -127,6 +130,7 @@ Sellowrap Production Monitor Version 2
 │   │   ├── process_master.js
 │   │   ├── production_hourly_report.js
 │   │   ├── production_hourly_status.js
+│   │   ├── production_log_manager.js
 │   │   ├── productionstatus.js
 │   │   ├── rejection_reason_master.js
 │   │   ├── shift_summary.js
@@ -176,7 +180,6 @@ Sellowrap Production Monitor Version 2
 │   ├── shortfall_reason_master.html
 │   ├── teep_summary.html
 │   ├── teep_summary_idle_machines.html
-│   └── 
 │
 └── Refer while install.txt
 
