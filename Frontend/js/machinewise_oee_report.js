@@ -408,7 +408,7 @@ async function emailReport() {
         formData.append("file", blob, `Machinewise_OEE_${dateStr}.xlsx`);
         
         // You can change the default recipient here or let Python handle it
-        formData.append("recipient", "srinivignesh1999@gmail.com");
+        //formData.append("recipient", "srinivignesh1999@gmail.com");
 
         // 4. Send to backend
         const response = await fetch('/api/email_oee_report', {

@@ -962,8 +962,6 @@ def get_shift_summary(date: str, shift: str):
         cur.close()
         conn.close()
 
-from fastapi import APIRouter, Query, HTTPException
-
 @router.get("/api/report/moulding_machines_history")
 def get_moulding_machine_history(
     start: str = Query(..., description="Start date YYYY-MM-DD"),
