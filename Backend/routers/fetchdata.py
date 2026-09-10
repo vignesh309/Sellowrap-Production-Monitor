@@ -169,44 +169,67 @@ def get_live_moulding_data(machine_code: str, date: str = None, shift: str = Non
             response_data["mold_name"] = mold_row[0]
             
         # 5. 🚨 SMART QUERY: Calculate exact hourly shots using true Shift Window
-        if date and shift:
-            # Calculate physical start and end times for the shift
-            start_date_obj = datetime.strptime(date, "%Y-%m-%d")
-            
-            if shift == "A":
-                start_dt = start_date_obj.replace(hour=7, minute=0, second=0)
-                end_dt = start_date_obj.replace(hour=18, minute=59, second=59)
-            else: # Shift B
-                start_dt = start_date_obj.replace(hour=19, minute=0, second=0)
-                end_dt = (start_date_obj + timedelta(days=1)).replace(hour=6, minute=59, second=59)
+            if date and shift:
+                start_date_obj = datetime.strptime(date, "%Y-%m-%d")
+                
+                if shift == "A":
+                    start_dt = start_date_obj.replace(hour=7, minute=0, second=0)
+                    end_dt = start_date_obj.replace(hour=18, minute=59, second=59)
+                else: # Shift B
+                    start_dt = start_date_obj.replace(hour=19, minute=0, second=0)
+                    end_dt = (start_date_obj + timedelta(days=1)).replace(hour=6, minute=59, second=59)
 
-            cur.execute(f"""
-                WITH FirstShots AS (
-                    -- Get the very first shot count recorded at the start of each hour within the shift window
-                    SELECT DISTINCT ON (EXTRACT(HOUR FROM monitor_timestamp))
-                        EXTRACT(HOUR FROM monitor_timestamp) AS hr,
-                        shot_count
-                    FROM moulding_machines_monitor1_{suffix}
-                    WHERE machine_id = %s AND monitor_timestamp >= %s AND monitor_timestamp <= %s
-                    ORDER BY EXTRACT(HOUR FROM monitor_timestamp), monitor_timestamp ASC
-                )
-                SELECT 
-                    hr,
-                    -- Subtract current hour's first shot from the next hour's first shot
-                    -- If it is the current running hour, subtract from the absolute MAX shot count right now
-                    COALESCE(
-                        LEAD(shot_count) OVER (ORDER BY hr), 
-                        (SELECT MAX(shot_count) FROM moulding_machines_monitor1_{suffix} 
-                         WHERE machine_id = %s AND monitor_timestamp >= %s AND monitor_timestamp <= %s 
-                         AND EXTRACT(HOUR FROM monitor_timestamp) = FirstShots.hr)
-                    ) - shot_count AS hourly_shots
-                FROM FirstShots;
-            """, (machine_code, start_dt, end_dt, machine_code, start_dt, end_dt))
-            
-            for row in cur.fetchall():
-                hour_no = int(row[0])
-                shots = int(row[1])
-                response_data["iot_counts"][hour_no] = shots
+                cur.execute(f"""
+                    WITH HourlyRowCounts AS (
+                        -- FALLBACK LOGIC: Count the actual physical cycle logs generated in each hour
+                        SELECT 
+                            EXTRACT(HOUR FROM monitor_timestamp) AS hr, 
+                            COUNT(*) as total_cycles
+                        FROM moulding_machines_monitor1_{suffix}
+                        WHERE machine_id = %s AND monitor_timestamp >= %s AND monitor_timestamp <= %s
+                        GROUP BY EXTRACT(HOUR FROM monitor_timestamp)
+                    ),
+                    FirstShots AS (
+                        -- Get the very first shot count recorded at the start of each hour
+                        SELECT DISTINCT ON (EXTRACT(HOUR FROM monitor_timestamp))
+                            EXTRACT(HOUR FROM monitor_timestamp) AS hr,
+                            shot_count AS start_count
+                        FROM moulding_machines_monitor1_{suffix}
+                        WHERE machine_id = %s AND monitor_timestamp >= %s AND monitor_timestamp <= %s
+                        ORDER BY EXTRACT(HOUR FROM monitor_timestamp), monitor_timestamp ASC
+                    ),
+                    EndCounts AS (
+                        -- Find the count at the end of the hour (or current max if it's the running hour)
+                        SELECT 
+                            hr,
+                            start_count,
+                            COALESCE(
+                                LEAD(start_count) OVER (ORDER BY hr), 
+                                (SELECT MAX(shot_count) FROM moulding_machines_monitor1_{suffix} 
+                                 WHERE machine_id = %s AND monitor_timestamp >= %s AND monitor_timestamp <= %s 
+                                 AND EXTRACT(HOUR FROM monitor_timestamp) = FirstShots.hr)
+                            ) AS end_count
+                        FROM FirstShots
+                    )
+                    SELECT 
+                        e.hr,
+                        -- 🚨 HYBRID CALCULATION: Subtraction first, COUNT(*) if counter resets
+                        CASE 
+                            WHEN e.end_count < e.start_count THEN COALESCE(c.total_cycles, 0)
+                            ELSE (e.end_count - e.start_count)
+                        END AS hourly_shots
+                    FROM EndCounts e
+                    LEFT JOIN HourlyRowCounts c ON e.hr = c.hr;
+                """, (
+                    machine_code, start_dt, end_dt, # Params for HourlyRowCounts
+                    machine_code, start_dt, end_dt, # Params for FirstShots
+                    machine_code, start_dt, end_dt  # Params for EndCounts
+                ))
+                
+                for row in cur.fetchall():
+                    hour_no = int(row[0])
+                    shots = int(row[1])
+                    response_data["iot_counts"][hour_no] = shots
 
     except psycopg2.errors.UndefinedTable:
         # Safely ignore if the table doesn't exist yet for a new month
