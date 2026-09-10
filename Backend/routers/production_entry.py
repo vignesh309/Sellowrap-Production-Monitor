@@ -236,13 +236,33 @@ def get_batch_logs(date: str, shift: str, machine_code: str):
     conn = get_conn()
     cur = conn.cursor()
     try:
+        # 🚨 FIX: Add datetime calculation for Shift B rollover
+        from datetime import datetime, timedelta
+        start_date_obj = datetime.strptime(date, "%Y-%m-%d")
+        next_day_str = (start_date_obj + timedelta(days=1)).strftime("%Y-%m-%d")
+
         # 1. Fetch the automated IoT counts for this machine and date
-        cur.execute("""
-            SELECT hour_no, part_count 
-            FROM machine_hourly_summary 
-            WHERE machine_code = %s AND summary_date = %s
-        """, (machine_code, date))
-        
+        if shift == "A":
+            cur.execute("""
+                SELECT hour_no, part_count 
+                FROM machine_hourly_summary 
+                WHERE machine_code = %s 
+                  AND summary_date = %s 
+                  AND hour_no >= 7 AND hour_no <= 18
+            """, (machine_code, date))
+        else:
+            # 🚨 SMART QUERY: Shift B bridges across two physical calendar days!
+            cur.execute("""
+                SELECT hour_no, part_count 
+                FROM machine_hourly_summary 
+                WHERE machine_code = %s 
+                  AND (
+                      (summary_date = %s AND hour_no >= 19 AND hour_no <= 23)
+                      OR 
+                      (summary_date = %s AND hour_no >= 0 AND hour_no <= 6)
+                  )
+            """, (machine_code, date, next_day_str))
+            
         # Format as a dictionary: {"8": 120, "9": 145}
         iot_counts = {str(row[0]): row[1] for row in cur.fetchall()}
 
@@ -259,7 +279,7 @@ def get_batch_logs(date: str, shift: str, machine_code: str):
         rows = cur.fetchall()
         
         if not rows:
-            # 🚨 NEW: Fetch the Last Known Setup if there are no logs for today!
+            # Fetch the Last Known Setup if there are no logs for today!
             # We filter out 'is_no_plan = TRUE' so it only remembers real setups.
             cur.execute("""
                 SELECT part_number, mould_code, operator_code, supervisor_code
@@ -285,7 +305,7 @@ def get_batch_logs(date: str, shift: str, machine_code: str):
                 "logs": [], 
                 "is_finalized": False, 
                 "iot_counts": iot_counts,
-                "last_known_setup": last_known_setup # 🚨 Pass the setup to the frontend
+                "last_known_setup": last_known_setup # Pass the setup to the frontend
             }
             
         last_row = rows[-1]
