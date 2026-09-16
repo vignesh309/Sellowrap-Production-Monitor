@@ -23,7 +23,9 @@ def get_conn():
             host=DB_HOST,
             database=DB_NAME,
             user=DB_USER,
-            password=DB_PASS
+            password=DB_PASS,
+            connect_timeout=10,
+            options="-c statement_timeout=120000"
         )
         return conn
     except psycopg2.OperationalError as e:

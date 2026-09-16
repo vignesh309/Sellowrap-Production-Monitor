@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Daily OEE Trend</title>
+    <link rel="stylesheet" href="/static/css/process_daily_oee.css">
+</head>
+<body>
+
+    <!-- ENTERPRISE NAVBAR -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>PROCESS DAILY OEE TREND</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="main-container">
+        
+        <!-- HEADER ACTIONS -->
+        <div class="canvas-header">
+            <div>
+                <h2 style="margin: 0; color: var(--text-main);">Daily OEE Matrix</h2>
+                <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 13px;">Track OEE performance for each process across a continuous date range.</p>
+            </div>
+            <button class="hub-btn" onclick="exportToExcel()" style="margin: 0; background: rgba(0, 240, 118, 0.15); border-color: var(--status-green); color: var(--status-green);">
+                ⬇️ Export Excel
+            </button>
+        </div>
+
+        <!-- FILTER CARD -->
+        <div class="card" style="margin-bottom: 20px; padding: 15px 25px; display: flex; gap: 20px; align-items: flex-end;">
+            <div>
+                <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; font-weight: bold;">From Date</label>
+                <input type="date" id="start_date" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); color: white; width: 160px; color-scheme: dark;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; font-weight: bold;">To Date</label>
+                <input type="date" id="end_date" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input); color: white; width: 160px; color-scheme: dark;">
+            </div>
+            <button class="hub-btn" onclick="generateTrendReport()" style="margin: 0; height: 38px;">
+                📊 Generate Report
+            </button>
+        </div>
+
+        <!-- MATRIX TABLE CARD -->
+        <div class="card">
+            <div class="table-container">
+                <table id="oee_trend_table">
+                    <thead>
+                        <tr id="table_header_row">
+                            <th class="sticky-col">PROCESS</th>
+                            <!-- Dynamic Date Columns Will Be Injected Here via JS -->
+                            <th class="val-col" id="col_placeholder">Select date range to load</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                        <tr><td colspan="2" class="loading-cell">Ready to generate report...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Libraries -->
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/process_daily_oee.js"></script>
+</body>
+</html>

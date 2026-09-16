@@ -221,7 +221,7 @@ def start_scheduler():
     # 1. Start the Automatic Hourly Timer
     scheduler.add_job(generate_hourly_report, 'cron', minute=0)
     scheduler.start()
-    print("🤖 Telegram Bot Scheduler Started. Running EXACTLY on the hour, every hour.")
+    print("Telegram Bot Scheduler Started. Running EXACTLY on the hour, every hour.")
 
     # 2. Start the Command Listener in a background thread
     listener_thread = threading.Thread(target=run_bot_listener)

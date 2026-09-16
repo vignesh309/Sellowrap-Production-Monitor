@@ -1,38 +1,11 @@
 This is the code to run in the JP's computer or server to completetly change the name of part_master table to
 rm_master in order to make our new code work.
 
--- 1. Rename the table itself
-ALTER TABLE IF EXISTS public.part_master RENAME TO rm_master;
-
--- 2. Rename the Primary Key
-ALTER INDEX IF EXISTS part_master_pkey RENAME TO rm_master_pkey;
-
--- 3. Rename the Unique Constraint on part_no
-ALTER TABLE IF EXISTS public.rm_master RENAME CONSTRAINT part_master_part_no_key TO rm_master_part_no_key;
-
--- 4. Rename the custom Index you created
-ALTER INDEX IF EXISTS ix_part_master_id RENAME TO ix_rm_master_id;
-
--- 5. Rename the Auto-Increment Sequence for the ID
-ALTER SEQUENCE IF EXISTS part_master_id_seq RENAME TO rm_master_id_seq;
-
-SQL command to select multiple id search
-
-SELECT * 
-FROM production_shortfalls -- Replace this with your actual table name
-WHERE log_id IN (
-    17008, 17009, 17010, 
-    17057, 17058, 17059, 
-│   │   ├── email_notifier.py
-    17256, 17257, 17258, 17259, 17260, 17261
-)
-ORDER BY id;
-
 Current Folder Structure
 Sellowrap Production Monitor Version 2
 ├── .git/
 ├── .gitignore
-├── Backend
+├── Backend/
 │   ├── .env
 │   ├── __pycache__/
 │   ├── config.py
@@ -46,6 +19,7 @@ Sellowrap Production Monitor Version 2
 │   ├── utils.py
 │   ├── routers/
 │   │   ├── __init__.py
+│   │   ├── __pycache__/
 │   │   ├── auth.py
 │   │   ├── email_notifier.py
 │   │   ├── erp_integration.py
@@ -53,8 +27,7 @@ Sellowrap Production Monitor Version 2
 │   │   ├── frontend.py
 │   │   ├── master.py
 │   │   ├── production_entry.py
-│   │   ├── reports.py
-│   │   └── __pycache__/
+│   │   └── reports.py
 │   └── services/
 │       ├── __pycache__/
 │       ├── auto_worker.py
@@ -63,7 +36,46 @@ Sellowrap Production Monitor Version 2
 │       ├── telegram_notifier.py
 │       └── test_erp_push.py
 │
-├── Frontend
+├── Frontend/
+│   ├── batch_ledger.html
+│   ├── cycle_time_analysis.html
+│   ├── detailed_rejections_report.html
+│   ├── detailed_shortfalls_report.html
+│   ├── employee_master.html
+│   ├── erp_integration_master.html
+│   ├── erp_staging_view.html
+│   ├── hub.html
+│   ├── iot_report.html
+│   ├── iot_summary.html
+│   ├── lineprocesswise_oee_report.html
+│   ├── login.html
+│   ├── loss_analysis.html
+│   ├── machine_master.html
+│   ├── machinewise_oee_report.html
+│   ├── manifest.json
+│   ├── moulding_machines_alarms.html
+│   ├── moulding_machines_history.html
+│   ├── moulding_stage.html
+│   ├── moulding_stage_hourly_status.html
+│   ├── oeeteep_dashboard.html
+│   ├── oee_summary.html
+│   ├── part_master.html
+│   ├── partwise_report.html
+│   ├── pending_batches.html
+│   ├── Plant_kpi_performance/
+│   │   └── non_hazardous_waste_generation_report.html
+│   ├── process_master.html
+│   ├── production_entry_stage_1.html
+│   ├── production_hourly_report.html
+│   ├── production_hourly_status.html
+│   ├── production_log_manager.html
+│   ├── productionstatus.html
+│   ├── rejection_reason_master.html
+│   ├── shift_summary.html
+│   ├── shift_summary_tvscreen.html
+│   ├── shortfall_reason_master.html
+│   ├── teep_summary.html
+│   ├── teep_summary_idle_machines.html
 │   ├── css/
 │   │   ├── batch_ledger.css
 │   │   ├── cycle_time_analysis.css
@@ -75,8 +87,8 @@ Sellowrap Production Monitor Version 2
 │   │   ├── iot_report.css
 │   │   ├── iot_summary.css
 │   │   ├── lineprocesswise_oee_report.css
-│   │   ├── machinewise_oee_report.css
 │   │   ├── machine_master.css
+│   │   ├── machinewise_oee_report.css
 │   │   ├── moulding_machines_alarms.css
 │   │   ├── moulding_machines_history.css
 │   │   ├── moulding_stage.css
@@ -103,83 +115,45 @@ Sellowrap Production Monitor Version 2
 │   │   ├── Title_Company_logo.png
 │   │   ├── Vendor_logo.png
 │   │   └── Vendor_logo1.png
-│   ├── js/
-│   │   ├── batch_ledger.js
-│   │   ├── cycle_time_analysis.js
-│   │   ├── detailed_rejections_report.js
-│   │   ├── detailed_shortfalls_report.js
-│   │   ├── employee_master.js
-│   │   ├── erp_integration_master.js
-│   │   ├── erp_staging_view.js
-│   │   ├── iot_report.js
-│   │   ├── iot_summary.js
-│   │   ├── lineprocesswise_oee_report.js
-│   │   ├── loss_analysis.js
-│   │   ├── machinewise_oee_report.js
-│   │   ├── machine_master.js
-│   │   ├── moulding_machines_alarms.js
-│   │   ├── moulding_machines_history.js
-│   │   ├── moulding_stage.js
-│   │   ├── moulding_stage_hourly_status.js
-│   │   ├── non_hazardous_waste_generation_report.js
-│   │   ├── oeeteep_dashboard.js
-│   │   ├── oee_summary.js
-│   │   ├── part_master.js
-│   │   ├── partwise_report.js
-│   │   ├── pending_batches.js
-│   │   ├── process_master.js
-│   │   ├── production_hourly_report.js
-│   │   ├── production_hourly_status.js
-│   │   ├── production_log_manager.js
-│   │   ├── productionstatus.js
-│   │   ├── rejection_reason_master.js
-│   │   ├── shift_summary.js
-│   │   ├── shift_summary_tvscreen.js
-│   │   ├── shortfall_reason_master.js
-│   │   ├── stage1.js
-│   │   ├── teep_summary.js
-│   │   ├── teep_summary_idle_machines.js
-│   │   └── js libraries/
-│   │       ├── chart.js
-│   │       └── xlsx.full.min.js
-│   ├── Plant_kpi_performance/
-│   │   └── non_hazardous_waste_generation_report.html
-│   ├── batch_ledger.html
-│   ├── cycle_time_analysis.html
-│   ├── detailed_rejections_report.html
-│   ├── detailed_shortfalls_report.html
-│   ├── employee_master.html
-│   ├── erp_integration_master.html
-│   ├── erp_staging_view.html
-│   ├── hub.html
-│   ├── iot_report.html
-│   ├── iot_summary.html
-│   ├── lineprocesswise_oee_report.html
-│   ├── login.html
-│   ├── loss_analysis.html
-│   ├── machinewise_oee_report.html
-│   ├── machine_master.html
-│   ├── manifest.json
-│   ├── moulding_machines_alarms.html
-│   ├── moulding_machines_history.html
-│   ├── moulding_stage.html
-│   ├── moulding_stage_hourly_status.html
-│   ├── oeeteep_dashboard.html
-│   ├── oee_summary.html
-│   ├── part_master.html
-│   ├── partwise_report.html
-│   ├── pending_batches.html
-│   ├── process_master.html
-│   ├── production_entry_stage_1.html
-│   ├── production_hourly_report.html
-│   ├── production_hourly_status.html
-│   ├── productionstatus.html
-│   ├── rejection_reason_master.html
-│   ├── shift_summary.html
-│   ├── shift_summary_tvscreen.html
-│   ├── shortfall_reason_master.html
-│   ├── teep_summary.html
-│   ├── teep_summary_idle_machines.html
+│   └── js/
+│       ├── batch_ledger.js
+│       ├── cycle_time_analysis.js
+│       ├── detailed_rejections_report.js
+│       ├── detailed_shortfalls_report.js
+│       ├── employee_master.js
+│       ├── erp_integration_master.js
+│       ├── erp_staging_view.js
+│       ├── iot_report.js
+│       ├── iot_summary.js
+│       ├── js libraries/
+│       │   ├── chart.js
+│       │   └── xlsx.full.min.js
+│       ├── lineprocesswise_oee_report.js
+│       ├── loss_analysis.js
+│       ├── machine_master.js
+│       ├── machinewise_oee_report.js
+│       ├── moulding_machines_alarms.js
+│       ├── moulding_machines_history.js
+│       ├── moulding_stage.js
+│       ├── moulding_stage_hourly_status.js
+│       ├── non_hazardous_waste_generation_report.js
+│       ├── oeeteep_dashboard.js
+│       ├── oee_summary.js
+│       ├── part_master.js
+│       ├── partwise_report.js
+│       ├── pending_batches.js
+│       ├── process_master.js
+│       ├── production_hourly_report.js
+│       ├── production_hourly_status.js
+│       ├── production_log_manager.js
+│       ├── productionstatus.js
+│       ├── rejection_reason_master.js
+│       ├── shift_summary.js
+│       ├── shift_summary_tvscreen.js
+│       ├── shortfall_reason_master.js
+│       ├── stage1.js
+│       ├── teep_summary.js
+│       └── teep_summary_idle_machines.js
 │
 └── Refer while install.txt
 
@@ -206,7 +180,7 @@ persistence true
 persistence_file mosquitto.db
 so that mosquito will listen in port 1883 for machine trigger counts.
 
-pip install paho-mqtt uvicorn fastapi psycopg2-binary python-dotenv apscheduler requests
+pip install paho-mqtt uvicorn fastapi psycopg2-binary python-dotenv apscheduler requests pandas matplotlib openpyxl
 PyTelegramBotAPI Pillow qrcode[pil]
 
 

@@ -1,0 +1,116 @@
+:root {
+    --bg-main: #14172b;
+    --bg-panel: #1e223c;
+    --bg-input: #262a47;
+    --border-color: rgba(81, 128, 230, 0.2);
+    --border-solid: #5180e6;
+    --text-main: #ffffff;
+    --text-muted: #c1deff;
+    --accent-cyan: #00e5ff;
+    --status-green: #00f076;
+    --status-red: #ff2a7a;
+    --status-yellow: #ffb142;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    margin: 0;
+}
+
+/* NAVBAR */
+.navbar { background-color: var(--bg-panel); border-bottom: 1px solid var(--border-solid); padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+.brand { display: flex; align-items: center; gap: 15px; }
+.brand img { height: 50px; border-radius: 4px; background: #ffffff; }
+.brand h2 { margin: 0; color: var(--accent-cyan); font-size: 20px; font-weight: 600; }
+.nav-utils { display: flex; align-items: center; }
+.hub-btn { background: rgba(0, 229, 255, 0.08); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; margin-right: 20px; transition: 0.3s; }
+.hub-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+.hub-btn svg { width: 18px; height: 18px; fill: currentColor; }
+.user-profile { display: flex; align-items: center; gap: 12px; padding-right: 20px; margin-right: 20px; border-right: 1px solid rgba(81, 128, 230, 0.4); }
+.avatar { width: 50px; height: 50px; border-radius: 5px; background: linear-gradient(135deg, var(--accent-cyan) 0%, #0072ff 100%); display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: #fff; }
+.user-info { display: flex; flex-direction: column; justify-content: center; }
+.user-name { font-weight: bold; font-size: 15px; color: #fff; }
+.user-role { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;}
+.logout-btn { background: transparent; border: none; color: var(--status-red); cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 14px; transition: 0.3s; }
+.logout-btn:hover { color: #ff5494; }
+.logout-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* MAIN LAYOUT */
+.main-container { max-width: 98%; margin: 40px auto; padding: 0 20px; }
+.canvas-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+
+/* CARDS */
+.card { background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+/* HORIZONTAL SCROLLING CONTAINER */
+.table-container { 
+    overflow-x: auto; 
+    border-radius: 8px; 
+    border: 1px solid rgba(81, 128, 230, 0.2); 
+    max-height: 70vh; 
+    overflow-y: auto; 
+}
+
+/* Custom Scrollbar for horizontal scrolling */
+.table-container::-webkit-scrollbar { height: 10px; width: 10px; }
+.table-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+.table-container::-webkit-scrollbar-thumb { background: var(--border-solid); border-radius: 4px; }
+
+/* TABLE STYLING */
+table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0; 
+    white-space: nowrap; 
+    font-size: 14px;
+}
+
+thead th { 
+    background-color: var(--bg-input); 
+    color: var(--accent-cyan); 
+    padding: 15px 20px; 
+    font-size: 13px; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    border-bottom: 1px solid rgba(81, 128, 230, 0.3); 
+    border-right: 1px solid rgba(81, 128, 230, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+tbody td { 
+    padding: 15px 20px; 
+    border-bottom: 1px solid rgba(81, 128, 230, 0.2); 
+    border-right: 1px solid rgba(81, 128, 230, 0.2);
+}
+
+tbody tr:hover { background-color: rgba(0, 229, 255, 0.03); }
+
+.val-col { min-width: 120px; text-align: center; }
+.val-cell { text-align: center; font-weight: bold; }
+
+.loading-cell { text-align: center; padding: 40px; color: var(--text-muted); font-size: 16px; font-style: italic; border: none !important; }
+
+/* 🚨 CRITICAL: STICKY FIRST COLUMN FOR HORIZONTAL SCROLLING 🚨 */
+.sticky-col {
+    position: sticky;
+    left: 0;
+    background-color: var(--bg-input) !important;
+    font-weight: bold;
+    min-width: 200px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2); /* Creates a shadow effect over the scrolling columns */
+    z-index: 20 !important; /* Stays above both the rows and the header */
+}
+
+tbody td.sticky-col {
+    background-color: var(--bg-panel) !important;
+    z-index: 5 !important; 
+    color: var(--text-main);
+}
+
+tbody tr:hover td.sticky-col {
+    background-color: #212642 !important; /* Slightly lighter panel color on hover */
+}

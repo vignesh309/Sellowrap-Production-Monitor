@@ -1,20 +1,68 @@
 import uvicorn
 import os
 import sys
+import logging
 import threading
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from logging.handlers import TimedRotatingFileHandler
 
 # 🚨 Import our relocated functions!
 from services.telegram_notifier import start_scheduler
 from summary_worker import start_summary_worker
+from apscheduler.schedulers.background import BackgroundScheduler
+from services.automated_email import send_morning_digest
 
 # Import our routers
 from routers import frontend, master, reports, auth, production_entry, fetchdata, erp_integration, email_notifier
 
 # =========================
+# Logging Configuration
+# =========================
+# 1. Create a Handler that rotates the log every 4 hours
+# backupCount=1 means it keeps the current 4-hour file and ONE previous 4-hour file. 
+# Anything older than 8 hours is automatically deleted!
+log_handler = TimedRotatingFileHandler(
+    "fastapi_logs.txt", 
+    when="H",          # H = Hours
+    interval=4,        # Every 4 hours
+    backupCount=1,     # Keep only 1 backup file
+    encoding="utf-8"   # This also permanently fixes your Emoji crash bug!
+)
+
+# 2. Configure the root logger
+logging.basicConfig(
+    handlers=[log_handler],
+    level=logging.INFO,
+    format="[%(asctime)s] %(levelname)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+
+# 3. Intercept all normal print() statements and route them to the logger
+class StreamToLogger:
+    def __init__(self, logger, level):
+        self.logger = logger
+        self.level = level
+
+    def write(self, message):
+        if message.rstrip() != "":
+            self.logger.log(self.level, message.rstrip())
+
+    def flush(self):
+        pass
+
+    # 🚨 ADD THIS MISSING METHOD
+    def isatty(self):
+        return False
+
+# Force sys.stdout (prints) and sys.stderr (errors) into our rotator
+sys.stdout = StreamToLogger(logging.getLogger(), logging.INFO)
+# 🚨 COMMENT OUT OR DELETE THIS LINE:
+# Do NOT redirect sys.stderr! This permanently prevents the infinite Windows crash loop.
+# sys.stderr = StreamToLogger(logging.getLogger(), logging.ERROR)
+
 # Lifespan Events (Startup & Shutdown)
 # =========================
 @asynccontextmanager
@@ -27,7 +75,19 @@ async def lifespan(app: FastAPI):
     worker_thread.daemon = True  # Ensures it shuts down when the server closes
     worker_thread.start()
 
+    # Start the automated email scheduler once with the application lifecycle.
+    scheduler.start()
+
     yield  # The FastAPI server runs while yielding here
+
+    scheduler.shutdown(wait=False)
+
+# Initialize the automated background scheduler
+scheduler = BackgroundScheduler()
+
+# 🚨 CHANGE THE TIME HERE
+
+scheduler.add_job(send_morning_digest, 'cron', hour=10, minute=0)  # Adjust the time as needed
 
 # =========================
 # App Initialization
@@ -75,4 +135,5 @@ app.include_router(email_notifier.router)  # 🚨 NEW: Email Notifier Router
 # Main Entry
 # =========================
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)
+    # Reload mode is for development only; it can duplicate background workers in production.
+    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=False)

@@ -21,7 +21,9 @@ def calculate_hourly_summary():
             host=DB_HOST,
             database=DB_NAME,
             user=DB_USER,
-            password=DB_PASSWORD
+            password=DB_PASSWORD,
+            connect_timeout=10,
+            options="-c statement_timeout=120000"
         )
         cursor = conn.cursor()
 

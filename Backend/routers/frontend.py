@@ -177,6 +177,10 @@ def machinewise_oee_report_page():
 def lineprocesswise_oee_report_page():
     return FileResponse(get_html_path("lineprocesswise_oee_report.html"))
 
+@router.get("/process-daily-oee", response_class=HTMLResponse)
+def process_daily_oee_page():
+    return FileResponse(get_html_path("process_daily_oee.html"))
+
 @router.get("/production-log-manager", response_class=HTMLResponse)
 def production_log_manager_page():
     return FileResponse(get_html_path("production_log_manager.html"))

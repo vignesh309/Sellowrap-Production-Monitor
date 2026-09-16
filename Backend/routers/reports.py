@@ -2797,3 +2797,150 @@ def get_lineprocesswise_oee_report(
     finally:
         cur.close()
         conn.close()
+
+@router.get("/api/report/process_daily_oee_trend")
+def get_process_daily_oee_trend(start_date: str = Query(""), end_date: str = Query("")):
+    """Calculates OEE dynamically grouped by Process AND Date for the matrix trend view."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT DISTINCT category, oee_impact FROM shortfall_reason_master WHERE is_active = true")
+        impact_map = {row[0]: row[1] for row in cur.fetchall()}
+        
+        def get_impact(category_name):
+            return impact_map.get(category_name, 'Availability')
+
+        group_col_sql = "COALESCE(m.machine_process, 'Unknown Process')"
+
+        query = f"""
+        WITH BaseLogs AS (
+            SELECT 
+                log.id as log_id,
+                log.production_date,
+                {group_col_sql} as process_name,
+                COALESCE(log.active_cavities, 1) as active_cavities,
+                log.target_shots * COALESCE(log.active_cavities, 1) as target_qty,
+                log.actual_shots * COALESCE(log.active_cavities, 1) as actual_qty,
+                log.ng_parts as ng_qty,
+                ((EXTRACT(EPOCH FROM log.end_time) - EXTRACT(EPOCH FROM log.start_time) + 
+                  CASE WHEN log.end_time < log.start_time THEN 86400 ELSE 0 END) / 60.0) as logged_mins,
+                CASE WHEN pr.cycle_time > 0 THEN pr.cycle_time
+                     WHEN pr.hourly_target > 0 THEN 60.0 / pr.hourly_target
+                     ELSE 0 END as ct_mins,
+                CASE WHEN log.is_no_plan = true THEN 1 ELSE 0 END as is_no_plan
+            FROM production_hourly_log log
+            LEFT JOIN part_routing pr ON pr.part_no = split_part(log.batch_id, '_', 5) AND pr.process_name = split_part(log.batch_id, '_', 4)
+            LEFT JOIN machine_master m ON log.machine_code = m.machine_code
+            WHERE log.production_date >= %s AND log.production_date <= %s
+        ),
+        AggLogs AS (
+            SELECT 
+                b.log_id,
+                b.production_date,
+                b.process_name,
+                b.active_cavities,
+                b.target_qty,
+                b.actual_qty,
+                b.ng_qty,
+                b.logged_mins,
+                b.is_no_plan,
+                CASE WHEN b.ct_mins > 0 THEN b.ct_mins
+                     WHEN b.target_qty > 0 THEN b.logged_mins / b.target_qty
+                     ELSE 0 END as final_ct_mins,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Mould Changeover'), 0) as dt_mould,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Planning / Management'), 0) as dt_plan,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Machine Breakdown'), 0) as dt_machine,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Tooling Issue'), 0) as dt_tooling,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Material Shortage'), 0) as dt_material,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Utility Failure'), 0) as dt_utility,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Operator Efficiency'), 0) as dt_operator,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Manpower Shortage'), 0) as dt_manpower,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Process & Quality'), 0) as dt_process,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Planned Maintenance'), 0) as dt_maint,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Break Time'), 0) as dt_break
+            FROM BaseLogs b
+        )
+        SELECT 
+            production_date,
+            process_name,
+            SUM(target_qty),
+            SUM(actual_qty),
+            SUM(ng_qty),
+            SUM(logged_mins),
+            SUM(CASE WHEN is_no_plan = 1 THEN logged_mins ELSE 0 END),
+            SUM(dt_mould * active_cavities * final_ct_mins),
+            SUM(dt_plan * active_cavities * final_ct_mins),
+            SUM(dt_machine * active_cavities * final_ct_mins),
+            SUM(dt_tooling * active_cavities * final_ct_mins),
+            SUM(dt_material * active_cavities * final_ct_mins),
+            SUM(dt_utility * active_cavities * final_ct_mins),
+            SUM(dt_operator * active_cavities * final_ct_mins),
+            SUM(dt_manpower * active_cavities * final_ct_mins),
+            SUM(dt_process * active_cavities * final_ct_mins),
+            SUM(dt_maint * active_cavities * final_ct_mins),
+            SUM(dt_break * active_cavities * final_ct_mins)
+        FROM AggLogs
+        GROUP BY production_date, process_name 
+        ORDER BY production_date ASC, process_name ASC
+        """
+        
+        cur.execute(query, (start_date, end_date))
+        rows = cur.fetchall()
+
+        # Cache machine counts per process to avoid running a query inside the loop
+        cur.execute("SELECT machine_process, COUNT(*) FROM machine_master WHERE is_active = true GROUP BY machine_process")
+        machine_counts = {row[0]: row[1] for row in cur.fetchall()}
+
+        records = []
+        for row in rows:
+            prod_date = str(row[0])
+            process_name = row[1]
+            
+            machine_count = machine_counts.get(process_name, 1)
+            total_range_mins = (24 * 60) * machine_count  # 1 day * 24h * 60m * machines
+            
+            tgt = float(row[2] or 0)
+            act = float(row[3] or 0)
+            ng = float(row[4] or 0)
+            logged_mins = float(row[5] or 0)
+            no_plan_mins = float(row[6] or 0)
+            
+            dt_dict = {
+                "Mould Changeover": float(row[7] or 0), "Planning / Management": float(row[8] or 0), 
+                "Machine Breakdown": float(row[9] or 0), "Tooling Issue": float(row[10] or 0), 
+                "Material Shortage": float(row[11] or 0), "Utility Failure": float(row[12] or 0),
+                "Operator Efficiency": float(row[13] or 0), "Manpower Shortage": float(row[14] or 0), 
+                "Process & Quality": float(row[15] or 0), "Planned Maintenance": float(row[16] or 0), 
+                "Break Time": float(row[17] or 0)
+            }
+            
+            avail_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Availability')
+            perf_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Performance')
+            
+            planned_prod_time = max(0, total_range_mins - no_plan_mins)
+            logged_prod_mins = max(0, logged_mins - no_plan_mins)
+            operating_time = max(0, logged_prod_mins - avail_loss_mins - perf_loss_mins)
+            
+            target_per_min = (tgt / logged_prod_mins) if logged_prod_mins > 0 else 0
+            tgt = max(0, tgt - ((avail_loss_mins + perf_loss_mins) * target_per_min))
+            
+            avail_pct = (operating_time / planned_prod_time * 100) if planned_prod_time > 0 else 0.0
+            perf_pct = min(100.0, (act / tgt * 100) if tgt > 0 else 0.0)
+            qual_pct = ((act - ng) / act * 100) if act > 0 else 0.0
+            
+            oee_pct = (avail_pct / 100) * (perf_pct / 100) * (qual_pct / 100) * 100
+            
+            records.append({
+                "date": prod_date,
+                "process": process_name,
+                "oee": round(oee_pct, 2)
+            })
+            
+        return {"records": records}
+        
+    except Exception as e:
+        print("Process Daily OEE Error:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()

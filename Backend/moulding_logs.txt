@@ -1,0 +1,1658 @@
+[96m[IM01-850T] Connecting to 192.168.3.157:8200 ...[0m
+[96m[IM02-350T-1] Connecting to 192.168.3.153:8200 ...[0m
+[96m[IM03-280T-1] Connecting to 192.168.3.163:8200 ...[0m
+[96m[IM04-130T] Connecting to 200.200.210.239:8200 ...[0m
+[96m[IM05-100T-1] Connecting to 192.168.3.155:8200 ...[0m
+[96m[IM06-80T-1] Connecting to 192.168.3.164:8200 ...[0m
+[96m[IM07-550T] Connecting to 192.168.3.156:8200 ...[0m
+[96m[IM08-80T-2] Connecting to 192.168.3.161:8200 ...[0m
+[96m[IM09-80T-3] Connecting to 192.168.3.162:8200 ...[0m
+[96m[IM10-180T-1] Connecting to 192.168.3.154:8200 ...[0m
+[96m[IM11-100T-2] Connecting to 192.168.3.150:8200 ...[0m
+[96m[IM12-350T-2] Connecting to 192.168.3.165:8200 ...[0m
+[96m[IM13-280T-2] Connecting to 192.168.3.169:8200 ...[0m
+[96m[IM14-180T-2] Connecting to 192.168.3.168:8200 ...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[IM16-280T-3] Connecting to 192.168.3.166:8200 ...[0m
+[96m[IM19-350T-5] Connecting to 192.168.3.170:8200 ...[0m
+[92m[IM01-850T] Connected. Sending XON...[0m
+[92m[IM02-350T-1] Connected. Sending XON...[0m
+[92m[IM06-80T-1] Connected. Sending XON...[0m
+[92m[IM03-280T-1] Connected. Sending XON...[0m
+[92m[IM05-100T-1] Connected. Sending XON...[0m
+[92m[IM07-550T] Connected. Sending XON...[0m
+[92m[IM10-180T-1] Connected. Sending XON...[0m
+[92m[IM08-80T-2] Connected. Sending XON...[0m
+[92m[IM11-100T-2] Connected. Sending XON...[0m
+[92m[IM13-280T-2] Connected. Sending XON...[0m
+[92m[IM09-80T-3] Connected. Sending XON...[0m
+[92m[IM19-350T-5] Connected. Sending XON...[0m
+[92m[IM16-280T-3] Connected. Sending XON...[0m
+[92m[IM14-180T-2] Connected. Sending XON...[0m
+[92m[IM12-350T-2] Connected. Sending XON...[0m
+[92m[IM04-130T] Connected. Sending XON...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[92m[DB SUCCESS] STATUS Logged for IM14-180T-2 -> moulding_machines_status_sep_2026 | Mold: Regualtor cover(79925403)[0m
+[92m[DB SUCCESS] STATUS Logged for IM19-350T-5 -> moulding_machines_status_sep_2026 | Mold: OV64 RR DR FR (8980-8780)[0m
+[96m[DB SUCCESS] Cycle 3206 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2957 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5887 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[92m[DB SUCCESS] STATUS Logged for IM03-280T-1 -> moulding_machines_status_sep_2026 | Mold: FR DOOR RR LHRH(9846934480-3980)[0m
+[92m[DB SUCCESS] STATUS Logged for IM11-100T-2 -> moulding_machines_status_sep_2026 | Mold: HBC pop up knob[0m
+[96m[DB SUCCESS] Cycle 6454 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2082 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[92m[DB SUCCESS] STATUS Logged for IM01-850T -> moulding_machines_status_sep_2026 | Mold: convergent upr xmld(215787893R)[0m
+[96m[DB SUCCESS] Cycle 1682 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 199 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[92m[DB SUCCESS] STATUS Logged for IM13-280T-2 -> moulding_machines_status_sep_2026 | Mold: COVER FR END  (72433T6T00-72432)[0m
+[96m[DB SUCCESS] Cycle 536 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[92m[DB SUCCESS] STATUS Logged for IM10-180T-1 -> moulding_machines_status_sep_2026 | Mold: 9halter Bracket(A4008110914)[0m
+[92m[DB SUCCESS] STATUS Logged for IM05-100T-1 -> moulding_machines_status_sep_2026 | Mold: SEAL PLUG(ZOAOO23230-229)[0m
+[92m[DB SUCCESS] STATUS Logged for IM16-280T-3 -> moulding_machines_status_sep_2026 | Mold: silencer (7236576T00-7237576T00)[0m
+[92m[DB SUCCESS] STATUS Logged for IM09-80T-3 -> moulding_machines_status_sep_2026 | Mold: separator plate(79954796-797)[0m
+[92m[DB SUCCESS] STATUS Logged for IM06-80T-1 -> moulding_machines_status_sep_2026 | Mold: flunger (A4009910698)[0m
+[96m[DB SUCCESS] Cycle 1046 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2958 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[92m[DB SUCCESS] STATUS Logged for IM02-350T-1 -> moulding_machines_status_sep_2026 | Mold: RR DR RR K9 (9846940780-0680)[0m
+[92m[DB SUCCESS] STATUS Logged for IM07-550T -> moulding_machines_status_sep_2026 | Mold: BACK COVER (6661H117)[0m
+[92m[DB SUCCESS] STATUS Logged for IM08-80T-2 -> moulding_machines_status_sep_2026 | Mold: Rbc  latch clip (siplct145)[0m
+[96m[DB SUCCESS] Cycle 2959 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7515 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2960 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5888 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 200 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 602 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2846 saved for IM03-280T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM12-350T-2] Receiver error: [WinError 10054] An existing connection was forcibly closed by the remote host[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2083 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6455 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7516 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1683 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1773 saved for IM19-350T-5 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1047 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2961 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 201 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5889 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3207 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7517 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6456 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2962 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1684 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2084 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM12-350T-2] Connection lost: [WinError 10054] An existing connection was forcibly closed by the remote host[0m
+[93m[IM12-350T-2] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 202 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 546 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5890 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 537 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 603 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1048 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM12-350T-2] Connecting to 192.168.3.165:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2963 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[92m[IM12-350T-2] Connected. Sending XON...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[92m[DB SUCCESS] STATUS Logged for IM12-350T-2 -> moulding_machines_status_sep_2026 | Mold: BEZEL IP SWITCH(7383376T00)[0m
+[96m[DB SUCCESS] Cycle 7518 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6457 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2964 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 203 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1685 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5891 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1774 saved for IM19-350T-5 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2085 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3208 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7519 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2847 saved for IM03-280T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1049 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2965 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6458 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 204 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5892 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 604 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7520 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2966 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2086 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6459 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 205 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1686 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1050 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2967 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5893 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 538 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7521 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2848 saved for IM03-280T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1775 saved for IM19-350T-5 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2968 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 206 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6460 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5894 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 605 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2087 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 547 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7522 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3209 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1051 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1687 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2969 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 207 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6461 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5895 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2970 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7523 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2849 saved for IM03-280T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 208 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2088 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1688 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1052 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2971 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 539 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6462 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5896 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1776 saved for IM19-350T-5 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7524 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 606 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3210 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 209 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2972 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1689 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5897 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2089 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6463 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7525 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1053 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2973 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 210 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2850 saved for IM03-280T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 548 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2974 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5898 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7526 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6464 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1690 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 607 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 211 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1054 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1777 saved for IM19-350T-5 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2090 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2975 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 540 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5899 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3211 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7527 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6465 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 212 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1691 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2976 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1055 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2851 saved for IM03-280T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2091 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7528 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5900 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2977 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 608 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 213 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6466 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1692 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2978 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1778 saved for IM19-350T-5 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7529 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5901 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3212 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 214 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1056 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6467 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2092 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2979 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 541 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1693 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7530 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2852 saved for IM03-280T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5902 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 215 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 609 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2980 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 549 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6468 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1057 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7531 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2093 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2981 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5903 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1694 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 216 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1779 saved for IM19-350T-5 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6469 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2982 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3213 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7532 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5904 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1058 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 217 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 610 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2853 saved for IM03-280T-1 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2094 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2983 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 542 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6470 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7533 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5905 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 218 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2984 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1059 saved for IM13-280T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[93m[DB SUCCESS] Logged MODE (MANUAL) for IM19-350T-5 -> moulding_machines_mode_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1695 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6471 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7534 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2095 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2985 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3214 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 219 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5906 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 550 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 611 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[93m[DB SUCCESS] Logged MODE (MANUAL) for IM13-280T-2 -> moulding_machines_mode_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2854 saved for IM03-280T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2986 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7535 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 220 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6472 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5907 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2987 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2096 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 543 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7536 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[93m[DB SUCCESS] Logged MODE (MANUAL) for IM03-280T-1 -> moulding_machines_mode_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 221 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2988 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3215 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6473 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5908 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM04-130T] Receiver error: [WinError 10054] An existing connection was forcibly closed by the remote host[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 612 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1696 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM04-130T] Connection lost: [WinError 10054] An existing connection was forcibly closed by the remote host[0m
+[93m[IM04-130T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2989 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7537 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2097 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 222 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM04-130T] Connecting to 200.200.210.239:8200 ...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[92m[IM04-130T] Connected. Sending XON...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[93m[DB SUCCESS] Logged MODE (SEMI-AUTO) for IM04-130T -> moulding_machines_mode_sep_2026[0m
+[92m[DB SUCCESS] STATUS Logged for IM04-130T -> moulding_machines_status_sep_2026 | Mold: PPAP(199)[0m
+[96m[DB SUCCESS] Cycle 1209 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5909 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6474 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 551 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2990 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7538 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 223 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1697 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5910 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2991 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1210 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2098 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6475 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 613 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3216 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 544 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7539 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 224 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2992 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5911 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1698 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6476 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1211 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[93m[DB SUCCESS] Logged MODE (ABNORMAL) for IM04-130T -> moulding_machines_mode_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2993 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[DB SUCCESS] ALARM TRIGGERED Logged for IM04-130T -> moulding_machines_alarms_sep_2026[0m
+[91m[DB SUCCESS] ALARM TRIGGERED Logged for IM04-130T -> moulding_machines_alarms_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7540 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 225 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2099 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[93m[DB SUCCESS] Logged MODE (OFF) for IM04-130T -> moulding_machines_mode_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[93m[DB SUCCESS] Logged MODE (MANUAL) for IM04-130T -> moulding_machines_mode_sep_2026[0m
+[91m[DB SUCCESS] ALARM TRIGGERED Logged for IM04-130T -> moulding_machines_alarms_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5912 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2994 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 614 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6477 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3217 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7541 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 226 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1699 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 552 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2995 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5913 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2100 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6478 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 227 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7542 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2996 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5914 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1700 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 615 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2997 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 228 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7543 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6479 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2101 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3218 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5915 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2998 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 229 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7544 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1701 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6480 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2999 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5916 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2102 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 230 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 616 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7545 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 553 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 545 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3000 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6481 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1702 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5917 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3219 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM04-130T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3001 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 231 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM04-130T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7546 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2103 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6482 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5918 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM04-130T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3002 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM04-130T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1703 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 232 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7547 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 617 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3003 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5919 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6483 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2104 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3220 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 233 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1704 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7548 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[DB SUCCESS] ALARM TRIGGERED Logged for IM04-130T -> moulding_machines_alarms_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3004 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 546 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[93m[DB SUCCESS] Logged MODE (SEMI-AUTO) for IM04-130T -> moulding_machines_mode_sep_2026[0m
+[93m[DB SUCCESS] Logged MODE (SEMI-AUTO) for IM04-130T -> moulding_machines_mode_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5920 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1212 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6484 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3005 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 234 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 554 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7549 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 618 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2105 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1705 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3006 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5921 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 235 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6485 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3221 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7550 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1213 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3007 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1706 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2106 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5922 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 236 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6486 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3008 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7551 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[92m[DB SUCCESS] STATUS Logged for IM19-350T-5 -> moulding_machines_status_sep_2026 | Mold: OV64 RR DR FR (8980-8780)[0m
+[92m[DB SUCCESS] STATUS Logged for IM03-280T-1 -> moulding_machines_status_sep_2026 | Mold: FR DOOR RR LHRH(9846934480-3980)[0m
+[92m[DB SUCCESS] STATUS Logged for IM14-180T-2 -> moulding_machines_status_sep_2026 | Mold: Regualtor cover(79925403)[0m
+[92m[DB SUCCESS] STATUS Logged for IM11-100T-2 -> moulding_machines_status_sep_2026 | Mold: HBC pop up knob[0m
+[92m[DB SUCCESS] STATUS Logged for IM01-850T -> moulding_machines_status_sep_2026 | Mold: convergent upr xmld(215787893R)[0m
+[92m[DB SUCCESS] STATUS Logged for IM13-280T-2 -> moulding_machines_status_sep_2026 | Mold: COVER FR END  (72433T6T00-72432)[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[92m[DB SUCCESS] STATUS Logged for IM05-100T-1 -> moulding_machines_status_sep_2026 | Mold: SEAL PLUG(ZOAOO23230-229)[0m
+[92m[DB SUCCESS] STATUS Logged for IM16-280T-3 -> moulding_machines_status_sep_2026 | Mold: silencer (7236576T00-7237576T00)[0m
+[92m[DB SUCCESS] STATUS Logged for IM10-180T-1 -> moulding_machines_status_sep_2026 | Mold: 9halter Bracket(A4008110914)[0m
+[92m[DB SUCCESS] STATUS Logged for IM08-80T-2 -> moulding_machines_status_sep_2026 | Mold: Rbc  latch clip (siplct145)[0m
+[92m[DB SUCCESS] STATUS Logged for IM07-550T -> moulding_machines_status_sep_2026 | Mold: BACK COVER (6661H117)[0m
+[92m[DB SUCCESS] STATUS Logged for IM06-80T-1 -> moulding_machines_status_sep_2026 | Mold: flunger (A4009910698)[0m
+[92m[DB SUCCESS] STATUS Logged for IM02-350T-1 -> moulding_machines_status_sep_2026 | Mold: RR DR RR K9 (9846940780-0680)[0m
+[92m[DB SUCCESS] STATUS Logged for IM09-80T-3 -> moulding_machines_status_sep_2026 | Mold: separator plate(79954796-797)[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 619 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1214 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1707 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3009 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 237 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 547 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7552 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6487 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2107 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3222 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5923 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3010 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1215 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 238 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1708 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7553 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 555 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3011 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6488 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 620 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2108 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 239 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1216 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3012 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7554 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5924 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[92m[DB SUCCESS] STATUS Logged for IM12-350T-2 -> moulding_machines_status_sep_2026 | Mold: BEZEL IP SWITCH(7383376T00)[0m
+[96m[DB SUCCESS] Cycle 1709 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6489 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3223 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 240 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3013 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 548 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1217 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7555 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2109 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 621 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3014 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6490 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 241 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5925 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7556 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1710 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1218 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3015 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3224 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 242 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6491 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2110 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 556 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3016 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7557 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1711 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5926 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 622 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 243 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3017 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1219 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6492 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 549 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7558 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2111 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5927 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3018 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[DB SUCCESS] ALARM TRIGGERED Logged for IM02-350T-1 -> moulding_machines_alarms_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1712 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 244 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3225 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6493 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7559 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3019 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5928 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 245 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 623 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2112 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3020 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1713 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7560 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6494 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1220 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 246 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5929 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3021 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 550 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7561 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3226 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 557 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6495 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2113 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1714 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3022 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 247 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 624 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5930 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7562 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3023 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6496 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1221 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 248 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1715 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2114 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5931 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3024 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7563 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6497 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1222 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 249 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3025 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1716 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 625 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 551 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3227 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5932 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7564 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2115 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3026 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 250 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6498 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1223 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5933 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1717 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7565 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3027 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 251 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6499 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2116 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3028 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 626 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5934 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7566 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1224 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3228 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1718 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 558 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 252 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3029 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 552 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6500 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7567 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5935 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2117 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3030 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1225 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 253 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 627 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6501 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3031 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7568 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5936 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1226 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1719 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 254 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3229 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3032 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2118 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7569 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5937 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6502 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 255 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3033 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1227 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1720 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 553 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7570 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 628 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5938 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3034 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6503 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2119 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 256 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1228 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3230 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1721 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3035 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7571 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5939 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 257 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6504 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3036 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2120 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1229 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7572 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 629 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1722 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5940 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 258 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3037 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6505 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 559 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 554 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1230 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3231 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7573 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3038 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 259 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5941 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2121 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1723 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[92m[DB SUCCESS] STATUS Logged for IM04-130T -> moulding_machines_status_sep_2026 | Mold: PPAP(199)[0m
+[96m[DB SUCCESS] Cycle 6506 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3039 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1231 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7574 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 260 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 630 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5942 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1724 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3040 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6507 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2122 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7575 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3232 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1232 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 261 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5943 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3041 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 555 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1725 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6508 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7576 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3042 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 560 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 262 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2123 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 631 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1233 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5944 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3043 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6509 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7577 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1726 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 263 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3233 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5945 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1234 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3044 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2124 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7578 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 264 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6510 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3045 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 632 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1235 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 556 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1727 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7579 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3046 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 265 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 6511 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2125 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5946 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1236 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3234 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3047 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7580 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 266 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6512 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5947 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 633 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1728 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3048 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 561 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1237 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 2126 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7581 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 267 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3049 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[DB SUCCESS] ALARM TRIGGERED Logged for IM02-350T-1 -> moulding_machines_alarms_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 557 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5948 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6513 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3235 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1238 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3050 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 268 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7582 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2127 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5949 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1729 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 634 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6514 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3051 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 269 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7583 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1239 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3052 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5950 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1730 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6515 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2128 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 270 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7584 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3236 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1240 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3053 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 562 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 558 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5951 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 635 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3054 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6516 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 271 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7585 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1731 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1241 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2129 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5952 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3055 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 272 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7586 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6517 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3237 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1732 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1242 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3056 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5953 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 636 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2130 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 273 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7587 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3057 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6518 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 559 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[92m[DB SUCCESS] STATUS Logged for IM13-280T-2 -> moulding_machines_status_sep_2026 | Mold: COVER FR END  (72433T6T00-72432)[0m
+[92m[DB SUCCESS] STATUS Logged for IM03-280T-1 -> moulding_machines_status_sep_2026 | Mold: FR DOOR RR LHRH(9846934480-3980)[0m
+[92m[DB SUCCESS] STATUS Logged for IM01-850T -> moulding_machines_status_sep_2026 | Mold: convergent upr xmld(215787893R)[0m
+[92m[DB SUCCESS] STATUS Logged for IM14-180T-2 -> moulding_machines_status_sep_2026 | Mold: Regualtor cover(79925403)[0m
+[92m[DB SUCCESS] STATUS Logged for IM19-350T-5 -> moulding_machines_status_sep_2026 | Mold: OV64 RR DR FR (8980-8780)[0m
+[92m[DB SUCCESS] STATUS Logged for IM11-100T-2 -> moulding_machines_status_sep_2026 | Mold: HBC pop up knob[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[92m[DB SUCCESS] STATUS Logged for IM08-80T-2 -> moulding_machines_status_sep_2026 | Mold: Rbc  latch clip (siplct145)[0m
+[92m[DB SUCCESS] STATUS Logged for IM10-180T-1 -> moulding_machines_status_sep_2026 | Mold: 9halter Bracket(A4008110914)[0m
+[92m[DB SUCCESS] STATUS Logged for IM02-350T-1 -> moulding_machines_status_sep_2026 | Mold: RR DR RR K9 (9846940780-0680)[0m
+[92m[DB SUCCESS] STATUS Logged for IM09-80T-3 -> moulding_machines_status_sep_2026 | Mold: separator plate(79954796-797)[0m
+[92m[DB SUCCESS] STATUS Logged for IM16-280T-3 -> moulding_machines_status_sep_2026 | Mold: silencer (7236576T00-7237576T00)[0m
+[92m[DB SUCCESS] STATUS Logged for IM06-80T-1 -> moulding_machines_status_sep_2026 | Mold: flunger (A4009910698)[0m
+[92m[DB SUCCESS] STATUS Logged for IM07-550T -> moulding_machines_status_sep_2026 | Mold: BACK COVER (6661H117)[0m
+[92m[DB SUCCESS] STATUS Logged for IM05-100T-1 -> moulding_machines_status_sep_2026 | Mold: SEAL PLUG(ZOAOO23230-229)[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1243 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1733 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5954 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 274 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3058 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7588 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6519 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2131 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3238 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1244 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3059 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5955 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1734 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 637 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 275 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 563 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7589 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3060 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6520 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5956 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1245 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 276 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2132 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7590 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3061 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1735 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 560 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[92m[DB SUCCESS] STATUS Logged for IM12-350T-2 -> moulding_machines_status_sep_2026 | Mold: BEZEL IP SWITCH(7383376T00)[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6521 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5957 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 277 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3239 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3062 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 638 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1246 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7591 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 2133 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1736 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3063 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6522 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5958 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 278 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 7592 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1247 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3064 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 279 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5959 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1737 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6523 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2134 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7593 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 639 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3240 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3065 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 561 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1248 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 280 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 564 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3066 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 5960 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 6524 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7594 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1738 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1249 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2135 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3067 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 281 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5961 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 7595 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6525 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 640 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3241 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3068 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 1250 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 282 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1739 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 5962 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2136 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3069 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 562 saved for IM07-550T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7596 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6526 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[91m[DB SUCCESS] ALARM TRIGGERED Logged for IM02-350T-1 -> moulding_machines_alarms_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 1251 saved for IM04-130T -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 283 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 3070 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 5963 saved for IM09-80T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 7597 saved for IM14-180T-2 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[91m[DB SUCCESS] ALARM TRIGGERED Logged for IM01-850T -> moulding_machines_alarms_sep_2026[0m
+[96m[DB SUCCESS] Cycle 1740 saved for IM16-280T-3 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 641 saved for IM11-100T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 3242 saved for IM02-350T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 6527 saved for IM05-100T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 2137 saved for IM10-180T-1 -> moulding_machines_monitor1_sep_2026[0m
+[96m[DB SUCCESS] Cycle 3071 saved for IM08-80T-2 -> moulding_machines_monitor1_sep_2026[0m
+[96m[IM15-50T] Connecting to 192.168.3.167:8200 ...[0m
+[96m[DB SUCCESS] Cycle 284 saved for IM06-80T-1 -> moulding_machines_monitor1_sep_2026[0m
+[91m[IM15-50T] Connection lost: timed out[0m
+[93m[IM15-50T] Reconnecting in 5 seconds...[0m
+[96m[DB SUCCESS] Cycle 565 saved for IM01-850T -> moulding_machines_monitor1_sep_2026[0m
+[95m[DB SUCCESS] HISTORY Logged for IM07-550T -> moulding_machines_history1_sep_2026[0m
