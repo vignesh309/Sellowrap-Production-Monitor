@@ -10,10 +10,17 @@ Sellowrap Production Monitor Version 2
 │   ├── __pycache__/
 │   ├── config.py
 │   ├── database.py
+│   ├── fastapi_logs.txt
+│   ├── fastapi_logs.txt.2026-09-16_20
+│   ├── fastapi_logs1.txt
 │   ├── FINSYS_Payload_20260825_171848.json
 │   ├── FINSYS_Payload_20260831_170418.json
 │   ├── main.py
+│   ├── moulding_logs.txt
+│   ├── mqtt_logs.txt
+│   ├── Restart_Server.bat
 │   ├── schemas.py
+│   ├── Stop_Server.bat
 │   ├── Start_Server.bat
 │   ├── summary_worker.py
 │   ├── utils.py
@@ -30,6 +37,7 @@ Sellowrap Production Monitor Version 2
 │   │   └── reports.py
 │   └── services/
 │       ├── __pycache__/
+│       ├── automated_email.py
 │       ├── auto_worker.py
 │       ├── moulding_machines_data_monitor.py
 │       ├── mqtt_listener.py
@@ -64,6 +72,7 @@ Sellowrap Production Monitor Version 2
 │   ├── pending_batches.html
 │   ├── Plant_kpi_performance/
 │   │   └── non_hazardous_waste_generation_report.html
+│   ├── process_daily_oee.html
 │   ├── process_master.html
 │   ├── production_entry_stage_1.html
 │   ├── production_hourly_report.html
@@ -98,6 +107,7 @@ Sellowrap Production Monitor Version 2
 │   │   ├── part_master.css
 │   │   ├── partwise_report.css
 │   │   ├── pending_batches.css
+│   │   ├── process_daily_oee.css
 │   │   ├── process_master.css
 │   │   ├── production_hourly_report.css
 │   │   ├── production_hourly_status.css
@@ -142,6 +152,7 @@ Sellowrap Production Monitor Version 2
 │       ├── part_master.js
 │       ├── partwise_report.js
 │       ├── pending_batches.js
+│       ├── process_daily_oee.js
 │       ├── process_master.js
 │       ├── production_hourly_report.js
 │       ├── production_hourly_status.js
@@ -181,7 +192,7 @@ persistence_file mosquitto.db
 so that mosquito will listen in port 1883 for machine trigger counts.
 
 pip install paho-mqtt uvicorn fastapi psycopg2-binary python-dotenv apscheduler requests pandas matplotlib openpyxl
-PyTelegramBotAPI Pillow qrcode[pil]
+PyTelegramBotAPI Pillow qrcode[pil] python-multipart
 
 
 Testing scenarios

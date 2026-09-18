@@ -2143,22 +2143,24 @@ def get_cycle_time_variance(
     end_date: str = Query(""),
     machine: str = Query("")
 ):
-    """Fetches IoT cycle time data, joins it with production logs, and calculates variance dynamically per month."""
+    """Fetches cycle times from BOTH the pre-calculated monitor table and the raw events table."""
     conn = get_conn()
     cur = conn.cursor()
     try:
-        # 1. Dynamically figure out the table name based on the start_date
+        # 1. Dynamically figure out BOTH table names based on the start_date
         if start_date:
             dt_obj = datetime.strptime(start_date, "%Y-%m-%d")
         else:
             dt_obj = datetime.now()
             
-        month_abbr = dt_obj.strftime("%b").lower()  
-        year_str = dt_obj.strftime("%Y")            
+        month_abbr = dt_obj.strftime("%b").lower()  # e.g., 'sep'
+        month_num = dt_obj.strftime("%m")           # e.g., '09'
+        year_str = dt_obj.strftime("%Y")            # e.g., '2026'
         
-        iot_table_name = f"moulding_machines_monitor1_{month_abbr}_{year_str}"
+        monitor_table = f"moulding_machines_monitor1_{month_abbr}_{year_str}"
+        events_table = f"machine_events_{month_num}_{year_str}"
 
-        # 2. Inject the dynamic table name into the query using an f-string
+        # 2. Combine both tables using UNION ALL
         query = f"""
             WITH ShiftBounds AS (
                 SELECT 
@@ -2173,18 +2175,46 @@ def get_cycle_time_variance(
                 WHERE production_date >= %s AND production_date <= %s
                   AND is_no_plan = false
             ),
+            
+            -- SOURCE 1: Pre-calculated Cycle Times
+            MonitorData AS (
+                SELECT 
+                    machine_id as machine_code, 
+                    monitor_timestamp as event_time, 
+                    cycle_time
+                FROM {monitor_table}
+                WHERE cycle_time > 0
+            ),
+            
+            -- SOURCE 2: Dynamically Calculated Cycle Times from Raw Events
+            EventsData AS (
+                SELECT 
+                    machine_code, 
+                    event_time,
+                    EXTRACT(EPOCH FROM (event_time - LAG(event_time) OVER (PARTITION BY machine_code ORDER BY event_time))) as cycle_time
+                FROM {events_table}
+            ),
+            
+            -- Combine both sources
+            UnifiedIoT AS (
+                SELECT machine_code, event_time, cycle_time FROM MonitorData
+                UNION ALL
+                SELECT machine_code, event_time, cycle_time FROM EventsData WHERE cycle_time IS NOT NULL
+            ),
+            
             MatchedIoT AS (
                 SELECT 
                     sb.machine_code,
                     sb.part_number,
                     sb.process_name,
-                    iot.cycle_time
+                    u.cycle_time
                 FROM ShiftBounds sb
-                JOIN {iot_table_name} iot
-                  ON iot.machine_id = sb.machine_code
-                 AND iot.monitor_timestamp >= sb.actual_start
-                 AND iot.monitor_timestamp < sb.actual_end
-                 AND iot.cycle_time > 0
+                JOIN UnifiedIoT u
+                  ON u.machine_code = sb.machine_code
+                 AND u.event_time >= sb.actual_start
+                 AND u.event_time < sb.actual_end
+                 AND u.cycle_time > 0 
+                 AND u.cycle_time < 300 -- Ignore massive gaps (breaks/downtimes)
             )
             SELECT 
                 m.machine_code,
@@ -2227,17 +2257,14 @@ def get_cycle_time_variance(
             hourly_target = int(r[7])
             routing_ct_mins = float(r[8])
 
-            # Convert Standard CT to SECONDS mathematically (keeping for reference if needed)
             std_ct_sec = 0.0
             if hourly_target > 0:
                 std_ct_sec = 3600.0 / hourly_target
             elif routing_ct_mins > 0:
                 std_ct_sec = routing_ct_mins * 60.0
 
-            # 🚨 Calculate Optimization Potential (Variance % between Standard and Proposed/Median)
             variance_pct = 0.0
             if std_ct_sec > 0 and median_ct > 0:
-                # E.g., ((90 - 70) / 90) * 100 = 22.2% Potential Improvement
                 variance_pct = ((std_ct_sec - median_ct) / std_ct_sec) * 100
 
             records.append({
@@ -2248,11 +2275,10 @@ def get_cycle_time_variance(
                 "max_ct": round(max_ct, 1),
                 "avg_ct": round(avg_ct, 1),
                 "std_ct": round(std_ct_sec, 1),
-                "median_ct": round(median_ct, 1), # This is your proposed cycle time
+                "median_ct": round(median_ct, 1),
                 "variance_pct": round(variance_pct, 1)
             })
             
-        # Sort the records by variance_pct in descending order
         records.sort(key=lambda x: x["variance_pct"], reverse=True)
         return {"records": records}
         

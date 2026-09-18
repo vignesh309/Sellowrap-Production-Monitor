@@ -22,14 +22,7 @@ def send_morning_digest():
         return
 
     recipients = [
-        "srinivignesh1999@gmail.com",
-        "maintenancesouth@sellowrap.com",
-        "productionsouth@sellowrap.com",
-        "durai.gopalan@sellowrap.com",
-        "qualitysouth1@sellowrap.com",
-        "padmanabha.pillai@sellowrap.com",
-        "bdtooling1@sellowrap.com",
-        "hrsouth@sellowrap.com"
+        "srinivignesh1999@gmail.com"
     ]
 
     target_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")

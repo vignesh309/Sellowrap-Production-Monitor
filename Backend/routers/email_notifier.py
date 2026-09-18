@@ -16,7 +16,14 @@ router = APIRouter()
 @router.post("/api/email_oee_report")
 async def email_oee_report(
     file: UploadFile = File(...),
-    recipient: str = Form("srinivignesh1999@gmail.com")
+    recipient: str = Form(
+        "karthik.j@sellowrap.com, maintenancesouth@sellowrap.com, "
+        "productionsouth@sellowrap.com, durai.gopalan@sellowrap.com, "
+        "qualitysouth1@sellowrap.com, padmanabha.pillai@sellowrap.com, "
+        "bdtooling1@sellowrap.com, hrsouth@sellowrap.com, "
+        "vijay.shankar@sellowrap.com, khush@sellowrap.com, "
+        "partheban.manoharan@sellowrap.com"
+    )
 ):
     """Generates the Executive Summary, Process OEE Chart, and emails it."""
     sender_email = "Sellowrap.rpt@gmail.com"
