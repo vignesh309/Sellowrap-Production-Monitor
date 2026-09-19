@@ -22,7 +22,12 @@ def send_morning_digest():
         return
 
     recipients = [
-        "srinivignesh1999@gmail.com"
+        "karthik.j@sellowrap.com, maintenancesouth@sellowrap.com, "
+        "productionsouth@sellowrap.com, durai.gopalan@sellowrap.com, "
+        "qualitysouth1@sellowrap.com, padmanabha.pillai@sellowrap.com, "
+        "bdtooling1@sellowrap.com, hrsouth@sellowrap.com, "
+        "vijay.shankar@sellowrap.com, khush@sellowrap.com, "
+        "partheban.manoharan@sellowrap.com", "tamilselvan@sellowrap.com"
     ]
 
     target_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
@@ -121,10 +126,11 @@ def send_morning_digest():
                 SELECT s.reason_name, SUM(s.quantity) as qty FROM production_shortfalls s
                 JOIN production_hourly_log h ON s.log_id = h.id
                 WHERE h.production_date = %s AND h.machine_code = %s
+                  AND s.reason_name NOT IN ('Break Time', 'No Plan')
                 GROUP BY s.reason_name ORDER BY qty DESC LIMIT 1
             """, (target_date, bottom_machine["machine"]))
             worst_reason = cur.fetchone()
-            worst_reason_text = f"{worst_reason[0]} ({worst_reason[1]} missing shots)" if worst_reason else "No shortfalls"
+            worst_reason_text = f"{worst_reason[0]} ({worst_reason[1]} missing shots)" if worst_reason else "No shortfalls logged"
             bottom_machine_text = f"{bottom_machine['machine']} (OEE: {bottom_machine['oee']}% - Highest Loss: {worst_reason_text})"
 
         # Generate Chart
@@ -155,21 +161,21 @@ def send_morning_digest():
         img_buffer.seek(0)
         plt.close()
 
-        # Fetch Top Losses (Ignoring Break Time)
+        # Fetch Top Losses (Ignoring Break Time and No Plan)
         cur.execute("""
             SELECT s.reason_name, SUM(s.quantity) as qty FROM production_shortfalls s
             JOIN production_hourly_log h ON s.log_id = h.id
-            WHERE h.production_date = %s AND s.reason_name != 'Break Time'
+            WHERE h.production_date = %s AND s.reason_name NOT IN ('Break Time', 'No Plan')
             GROUP BY s.reason_name ORDER BY qty DESC LIMIT 3
         """, (target_date,))
-        dt_html = "".join([f"<li style='margin-bottom: 4px;'>{i+1}. {r[0]}: {r[1]} missing shots</li>" for i, r in enumerate(cur.fetchall())]) or "<li>None</li>"
+        dt_html = "".join([f"<li style='margin-bottom: 4px;'>{i+1}. {r[0]}: {r[1]} missing shots</li>" for i, r in enumerate(cur.fetchall())]) or "<li>No downtime recorded.</li>"
 
         cur.execute("""
             SELECT r.reason_name, SUM(r.quantity) as qty FROM production_rejections r
             JOIN production_hourly_log h ON r.log_id = h.id
             WHERE h.production_date = %s GROUP BY r.reason_name ORDER BY qty DESC LIMIT 3
         """, (target_date,))
-        rej_html = "".join([f"<li style='margin-bottom: 4px;'>{i+1}. {r[0]}: {r[1]} pcs</li>" for i, r in enumerate(cur.fetchall())]) or "<li>None</li>"
+        rej_html = "".join([f"<li style='margin-bottom: 4px;'>{i+1}. {r[0]}: {r[1]} pcs</li>" for i, r in enumerate(cur.fetchall())]) or "<li>No rejections recorded.</li>"
 
         # Fetch Pending
         cur.execute("""
@@ -177,18 +183,18 @@ def send_morning_digest():
             LEFT JOIN batch_master b ON h.batch_id = b.batch_id
             WHERE h.production_date = %s GROUP BY h.machine_code HAVING COUNT(b.batch_id) = 0
         """, (target_date,))
-        pending_html = "".join([f"<li>⚠️ {p[0]}</li>" for p in cur.fetchall()]) or "<li>✅ All shifts finalized.</li>"
+        pending_html = "".join([f"<li>⚠️ {p[0]}</li>" for p in cur.fetchall()]) or "<li>✅ All shifts finalized successfully.</li>"
 
         # ==========================================
         # 4. BUILD & SEND EMAIL
         # ==========================================
         msg = EmailMessage()
         msg['Subject'] = f"Manufacturing Analytics: Daily OEE Report ({target_date})"
-        msg['From'] = f"Sellowrap Production Monitor <{sender_email}>"
+        msg['From'] = f"Production Monitor <{sender_email}>"
         msg['To'] = ", ".join(recipients)
 
-        image_cid = make_msgid(domain='sellowrap.com')
-        
+        image_cid = make_msgid(domain='production-monitor.local')
+
         html_body = f"""
         <!DOCTYPE html>
         <html>
@@ -257,6 +263,7 @@ def send_morning_digest():
                                                     <li style="margin-bottom: 6px;"><b>Needs Attention:</b> {bottom_machine_text}</li>
                                                 </ul>
                                                 <h3 style="margin: 0 0 10px 0; color: #14172b;">Compliance Alert: Pending Finalizations</h3>
+                                                <p style="margin: 0 0 5px 0; font-size: 13px; color: #666;"><i>The following machines have logged hours but have not been finalized:</i></p>
                                                 <ul style="margin: 0; padding-left: 20px; color: #ff2a7a; font-weight: bold;">{pending_html}</ul>
                                             </td>
                                         </tr>

@@ -10,7 +10,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from config import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
+from config import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER, MQTT_BROKER_HOST, MQTT_BROKER_PORT, MQTT_TOPIC
 
 # --------------------------------------------------
 # DATABASE HELPER & TABLE CREATION
@@ -111,17 +111,17 @@ def on_message(client, userdata, msg):
 # INITIALIZATION & STARTUP
 # --------------------------------------------------
 # Ensure current month table exists right now when script starts
-print("🚀 Initializing Sellowrap MQTT Listener...")
+print("🚀 Initializing MQTT Listener...")
 ensure_monthly_table_exists(datetime.now())
 
 client = mqtt.Client(
     callback_api_version=CallbackAPIVersion.VERSION2,
-    client_id="Sellowrap_Windows_Server",
+    client_id="Windows_Server",
     clean_session=False,
 )
 client.on_message = on_message
-client.connect("200.200.210.249", 1883, 60)
-client.subscribe("Sellowrap_Database/button", qos=1)
+client.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
+client.subscribe(MQTT_TOPIC, qos=1)
 
-print("🔌 MQTT Sellowrap-Database Listener Started (Raw Events Only)")
+print("🔌 MQTT Database Listener Started (Raw Events Only)")
 client.loop_forever()
