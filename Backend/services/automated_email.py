@@ -22,11 +22,11 @@ def send_morning_digest():
         return
 
     recipients = [
-        "karthik.j@sellowrap.com, maintenancesouth@sellowrap.com, "
-        "productionsouth@sellowrap.com, durai.gopalan@sellowrap.com, "
-        "qualitysouth1@sellowrap.com, padmanabha.pillai@sellowrap.com, "
-        "bdtooling1@sellowrap.com, hrsouth@sellowrap.com, "
-        "vijay.shankar@sellowrap.com, khush@sellowrap.com, "
+        "karthik.j@sellowrap.com", "maintenancesouth@sellowrap.com",
+        "productionsouth@sellowrap.com", "durai.gopalan@sellowrap.com",
+        "qualitysouth1@sellowrap.com", "padmanabha.pillai@sellowrap.com",
+        "bdtooling1@sellowrap.com", "hrsouth@sellowrap.com",
+        "vijay.shankar@sellowrap.com", "khush@sellowrap.com",
         "partheban.manoharan@sellowrap.com", "tamilselvan@sellowrap.com"
     ]
 
@@ -177,13 +177,32 @@ def send_morning_digest():
         """, (target_date,))
         rej_html = "".join([f"<li style='margin-bottom: 4px;'>{i+1}. {r[0]}: {r[1]} pcs</li>" for i, r in enumerate(cur.fetchall())]) or "<li>No rejections recorded.</li>"
 
-        # Fetch Pending
+        # Fetch Pending (Strict check: all active machines x both shifts, zero-hour machines included)
         cur.execute("""
-            SELECT h.machine_code FROM production_hourly_log h
-            LEFT JOIN batch_master b ON h.batch_id = b.batch_id
-            WHERE h.production_date = %s GROUP BY h.machine_code HAVING COUNT(b.batch_id) = 0
+            WITH shifts AS (
+                SELECT 'A' AS shift_name UNION ALL SELECT 'B'
+            ),
+            matrix AS (
+                SELECT s.shift_name, m.machine_code
+                FROM shifts s
+                CROSS JOIN machine_master m
+                WHERE m.is_active = true
+            ),
+            logged_data AS (
+                SELECT h.shift, h.machine_code, COUNT(DISTINCT b.batch_id) as finalized_batches
+                FROM production_hourly_log h
+                LEFT JOIN batch_master b ON h.batch_id = b.batch_id
+                WHERE h.production_date = %s
+                GROUP BY h.shift, h.machine_code
+            )
+            SELECT mx.machine_code, mx.shift_name
+            FROM matrix mx
+            LEFT JOIN logged_data ld 
+                ON mx.shift_name = ld.shift AND mx.machine_code = ld.machine_code
+            WHERE COALESCE(ld.finalized_batches, 0) = 0
+            ORDER BY mx.machine_code ASC, mx.shift_name ASC
         """, (target_date,))
-        pending_html = "".join([f"<li>⚠️ {p[0]}</li>" for p in cur.fetchall()]) or "<li>✅ All shifts finalized successfully.</li>"
+        pending_html = "".join([f"<li>⚠️ {p[0]} - Shift {p[1]}</li>" for p in cur.fetchall()]) or "<li>✅ All shifts finalized successfully.</li>"
 
         # ==========================================
         # 4. BUILD & SEND EMAIL
