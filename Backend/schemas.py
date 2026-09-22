@@ -117,6 +117,8 @@ class ProcessLinePayload(BaseModel):
 class EmployeeModel(BaseModel):
     emp_code: str
     full_name: str
+    email: Optional[str] = None
+    department: Optional[str] = None
     job_role: str
     username: str
     password_hash: str

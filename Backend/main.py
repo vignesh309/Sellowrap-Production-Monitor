@@ -87,7 +87,7 @@ scheduler = BackgroundScheduler()
 
 # 🚨 CHANGE THE TIME HERE
 
-scheduler.add_job(send_morning_digest, 'cron', hour=12, minute=1)  # Adjust the time as needed
+scheduler.add_job(send_morning_digest, 'cron', hour=11, minute=15)  # Adjust the time as needed
 
 # =========================
 # App Initialization

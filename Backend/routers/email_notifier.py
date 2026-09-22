@@ -13,17 +13,38 @@ from routers.reports import get_machinewise_oee_report, get_lineprocesswise_oee_
 
 router = APIRouter()
 
+# Emails that should never receive the report even if present in employee_master
+# (e.g. the sender's own mailbox used to dispatch the email)
+EXCLUDED_EMAILS = {"sellowrap.rpt@gmail.com"}
+
+
+def get_recipients_from_db():
+    """Fetches active employees' emails from employee_master, excluding blanks and the sender mailbox."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT email FROM employee_master 
+            WHERE is_active = true 
+              AND email IS NOT NULL 
+              AND TRIM(email) <> ''
+            ORDER BY full_name ASC
+        """)
+        rows = cur.fetchall()
+        emails = [r[0].strip() for r in rows if r[0] and r[0].strip().lower() not in EXCLUDED_EMAILS]
+        return emails
+    except Exception as e:
+        print(f"Error fetching recipient emails: {e}")
+        return []
+    finally:
+        cur.close()
+        conn.close()
+
+
 @router.post("/api/email_oee_report")
 async def email_oee_report(
     file: UploadFile = File(...),
-    recipient: str = Form(
-        "karthik.j@sellowrap.com, maintenancesouth@sellowrap.com, "
-        "productionsouth@sellowrap.com, durai.gopalan@sellowrap.com, "
-        "qualitysouth1@sellowrap.com, padmanabha.pillai@sellowrap.com, "
-        "bdtooling1@sellowrap.com, hrsouth@sellowrap.com, "
-        "vijay.shankar@sellowrap.com, khush@sellowrap.com, "
-        "partheban.manoharan@sellowrap.com"
-    )
+    recipient: str = Form("")
 ):
     """Generates the Executive Summary, Process OEE Chart, and emails it."""
     sender_email = "Sellowrap.rpt@gmail.com"
@@ -31,6 +52,13 @@ async def email_oee_report(
 
     if not sender_password:
         raise HTTPException(status_code=500, detail="Email App Password not configured in .env file.")
+
+    # If no recipient was explicitly typed in the form, pull the live list from employee_master
+    if not recipient or not recipient.strip():
+        db_emails = get_recipients_from_db()
+        if not db_emails:
+            raise HTTPException(status_code=400, detail="No employee emails found to send the report to.")
+        recipient = ", ".join(db_emails)
 
     # Determine the target date for the report (yesterday)
     target_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
@@ -69,7 +97,7 @@ async def email_oee_report(
                 JOIN production_hourly_log h ON s.log_id = h.id
                                 WHERE h.production_date = %s
                                     AND h.machine_code = %s
-                                    AND TRIM(s.reason_name) <> 'Break Time'
+                                    AND TRIM(s.reason_name) NOT IN ('Break Time', 'No Plan')
                 GROUP BY s.reason_name
                 ORDER BY qty DESC LIMIT 1
             """, (target_date, bottom_machine["machine"]))
@@ -132,7 +160,7 @@ async def email_oee_report(
             FROM production_shortfalls s
             JOIN production_hourly_log h ON s.log_id = h.id
                         WHERE h.production_date = %s
-                            AND TRIM(s.reason_name) <> 'Break Time'
+                            AND TRIM(s.reason_name) NOT IN ('Break Time', 'No Plan')
             GROUP BY s.reason_name
             ORDER BY qty DESC LIMIT 3
         """, (target_date,))
@@ -154,16 +182,31 @@ async def email_oee_report(
         # 4. PENDING FINALIZATIONS (COMPLIANCE)
         # ==========================================
         cur.execute("""
-            SELECT h.machine_code
-            FROM production_hourly_log h
-            LEFT JOIN batch_master b ON h.batch_id = b.batch_id
-            WHERE h.production_date = %s
-            GROUP BY h.machine_code
-            HAVING COUNT(b.batch_id) = 0
-            ORDER BY h.machine_code ASC
+            WITH shifts AS (
+                SELECT 'A' AS shift_name UNION ALL SELECT 'B'
+            ),
+            matrix AS (
+                SELECT s.shift_name, m.machine_code
+                FROM shifts s
+                CROSS JOIN machine_master m
+                WHERE m.is_active = true
+            ),
+            logged_data AS (
+                SELECT h.shift, h.machine_code, COUNT(DISTINCT b.batch_id) as finalized_batches
+                FROM production_hourly_log h
+                LEFT JOIN batch_master b ON h.batch_id = b.batch_id
+                WHERE h.production_date = %s
+                GROUP BY h.shift, h.machine_code
+            )
+            SELECT mx.machine_code, mx.shift_name
+            FROM matrix mx
+            LEFT JOIN logged_data ld 
+                ON mx.shift_name = ld.shift AND mx.machine_code = ld.machine_code
+            WHERE COALESCE(ld.finalized_batches, 0) = 0
+            ORDER BY mx.machine_code ASC, mx.shift_name ASC
         """, (target_date,))
         pending = cur.fetchall()
-        pending_html = "".join([f"<li>⚠️ {p[0]}</li>" for p in pending]) or "<li>✅ All shifts finalized successfully.</li>"
+        pending_html = "".join([f"<li>⚠️ {p[0]} - Shift {p[1]}</li>" for p in pending]) or "<li>✅ All shifts finalized successfully.</li>"
 
         # ==========================================
         # 5. BUILD OUTLOOK-SAFE HTML & ATTACHMENTS
@@ -171,12 +214,12 @@ async def email_oee_report(
         file_content = await file.read()
         msg = EmailMessage()
         msg['Subject'] = f"Manufacturing Analytics: Daily OEE Report ({target_date})"
-        # You can change "Sellowrap Production Monitor" to whatever title you prefer
-        msg['From'] = f"Sellowrap Production Monitor <{sender_email}>"
+        # You can change "Production Monitor" to whatever title you prefer
+        msg['From'] = f"Production Monitor <{sender_email}>"
         msg['To'] = recipient
 
         # Generate a unique Content-ID for the inline image
-        image_cid = make_msgid(domain='sellowrap.com')
+        image_cid = make_msgid(domain='production-monitor.local')
         
         html_body = f"""
         <!DOCTYPE html>
@@ -190,7 +233,7 @@ async def email_oee_report(
                             <!-- Header -->
                             <tr>
                                 <td bgcolor="#0072ff" style="padding: 20px; color: #ffffff;">
-                                    <h2 style="margin: 0; font-size: 24px;">Daily OEE Summary</h2>
+                                    <h2 style="margin: 0; font-size: 24px;">Daily OEE Executive Summary</h2>
                                     <p style="margin: 5px 0 0 0; font-size: 14px;">Date: {target_date}</p>
                                 </td>
                             </tr>
@@ -198,8 +241,7 @@ async def email_oee_report(
                             <!-- Body Content -->
                             <tr>
                                 <td style="padding: 20px; line-height: 1.6; color: #333333;">
-                                    <p style="margin-top: 0;">Good morning,</p>
-                                    <p>The detailed machine-wise OEE breakdown is attached. Here is the executive snapshot for the previous day:</p>
+                                    <p style="margin-top: 0;">Greetings,</p>
                                     
                                     <!-- 1. Executive Snapshot & Volume -->
                                     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 20px;">

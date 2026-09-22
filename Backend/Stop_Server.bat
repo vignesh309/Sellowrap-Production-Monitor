@@ -1,5 +1,5 @@
 @echo off
-echo Stopping Sellowrap Production Monitor services...
+echo Stopping Production Monitor services...
 
 :: 1. Navigate to current directory
 cd /d "%~dp0"
@@ -10,5 +10,5 @@ wmic process where "name='python.exe' and commandline like '%%mqtt_listener.py%%
 wmic process where "name='python.exe' and commandline like '%%moulding_machines_data_monitor.py%%'" call terminate >nul 2>&1
 
 echo.
-echo All Sellowrap background services have been successfully stopped!
+echo All Production Monitor background services have been successfully stopped!
 pause

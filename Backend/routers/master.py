@@ -388,7 +388,7 @@ def get_employees():
     cur = conn.cursor()
     try:
         cur.execute("""
-            SELECT id, emp_code, full_name, job_role, username, password_hash, is_active 
+            SELECT id, emp_code, full_name, job_role, username, password_hash, is_active, email, department 
             FROM employee_master 
             ORDER BY id ASC
         """)
@@ -403,7 +403,9 @@ def get_employees():
                 "job_role": r[3],
                 "username": r[4],
                 "password_hash": r[5],
-                "is_active": r[6]
+                "is_active": r[6],
+                "email": r[7],
+                "department": r[8]
             })
         return {"status": "success", "employees": employees}
     except Exception as e:
@@ -422,10 +424,10 @@ def create_employee(emp: EmployeeModel):
     try:
         query = """
             INSERT INTO employee_master 
-            (emp_code, full_name, job_role, username, password_hash, is_active, created_at, updated_at) 
-            VALUES (%s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            (emp_code, full_name, email, department, job_role, username, password_hash, is_active, created_at, updated_at) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
         """
-        cur.execute(query, (emp.emp_code, emp.full_name, emp.job_role, emp.username, emp.password_hash, emp.is_active))
+        cur.execute(query, (emp.emp_code, emp.full_name, emp.email, emp.department, emp.job_role, emp.username, emp.password_hash, emp.is_active))
         conn.commit()
         return {"status": "success", "message": "Employee created successfully"}
     except Exception as e:
@@ -445,11 +447,11 @@ def update_employee(emp_id: int, emp: EmployeeModel):
     try:
         query = """
             UPDATE employee_master 
-            SET emp_code=%s, full_name=%s, job_role=%s, username=%s, password_hash=%s, 
+            SET emp_code=%s, full_name=%s, email=%s, department=%s, job_role=%s, username=%s, password_hash=%s, 
                 is_active=%s, updated_at=CURRENT_TIMESTAMP
             WHERE id=%s
         """
-        cur.execute(query, (emp.emp_code, emp.full_name, emp.job_role, emp.username, emp.password_hash, emp.is_active, emp_id))
+        cur.execute(query, (emp.emp_code, emp.full_name, emp.email, emp.department, emp.job_role, emp.username, emp.password_hash, emp.is_active, emp_id))
         conn.commit()
         return {"status": "success", "message": "Employee updated successfully"}
     except Exception as e:
@@ -458,44 +460,6 @@ def update_employee(emp_id: int, emp: EmployeeModel):
     finally:
         cur.close()
         conn.close()
-
-# ==========================================
-# OTP AUTHORIZATION LOGIC
-# ==========================================
-@router.post("/api/employees/request-otp")
-def request_otp():
-    # 1. Generate a random 6-digit OTP
-    otp = str(random.randint(100000, 999999))
-    admin_otp_store['admin'] = otp
-    
-    # 2. Use HTML tags (<b> for bold, <code> for monospace)
-    message = (
-        "🔐 <b>System Admin Authorization</b>\n\n"
-        "A request was made to change an employee's password.\n\n"
-        f"🔑 <b>Your OTP:</b> <code>{otp}</code>\n\n"
-        "<i>This code will expire shortly. Do not share it.</i>"
-    )
-    
-    # 3. Send strictly to CHAT_ID (Admin), NOT the Factory Group!
-    success = send_telegram_message(message, target_chat=CHAT_ID)
-    
-    if success:
-        return {"status": "success", "message": "OTP sent via Telegram"}
-    else:
-        # Fallback print to console if internet drops
-        print(f"\n⚠️ [TELEGRAM FAILED] -> Fallback OTP: {otp}\n")
-        return {"status": "warning", "message": "Telegram failed, check server console for OTP."}
-
-@router.post("/api/employees/verify-otp")
-def verify_otp(payload: OTPVerifyModel):
-    stored_otp = admin_otp_store.get('admin')
-    
-    if stored_otp and stored_otp == payload.otp:
-        # Clear the OTP after successful use so it can't be reused
-        admin_otp_store['admin'] = None 
-        return {"status": "success", "valid": True}
-    
-    return {"status": "error", "valid": False}
 
 # ==========================================
 # REJECTION REASON MASTER ROUTES

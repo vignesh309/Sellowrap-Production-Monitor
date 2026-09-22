@@ -14,3 +14,7 @@ DB_PASSWORD = os.getenv("DB_PASSWORD") or ""
 BOT_TOKEN = os.getenv("BOT_TOKEN") or ""
 CHAT_ID = os.getenv("CHAT_ID") or ""
 GROUP_ID = os.getenv("GROUP_ID") or ""
+
+MQTT_BROKER_HOST = os.getenv("MQTT_BROKER_HOST") or ""
+MQTT_BROKER_PORT = int(os.getenv("MQTT_BROKER_PORT") or 1883)
+MQTT_TOPIC = os.getenv("MQTT_TOPIC") or "Sellowrap_Database/button"

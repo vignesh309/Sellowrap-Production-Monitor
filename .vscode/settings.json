@@ -1,0 +1,9 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "chat.tools.terminal.autoApprove": {
+        "/^python -m py_compile Backend\\\\services\\\\automated_email\\.py; if \\(\\$LASTEXITCODE -eq 0\\) \\{ 'Syntax check passed\\.' \\}$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
