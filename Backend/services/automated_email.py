@@ -11,6 +11,34 @@ from email.utils import make_msgid
 from database import get_conn
 from routers.reports import get_machinewise_oee_report, get_lineprocesswise_oee_report
 
+# Emails that should never receive the report even if present in employee_master
+# (e.g. the sender's own mailbox used to dispatch the email)
+EXCLUDED_EMAILS = {"sellowrap.rpt@gmail.com"}
+
+
+def get_recipients_from_db():
+    """Fetches active employees' emails from employee_master, excluding blanks and the sender mailbox."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT email FROM employee_master 
+            WHERE is_active = true 
+              AND email IS NOT NULL 
+              AND TRIM(email) <> ''
+            ORDER BY full_name ASC
+        """)
+        rows = cur.fetchall()
+        emails = [r[0].strip() for r in rows if r[0] and r[0].strip().lower() not in EXCLUDED_EMAILS]
+        return emails
+    except Exception as e:
+        print(f"Error fetching recipient emails: {e}")
+        return []
+    finally:
+        cur.close()
+        conn.close()
+
+
 def send_morning_digest():
     """Runs automatically at 10:00 AM. Generates the OEE HTML dashboard, Excel file, and emails it."""
     
@@ -21,14 +49,10 @@ def send_morning_digest():
         print("Automated Email Failed: No app password found.")
         return
 
-    recipients = [
-        "karthik.j@sellowrap.com", "maintenancesouth@sellowrap.com",
-        "productionsouth@sellowrap.com", "durai.gopalan@sellowrap.com",
-        "qualitysouth1@sellowrap.com", "padmanabha.pillai@sellowrap.com",
-        "bdtooling1@sellowrap.com", "hrsouth@sellowrap.com",
-        "vijay.shankar@sellowrap.com", "khush@sellowrap.com",
-        "partheban.manoharan@sellowrap.com", "tamilselvan@sellowrap.com"
-    ]
+    recipients = get_recipients_from_db()
+    if not recipients:
+        print(f"[{datetime.now()}] Automated Morning Email Failed: No employee emails found to send the report to.")
+        return
 
     target_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
     conn = get_conn()
@@ -177,7 +201,7 @@ def send_morning_digest():
         """, (target_date,))
         rej_html = "".join([f"<li style='margin-bottom: 4px;'>{i+1}. {r[0]}: {r[1]} pcs</li>" for i, r in enumerate(cur.fetchall())]) or "<li>No rejections recorded.</li>"
 
-        # Fetch Pending (Strict check: all active machines x both shifts, zero-hour machines included)
+        # Fetch Pending
         cur.execute("""
             WITH shifts AS (
                 SELECT 'A' AS shift_name UNION ALL SELECT 'B'
@@ -230,6 +254,8 @@ def send_morning_digest():
                             </tr>
                             <tr>
                                 <td style="padding: 20px; line-height: 1.6; color: #333333;">
+                                    <p style="margin-top: 0;">Greetings,</p>
+                                    
                                     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 20px;">
                                         <tr>
                                             <td width="4" bgcolor="#00e5ff"></td>
