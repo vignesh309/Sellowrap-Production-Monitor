@@ -76,9 +76,12 @@
         }
 
         .avatar {
-            width: 50px;  /* 🚨 Upgraded from 45px */
-            height: 50px; /* 🚨 Upgraded from 45px */
-            border-radius: 5px; /* 🚨 Changed to 5px for that slightly squarer look */
+            width: 50px;
+            /* 🚨 Upgraded from 45px */
+            height: 50px;
+            /* 🚨 Upgraded from 45px */
+            border-radius: 5px;
+            /* 🚨 Changed to 5px for that slightly squarer look */
             background: linear-gradient(135deg, var(--accent-prod) 0%, #0072ff 100%);
             display: flex;
             justify-content: center;
@@ -86,7 +89,8 @@
             font-weight: bold;
             font-size: 18px;
             color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 229, 255, 0.3); /* 🚨 Added subtle glow */
+            box-shadow: 0 2px 10px rgba(0, 229, 255, 0.3);
+            /* 🚨 Added subtle glow */
         }
 
         .user-info {
@@ -95,17 +99,19 @@
             justify-content: center;
         }
 
-        .user-name { 
-            font-weight: bold; 
-            font-size: 15px; /* 🚨 Upgraded from 14px */
-            color: #fff; 
+        .user-name {
+            font-weight: bold;
+            font-size: 15px;
+            /* 🚨 Upgraded from 14px */
+            color: #fff;
         }
-        
-        .user-role { 
-            font-size: 11px; /* 🚨 Upgraded from 10px */
-            color: var(--text-muted); 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
+
+        .user-role {
+            font-size: 11px;
+            /* 🚨 Upgraded from 10px */
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-top: 2px;
         }
 
@@ -125,15 +131,18 @@
             transition: 0.3s;
         }
 
-        .logout-btn:hover { 
-            background: rgba(255, 42, 122, 0.1); 
-            color: #ff5494; /* 🚨 Added brighter hover color */
+        .logout-btn:hover {
+            background: rgba(255, 42, 122, 0.1);
+            color: #ff5494;
+            /* 🚨 Added brighter hover color */
         }
 
-        .logout-btn svg { 
-            width: 20px; /* 🚨 Upgraded from 18px */
-            height: 20px; /* 🚨 Upgraded from 18px */
-            fill: currentColor; 
+        .logout-btn svg {
+            width: 20px;
+            /* 🚨 Upgraded from 18px */
+            height: 20px;
+            /* 🚨 Upgraded from 18px */
+            fill: currentColor;
         }
 
         /* --- DASHBOARD LAYOUT --- */
@@ -324,7 +333,9 @@
             </div>
             <button class="logout-btn" onclick="logout()" title="Secure Logout">
                 <svg viewBox="0 0 24 24">
-                    <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path>
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
                 </svg>
                 Log Out
             </button>
@@ -417,7 +428,8 @@
                         <div class="icon-box">⏱️</div>
                         <h3>Pending Finalizations</h3>
                     </div>
-                    <div class="module-card cat-rep restrict-operator" onclick="location.href='/production-hourly-report'">
+                    <div class="module-card cat-rep restrict-operator"
+                        onclick="location.href='/production-hourly-report'">
                         <div class="icon-box">⏱️</div>
                         <h3>Production Hourly Reports</h3>
                     </div>
@@ -501,6 +513,14 @@
                         <div class="icon-box">📝</div>
                         <h3>Daily OEE (Processwise)</h3>
                     </div>
+                    <div class="module-card cat-rep" onclick="location.href='/energy-report'">
+                        <div class="icon-box">⚡</div>
+                        <h3>Energy Report</h3>
+                    </div>
+                    <div class="module-card cat-rep" onclick="location.href='/energy-live-view'">
+                        <div class="icon-box">⚡</div>
+                        <h3>Energy Live View</h3>
+                    </div>
                 </div>
             </div>
 
@@ -526,7 +546,7 @@
                 el.style.pointerEvents = "none";       // Makes it completely unclickable and stops hover effects
             });
         }
-        
+
         if (role === "Supervisor") {
             document.querySelectorAll(".restrict-supervisor").forEach(el => {
                 el.style.opacity = "0.4";

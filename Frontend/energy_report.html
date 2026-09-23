@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Meter Report</title>
+    <link rel="stylesheet" href="/static/css/energy_report.css">
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>ENERGY REPORT</h2>
+        </div>
+
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'" title="Return to Hub">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()" title="Secure Logout">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <div class="filter-bar glass-panel">
+            <div class="filter-group">
+                <label for="meter_select">Meter</label>
+                <select id="meter_select"></select>
+            </div>
+            <div class="filter-group">
+                <label for="from_date">From</label>
+                <input type="date" id="from_date">
+            </div>
+            <div class="filter-group">
+                <label for="to_date">To</label>
+                <input type="date" id="to_date">
+            </div>
+            <div class="filter-group quick-select">
+                <label>&nbsp;</label>
+                <div class="quick-btns">
+                    <button type="button" class="btn-quick" onclick="setQuickRange('today')">Today</button>
+                    <button type="button" class="btn-quick" onclick="setQuickRange('week')">This Week</button>
+                    <button type="button" class="btn-quick" onclick="setQuickRange('month')">This Month</button>
+                </div>
+            </div>
+            <div class="filter-group filter-actions">
+                <label>&nbsp;</label>
+                <button type="button" class="btn-primary" onclick="loadReport()">Apply</button>
+            </div>
+        </div>
+
+        <div class="summary-grid">
+            <div class="summary-card glass-panel">
+                <span class="summary-label">Total Energy</span>
+                <span class="summary-value" id="sum_total_kwh">-- kWh</span>
+            </div>
+            <div class="summary-card glass-panel">
+                <span class="summary-label">Average Power</span>
+                <span class="summary-value" id="sum_avg_kw">-- kW</span>
+            </div>
+            <div class="summary-card glass-panel">
+                <span class="summary-label">Average Power Factor</span>
+                <span class="summary-value" id="sum_avg_pf">--</span>
+            </div>
+            <div class="summary-card glass-panel">
+                <span class="summary-label">Peak Demand</span>
+                <span class="summary-value" id="sum_peak_kw">-- kW</span>
+                <span class="summary-sub" id="sum_peak_time">--</span>
+            </div>
+        </div>
+
+        <div class="chart-section glass-panel">
+            <div class="section-header">
+                <h3>Power Trend</h3>
+                <span class="badge" id="chart_granularity_badge">Hourly</span>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-section glass-panel">
+            <div class="section-header" style="justify-content: space-between;">
+                <h3>Reading Log</h3>
+                <button type="button" class="btn-secondary" onclick="exportToExcel()">Export</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="readingsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Watts Total (W)</th>
+                            <th>PF Average</th>
+                            <th>VLL Average (V)</th>
+                            <th>Current Total (A)</th>
+                            <th>kWh Received</th>
+                        </tr>
+                    </thead>
+                    <tbody id="readingsTableBody">
+                        <tr><td colspan="7" class="empty-row">No data loaded yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/js/js libraries/chart.js"></script>
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/energy_report.js"></script>
+</body>
+</html>

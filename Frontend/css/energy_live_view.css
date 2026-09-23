@@ -1,0 +1,245 @@
+/* ==================================================
+   THEME
+================================================== */
+:root {
+  --bg-main: #14172b;
+  --bg-panel: #1e223c;
+  --bg-input: #262a47;
+  --border-color: rgba(0, 229, 255, 0.4); /* Cyan connection lines */
+  --text-main: #ffffff;
+  --text-muted: #c1deff;
+
+  --accent-cyan: #00e5ff;
+  --accent-blue: #0072ff;
+  --status-green: #00f076;
+  --status-red: #ff2a7a;
+  --status-yellow: #ffb142;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  margin: 0;
+  /* Allow the page to scroll entirely horizontally */
+  overflow-x: auto; 
+  overflow-y: auto;
+}
+
+/* ==================================================
+   NAVBAR
+================================================== */
+.navbar {
+  background-color: var(--bg-panel);
+  border-bottom: 1px solid #5180e6;
+  padding: 10px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100vw;
+  box-sizing: border-box;
+}
+.brand { display: flex; align-items: center; gap: 15px; }
+.brand img { height: 50px; border-radius: 4px; }
+.brand h2 { margin: 0; color: var(--status-yellow); font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
+.nav-utils { display: flex; align-items: center; gap: 15px; }
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 20px;
+  border-right: 1px solid rgba(81, 128, 230, 0.4);
+}
+.avatar {
+  width: 50px; height: 50px; border-radius: 5px;
+  background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%);
+  display: flex; justify-content: center; align-items: center;
+  font-weight: bold; font-size: 18px; color: #fff;
+}
+.user-info { display: flex; flex-direction: column; justify-content: center; }
+.user-name { font-weight: bold; font-size: 15px; color: #fff; }
+.user-role { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+.hub-btn, .logout-btn {
+  background: rgba(0, 229, 255, 0.08); border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan); padding: 8px 16px; border-radius: 6px;
+  cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s;
+}
+.hub-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+.hub-btn svg, .logout-btn svg { width: 18px; height: 18px; fill: currentColor; }
+.logout-btn { background: transparent; border: none; color: var(--status-red); }
+.logout-btn:hover { background: rgba(255, 42, 122, 0.1); color: #ff5494; box-shadow: none; }
+
+/* ==================================================
+   LEFT-TO-RIGHT HORIZONTAL TREE
+================================================== */
+.main-container {
+  padding: 60px 40px;
+  display: inline-block; /* Forces container to stretch horizontally with content */
+  min-width: max-content;
+}
+
+.horizontal-tree {
+  margin: 0;
+  padding: 0;
+}
+
+/* UL handles the vertical stacking of child branches */
+.horizontal-tree ul {
+  padding-left: 60px; /* Space between parent right edge and child left edge */
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 25px; /* Vertical gap between stacked child boxes */
+  position: relative;
+  margin: 0;
+}
+
+/* LI handles the horizontal alignment of box + children */
+.horizontal-tree li {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* 1. Vertical Line connecting sibling elements (Drawn on the left side of the UL padding) */
+.horizontal-tree li::before {
+  content: '';
+  position: absolute;
+  left: -30px; /* Sits exactly in the middle of the 60px UL padding */
+  border-left: 2px solid var(--border-color);
+}
+
+/* Fix vertical lines for first and last children so they don't overshoot */
+.horizontal-tree li:first-child::before {
+  top: 50%;
+  bottom: 0;
+}
+.horizontal-tree li:last-child::before {
+  top: 0;
+  bottom: 50%;
+}
+.horizontal-tree li:not(:first-child):not(:last-child)::before {
+  top: 0;
+  bottom: 0;
+}
+/* If there's only one child, no vertical connecting line is needed */
+.horizontal-tree li:only-child::before {
+  display: none;
+}
+
+/* 2. Horizontal Line entering the child box from the left */
+.horizontal-tree li::after {
+  content: '';
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  width: 30px;
+  border-top: 2px solid var(--border-color);
+}
+
+/* Remove incoming lines for the very first Root node */
+.horizontal-tree > li::before,
+.horizontal-tree > li::after {
+  display: none;
+}
+
+/* 3. Horizontal Line leaving the parent box from the right */
+.meter-box.has-children::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  width: 30px;
+  border-top: 2px solid var(--border-color);
+  z-index: 1;
+}
+
+
+/* ==================================================
+   METER BOX DESIGN
+================================================== */
+.meter-box {
+  background: rgba(30, 34, 60, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(81, 128, 230, 0.4);
+  border-radius: 8px;
+  padding: 20px;
+  width: 250px; /* Fixed width ensures perfect alignment */
+  text-align: center;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 2; /* Keeps the box floating above the connection lines */
+  transition: 0.2s;
+}
+
+.meter-box:hover {
+  border-color: var(--accent-cyan);
+  background: #1e223c;
+}
+
+.meter-box.root-box {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+  background: rgba(0, 229, 255, 0.05);
+}
+
+.box-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+  color: var(--text-muted);
+}
+
+.status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.status-dot.live { background: var(--status-green); box-shadow: 0 0 6px var(--status-green); }
+.status-dot.stale { background: var(--status-yellow); box-shadow: 0 0 6px var(--status-yellow); }
+.status-dot.offline { background: var(--status-red); box-shadow: 0 0 6px var(--status-red); }
+
+.box-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.box-kw {
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--accent-cyan);
+  line-height: 1;
+  margin-bottom: 15px;
+}
+
+.box-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(81, 128, 230, 0.2);
+  padding-top: 12px;
+}
+
+.box-balance {
+  margin-top: 15px;
+  font-size: 11px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.box-balance.ok { background: rgba(0, 240, 118, 0.1); color: var(--status-green); }
+.box-balance.warn { background: rgba(255, 177, 66, 0.1); color: var(--status-yellow); }

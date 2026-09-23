@@ -185,6 +185,14 @@ def process_daily_oee_page():
 def production_log_manager_page():
     return FileResponse(get_html_path("production_log_manager.html"))
 
+@router.get("/energy-report", response_class=HTMLResponse)
+def energy_report_page():
+    return FileResponse(get_html_path("energy_report.html"))
+
+@router.get("/energy-live-view", response_class=HTMLResponse)
+def energy_live_view_page():
+    return FileResponse(get_html_path("energy_live_view.html"))
+
 @router.get("/non-hazardous-waste-generation-report", response_class=HTMLResponse)
 def non_hazardous_waste_generation_report_page():
     return FileResponse(get_html_path("Plant_kpi_performance/non_hazardous_waste_generation_report.html"))

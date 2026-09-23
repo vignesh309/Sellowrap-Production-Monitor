@@ -16,7 +16,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from services.automated_email import send_morning_digest
 
 # Import our routers
-from routers import frontend, master, reports, auth, production_entry, production_entry_stage_1, fetchdata, erp_integration, email_notifier
+from routers import frontend, master, reports, auth, production_entry, production_entry_stage_1, fetchdata, erp_integration, email_notifier, energy_reports
 
 # =========================
 # Logging Configuration
@@ -132,6 +132,7 @@ app.include_router(production_entry_stage_1.router)
 app.include_router(fetchdata.router)
 app.include_router(erp_integration.router)  # 🚨 NEW: ERP Integration Router
 app.include_router(email_notifier.router)  # 🚨 NEW: Email Notifier Router
+app.include_router(energy_reports.router)
 # =========================
 # Main Entry
 # =========================
