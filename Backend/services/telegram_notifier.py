@@ -208,7 +208,8 @@ def handle_get_link_command(message):
 def run_bot_listener():
     """Runs the bot polling in a loop so it constantly listens for commands."""
     print("🎧 Telegram Bot Command Listener Started...")
-    bot.infinity_polling()
+    bot.remove_webhook()
+    bot.infinity_polling(timeout=10, long_polling_timeout=5)
 
 
 # ==========================================

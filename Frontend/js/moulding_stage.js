@@ -563,14 +563,28 @@ function enforceTimeLocks() {
     const globalDate = document.getElementById("global_date").value;
     const todayDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 
+    // Compute yesterday's date string in the same YYYY-MM-DD format
+    const yesterdayObj = new Date(now);
+    yesterdayObj.setDate(yesterdayObj.getDate() - 1);
+    const yesterdayDate = new Date(yesterdayObj.getTime() - (yesterdayObj.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+    const isToday = globalDate === todayDate;
+    const isYesterday = globalDate === yesterdayDate;
+
     hours.forEach((timeObj, index) => {
         const blockStartHour = parseInt(timeObj.start.split(":")[0]);
         let isLocked = false;
 
-        if (globalDate !== todayDate) {
+        if (!isToday && !isYesterday) {
+            // 🚨 Any date older than yesterday is fully locked for non-Admins
             isLocked = true;
         } 
+        else if (isYesterday) {
+            // Yesterday stays fully open so operators can catch up
+            isLocked = false;
+        } 
         else {
+            // Today: keep the existing "current hour + previous hour" rule
             let hourDifference = currentHour - blockStartHour;
             
             if (hourDifference < -12) hourDifference += 24; 
@@ -585,16 +599,32 @@ function enforceTimeLocks() {
             for (let j = 0; j < splitCounts[index]; j++) {
                 let btn = document.getElementById(`btn_submit_${index}_${j}`);
                 
-                if (btn && !btn.innerText.includes("Saved")) {
+                // 🚨 FIX: Check for BOTH "Saved" and "Logged" so we preserve historical timestamps!
+                if (btn && !btn.innerText.includes("Saved") && !btn.innerText.includes("Logged")) {
                     let shotsInput = document.getElementById(`shots_${index}_${j}`);
                     if (shotsInput) shotsInput.disabled = true;
                     
-                    document.getElementById(`sf_qty_${index}_${j}`).disabled = true;
-                    document.getElementById(`sf_reason_${index}_${j}`).disabled = true;
-                    document.getElementById(`btn_add_sf_${index}_${j}`).disabled = true;
-                    document.getElementById(`rej_qty_${index}_${j}`).disabled = true;
-                    document.getElementById(`rej_reason_${index}_${j}`).disabled = true;
-                    document.getElementById(`btn_add_rej_${index}_${j}`).disabled = true;
+                    let sfQty = document.getElementById(`sf_qty_${index}_${j}`);
+                    if (sfQty) sfQty.disabled = true;
+                    
+                    let sfReason = document.getElementById(`sf_reason_${index}_${j}`);
+                    if (sfReason) sfReason.disabled = true;
+                    
+                    let btnAddSf = document.getElementById(`btn_add_sf_${index}_${j}`);
+                    if (btnAddSf) btnAddSf.disabled = true;
+                    
+                    let rejQty = document.getElementById(`rej_qty_${index}_${j}`);
+                    if (rejQty) rejQty.disabled = true;
+                    
+                    let rejReason = document.getElementById(`rej_reason_${index}_${j}`);
+                    if (rejReason) rejReason.disabled = true;
+                    
+                    let btnAddRej = document.getElementById(`btn_add_rej_${index}_${j}`);
+                    if (btnAddRej) btnAddRej.disabled = true;
+
+                    // Disable the No Plan checkbox so they can't toggle it while locked
+                    let noPlanCheck = document.getElementById(`no_plan_${index}_${j}`);
+                    if (noPlanCheck) noPlanCheck.disabled = true;
 
                     btn.style.background = "var(--border-color)";
                     btn.style.color = "var(--text-muted)";
