@@ -117,7 +117,9 @@ function editRow(encodedEmpData) {
     
     const passField = document.getElementById("password_hash");
     passField.value = emp.password_hash;
-    passField.disabled = true;
+    passField.disabled = false;
+    passField.required = true;
+    passField.placeholder = "Enter password";
 
     document.getElementById("is_active").checked = emp.is_active;
     document.getElementById("is_active").dispatchEvent(new Event("change"));
@@ -135,7 +137,10 @@ function resetForm() {
     document.getElementById("is_active").dispatchEvent(new Event("change"));
 
     // Because it's a NEW employee, unlock the password field!
-    document.getElementById("password_hash").disabled = false;
+    const passField = document.getElementById("password_hash");
+    passField.disabled = false;
+    passField.required = true;
+    passField.placeholder = "Enter password";
 
     // Update Form Header & Button
     document.querySelector(".form-section h3").innerText = "Add New Employee";

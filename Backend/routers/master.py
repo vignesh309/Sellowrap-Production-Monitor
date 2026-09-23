@@ -1,7 +1,16 @@
 from fastapi import APIRouter, HTTPException
 from config import CHAT_ID
 from database import get_conn
-from schemas import PartMasterPayload, MachinePayload, EmployeeModel, OTPVerifyModel, RejectionReasonPayload, ShortfallReasonPayload, ProcessLine, ProcessLinePayload
+from schemas import (
+    EmployeeModel,
+    MachinePayload,
+    OTPVerifyModel,
+    PartMasterPayload,
+    ProcessLine,
+    ProcessLinePayload,
+    RejectionReasonPayload,
+    ShortfallReasonPayload,
+)
 import random
 from services.telegram_notifier import send_telegram_message
 
@@ -446,12 +455,23 @@ def update_employee(emp_id: int, emp: EmployeeModel):
     cur = conn.cursor()
     try:
         query = """
-            UPDATE employee_master 
-            SET emp_code=%s, full_name=%s, email=%s, department=%s, job_role=%s, username=%s, password_hash=%s, 
+            UPDATE employee_master
+            SET emp_code=%s, full_name=%s, email=%s, department=%s,
+                job_role=%s, username=%s, password_hash=%s,
                 is_active=%s, updated_at=CURRENT_TIMESTAMP
             WHERE id=%s
         """
-        cur.execute(query, (emp.emp_code, emp.full_name, emp.email, emp.department, emp.job_role, emp.username, emp.password_hash, emp.is_active, emp_id))
+        cur.execute(query, (
+            emp.emp_code,
+            emp.full_name,
+            emp.email,
+            emp.department,
+            emp.job_role,
+            emp.username,
+            emp.password_hash,
+            emp.is_active,
+            emp_id,
+        ))
         conn.commit()
         return {"status": "success", "message": "Employee updated successfully"}
     except Exception as e:
