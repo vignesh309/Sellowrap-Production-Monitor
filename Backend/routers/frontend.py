@@ -193,6 +193,14 @@ def energy_report_page():
 def energy_live_view_page():
     return FileResponse(get_html_path("energy_live_view.html"))
 
+@router.get("/compressor-monitor", response_class=HTMLResponse)
+def compressor_monitor_page():
+    return FileResponse(get_html_path("compressor_monitor.html"))
+
+@router.get("/energy-trends", response_class=HTMLResponse)
+def energy_trends_page():
+    return FileResponse(get_html_path("energy_trends.html"))
+
 @router.get("/non-hazardous-waste-generation-report", response_class=HTMLResponse)
 def non_hazardous_waste_generation_report_page():
     return FileResponse(get_html_path("Plant_kpi_performance/non_hazardous_waste_generation_report.html"))

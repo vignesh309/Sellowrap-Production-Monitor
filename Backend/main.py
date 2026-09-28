@@ -10,13 +10,12 @@ from fastapi.staticfiles import StaticFiles
 from logging.handlers import TimedRotatingFileHandler
 
 # 🚨 Import our relocated functions!
-from services.telegram_notifier import start_scheduler
 from summary_worker import start_summary_worker
 from apscheduler.schedulers.background import BackgroundScheduler
 from services.automated_email import send_morning_digest
 
 # Import our routers
-from routers import frontend, master, reports, auth, production_entry, production_entry_stage_1, fetchdata, erp_integration, email_notifier, energy_reports
+from routers import frontend, master, reports, auth, production_entry, production_entry_stage_1, fetchdata, erp_integration, email_notifier, energy_reports, compressor_readings, energy_trends
 
 # =========================
 # Logging Configuration
@@ -68,7 +67,6 @@ sys.stdout = StreamToLogger(logging.getLogger(), logging.INFO)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 1. Start the 4-Hour Telegram Alert Scheduler (Imported from services)
-    start_scheduler()
     
     # 2. Start Summary Worker
     worker_thread = threading.Thread(target=start_summary_worker)
@@ -87,7 +85,7 @@ scheduler = BackgroundScheduler()
 
 # 🚨 CHANGE THE TIME HERE
 
-scheduler.add_job(send_morning_digest, 'cron', hour=11, minute=0)  # Adjust the time as needed
+scheduler.add_job(send_morning_digest, 'cron', hour=11, minute=00)  # Adjust the time as needed
 
 # =========================
 # App Initialization
@@ -133,6 +131,8 @@ app.include_router(fetchdata.router)
 app.include_router(erp_integration.router)  # 🚨 NEW: ERP Integration Router
 app.include_router(email_notifier.router)  # 🚨 NEW: Email Notifier Router
 app.include_router(energy_reports.router)
+app.include_router(compressor_readings.router)
+app.include_router(energy_trends.router)
 # =========================
 # Main Entry
 # =========================

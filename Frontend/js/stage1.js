@@ -4,6 +4,7 @@ let mouldMaster = {};
 let rejectionCodes = [];
 let shortfallCodes = [];
 let currentBatchLogs = {};
+let currentBatchId = "";
 let machineList = [];
 
 // --- HOURLY TRACKING STATE ---
@@ -468,42 +469,18 @@ function updateTabStatus(hourIndex) {
 }
 
 function enforceTimeLocks() {
-    const role = localStorage.getItem("userRole") || "Unknown";
-    
-    // If Admin, they have god-mode. Do not lock anything.
-    if (role === "Admin") return;
+    const role = (localStorage.getItem("userRole") || "").trim().toLowerCase();
+
+    if (role === "admin") return;
 
     const now = new Date();
-    const currentHour = now.getHours(); // 0-23
     const globalDate = document.getElementById("global_date").value;
-    const todayDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+    const cutoffDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 2);
+    const selectedDate = new Date(`${globalDate}T00:00:00`);
+    const isLockedDate = Number.isNaN(selectedDate.getTime()) || selectedDate < cutoffDate;
 
     hours.forEach((timeObj, index) => {
-        const blockStartHour = parseInt(timeObj.start.split(":")[0]);
-        
-        let isLocked = false;
-
-        // Rule 1: If they are looking at a past or future DATE, lock everything for Operators
-        if (globalDate !== todayDate) {
-            isLocked = true;
-        } 
-        else {
-            // Rule 2: Operator Time Window Logic
-            // Allow them to edit the CURRENT hour, and the PREVIOUS hour.
-            // Example: If it's 15:30, currentHour is 15. They can edit 15:00-16:00 and 14:00-15:00.
-            
-            // Calculate the difference between the current real-world hour and the block's start hour
-            let hourDifference = currentHour - blockStartHour;
-            
-            // Handle midnight crossover for Shift B (e.g., Current hour 1 AM (1), Block start 23 PM (23))
-            if (hourDifference < -12) hourDifference += 24; 
-            if (hourDifference > 12) hourDifference -= 24;
-
-            // Lock if the block is more than 1 hour in the past, OR if it's in the future
-            if (hourDifference > 1 || hourDifference < 0) {
-                isLocked = true;
-            }
-        }
+        const isLocked = isLockedDate;
 
         // Apply the lock to the UI
         if (isLocked) {
@@ -927,6 +904,7 @@ function triggerPartChange() {
         return;
     }
 
+    currentBatchId = "";
     const fieldsToUnlock = ["part_number", "mould_code", "batchNo", "operator", "supervisor"];
     fieldsToUnlock.forEach(id => {
         let el = document.getElementById(id);
@@ -1011,6 +989,7 @@ async function checkActiveMachineState() {
                 filterMoldsByPart();
 
                 setTimeout(() => {
+                    currentBatchId = logData.setup.batch_id || "";
                     // 2. NOW set the value of the newly built dropdown
                     document.getElementById("mould_code").value = logData.setup.mould_code || "";
                     document.getElementById("operator").value = logData.setup.operator_code || "";
@@ -1078,6 +1057,7 @@ function wipeScreenForNewMachine() {
     document.getElementById("operator").value = "";
     document.getElementById("supervisor").value = "";
 
+    currentBatchId = "";
     let prodQtyEl = document.getElementById("prodQty");
     if (prodQtyEl) prodQtyEl.innerText = "0";
 
@@ -1382,6 +1362,7 @@ async function submitBlock(hourIndex, splitIndex) {
             throw new Error(errorData.detail || "Failed to save to database");
         }
 
+        currentBatchId = generatedBatchId;
         let noPlanCheck = document.getElementById(`no_plan_${hourIndex}_${splitIndex}`);
         if(noPlanCheck) noPlanCheck.disabled = true;
         
@@ -1467,7 +1448,7 @@ async function finalizeBatch() {
     let mould = document.getElementById("mould_code").value;
     let part = document.getElementById("part_number").value;
 
-    let generatedBatchId = `${dateVal}_${shiftVal}_${machine}_${mould}_${part}`;
+    let generatedBatchId = currentBatchId || `${dateVal}_${shiftVal}_${machine}_${mould || "N/A"}_${part || "NO PLAN"}`;
 
     let okParts = parseInt(document.getElementById("grand-ok").innerText) || 0;
     let ngParts = parseInt(document.getElementById("grand-ng").innerText) || 0;

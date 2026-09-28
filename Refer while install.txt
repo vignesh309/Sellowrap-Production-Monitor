@@ -5,16 +5,16 @@ Current Folder Structure
 Sellowrap Production Monitor Version 2
 ├── .git/
 ├── .gitignore
+├── .vscode/
+│   └── settings.json
 ├── Backend/
 │   ├── .env
 │   ├── __pycache__/
 │   ├── config.py
 │   ├── database.py
 │   ├── fastapi_logs.txt
-│   ├── fastapi_logs.txt.2026-09-16_20
+│   ├── fastapi_logs.txt.2026-09-22_19
 │   ├── fastapi_logs1.txt
-│   ├── FINSYS_Payload_20260825_171848.json
-│   ├── FINSYS_Payload_20260831_170418.json
 │   ├── main.py
 │   ├── moulding_logs.txt
 │   ├── mqtt_logs.txt
@@ -29,11 +29,13 @@ Sellowrap Production Monitor Version 2
 │   │   ├── __pycache__/
 │   │   ├── auth.py
 │   │   ├── email_notifier.py
+│   │   ├── energy_reports.py
 │   │   ├── erp_integration.py
 │   │   ├── fetchdata.py
 │   │   ├── frontend.py
 │   │   ├── master.py
 │   │   ├── production_entry.py
+│   │   ├── production_entry_stage_1.py
 │   │   └── reports.py
 │   └── services/
 │       ├── __pycache__/
@@ -50,6 +52,8 @@ Sellowrap Production Monitor Version 2
 │   ├── detailed_rejections_report.html
 │   ├── detailed_shortfalls_report.html
 │   ├── employee_master.html
+│   ├── energy_live_view.html
+│   ├── energy_report.html
 │   ├── erp_integration_master.html
 │   ├── erp_staging_view.html
 │   ├── hub.html
@@ -70,8 +74,6 @@ Sellowrap Production Monitor Version 2
 │   ├── part_master.html
 │   ├── partwise_report.html
 │   ├── pending_batches.html
-│   ├── Plant_kpi_performance/
-│   │   └── non_hazardous_waste_generation_report.html
 │   ├── process_daily_oee.html
 │   ├── process_master.html
 │   ├── production_entry_stage_1.html
@@ -91,6 +93,8 @@ Sellowrap Production Monitor Version 2
 │   │   ├── detailed_rejections_report.css
 │   │   ├── detailed_shortfalls_report.css
 │   │   ├── employee_master.css
+│   │   ├── energy_live_view.css
+│   │   ├── energy_report.css
 │   │   ├── erp_integration_master.css
 │   │   ├── erp_staging_view.css
 │   │   ├── iot_report.css
@@ -102,7 +106,6 @@ Sellowrap Production Monitor Version 2
 │   │   ├── moulding_machines_history.css
 │   │   ├── moulding_stage.css
 │   │   ├── moulding_stage_hourly_status.css
-│   │   ├── non_hazardous_waste_generation_report.css
 │   │   ├── oee_summary.css
 │   │   ├── part_master.css
 │   │   ├── partwise_report.css
@@ -131,6 +134,8 @@ Sellowrap Production Monitor Version 2
 │       ├── detailed_rejections_report.js
 │       ├── detailed_shortfalls_report.js
 │       ├── employee_master.js
+│       ├── energy_live_view.js
+│       ├── energy_report.js
 │       ├── erp_integration_master.js
 │       ├── erp_staging_view.js
 │       ├── iot_report.js
@@ -146,7 +151,6 @@ Sellowrap Production Monitor Version 2
 │       ├── moulding_machines_history.js
 │       ├── moulding_stage.js
 │       ├── moulding_stage_hourly_status.js
-│       ├── non_hazardous_waste_generation_report.js
 │       ├── oeeteep_dashboard.js
 │       ├── oee_summary.js
 │       ├── part_master.js

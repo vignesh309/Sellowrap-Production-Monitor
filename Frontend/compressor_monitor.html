@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compressor Monitor</title>
+    <link rel="stylesheet" href="/static/css/compressor_monitor.css">
+</head>
+<body>
+
+    <!-- ENTERPRISE NAVBAR -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>COMPRESSOR MONITOR</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="main-container">
+        
+        <!-- HEADER ACTIONS & FILTERS -->
+        <div class="canvas-header">
+            <div>
+                <h2 style="margin: 0; color: var(--text-main);">Compressor Analytics</h2>
+                <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 13px;">Monitor live pressure and temperature trends.</p>
+            </div>
+            
+            <div class="filter-group">
+                <select id="compressor_select" class="custom-select">
+                    <option value="ALL">All Compressors</option>
+                </select>
+                <input type="date" id="start_date" class="custom-date">
+                <input type="date" id="end_date" class="custom-date">
+                <button class="hub-btn" onclick="fetchCompressorData()" style="margin: 0; height: 38px;">
+                    🔄 Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Discharge Pressure</div>
+                <div class="kpi-value" id="kpi_pressure">--</div>
+                <div class="kpi-unit">bar</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Discharge Temp</div>
+                <div class="kpi-value" id="kpi_dis_temp" style="color: var(--status-yellow);">--</div>
+                <div class="kpi-unit">°C</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Ambient Temp</div>
+                <div class="kpi-value" id="kpi_amb_temp" style="color: var(--status-green);">--</div>
+                <div class="kpi-unit">°C</div>
+            </div>
+        </div>
+
+        <!-- CHART SECTION -->
+        <div class="card chart-card">
+            <h3 class="sub-title">Live Sensor Trends</h3>
+            <div class="chart-container">
+                <canvas id="compressorChart"></canvas>
+            </div>
+        </div>
+
+        <!-- DATA TABLE -->
+        <div class="card">
+            <h3 class="sub-title">Reading Logs</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Compressor</th>
+                            <th>Pressure (bar)</th>
+                            <th>Discharge Temp (°C)</th>
+                            <th>Ambient Temp (°C)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                        <tr><td colspan="6" class="loading-cell">Loading readings...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/js libraries/chart.js"></script>
+    <script src="/static/js/compressor_monitor.js"></script>
+</body>
+</html>

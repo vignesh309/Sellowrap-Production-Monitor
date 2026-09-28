@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Consumption Trends</title>
+    <link rel="stylesheet" href="/static/css/energy_trends.css">
+</head>
+
+<body>
+
+    <!-- ENTERPRISE NAVBAR -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>ENERGY AGGREGATION TRENDS</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="main-container">
+
+        <!-- HEADER ACTIONS & FILTERS -->
+        <div class="canvas-header">
+            <div>
+                <h2 style="margin: 0; color: var(--text-main);">Daily & Monthly Consumption</h2>
+                <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 13px;">Track overarching production
+                    energy costs and month-over-month usage.</p>
+            </div>
+
+            <div class="filter-group">
+                <select id="meter_select" class="custom-select">
+                    <option value="ALL">All Meters</option>
+                </select>
+                <!-- Using type="month" since this report focuses on monthly aggregation -->
+                <input type="month" id="month_filter" class="custom-date">
+                <button class="hub-btn" onclick="fetchTrendData()" style="margin: 0; height: 38px;">
+                    🔄 Load Report
+                </button>
+            </div>
+        </div>
+
+        <!-- OVERALL CONSUMPTION SUMMARY CARDS -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Current Month</div>
+                <div class="kpi-value" id="kpi_current_month">--</div>
+                <div class="kpi-unit">kWh</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Last Month</div>
+                <div class="kpi-value" id="kpi_last_month" style="color: var(--status-yellow);">--</div>
+                <div class="kpi-unit">kWh</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Average Daily (This Month)</div>
+                <div class="kpi-value" id="kpi_avg_daily" style="color: var(--status-green);">--</div>
+                <div class="kpi-unit">kWh / Day</div>
+            </div>
+        </div>
+
+        <!-- DAILY CONSUMPTION CHART SECTION -->
+        <div class="card chart-card">
+            <h3 class="sub-title">Daily Consumption Bar Chart</h3>
+            <div class="chart-container">
+                <canvas id="consumptionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- OVERALL CONSUMPTION SECTION -->
+        <div class="card">
+            <h3 class="sub-title">Overall Consumption</h3>
+            <div class="overall-split">
+                <!-- Left Side: Data Table -->
+                <div class="overall-table-container">
+                    <table class="overall-table">
+                        <tr>
+                            <td>Current Month</td>
+                            <td id="tbl_current">-- kWh</td>
+                        </tr>
+                        <tr>
+                            <td>Last Month</td>
+                            <td id="tbl_last">-- kWh</td>
+                        </tr>
+                        <tr>
+                            <td>Same Month Last Year</td>
+                            <td id="tbl_same_last_year">-- kWh</td>
+                        </tr>
+                        <tr>
+                            <td>Last Year</td>
+                            <td id="tbl_last_year">-- kWh</td>
+                        </tr>
+                        <tr>
+                            <td>Average Monthly</td>
+                            <td id="tbl_avg_monthly">-- kWh</td>
+                        </tr>
+                        <tr>
+                            <td>Average Daily</td>
+                            <td id="tbl_avg_daily">-- kWh</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Right Side: 3-Bar Comparison Chart -->
+                <div class="overall-chart-container">
+                    <canvas id="overallChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- ✅ "Overall Consumption" card now correctly closed here -->
+
+        <!-- LOAD CONSUMPTION DYNAMIC SECTION -->
+        <div class="card load-consumption-card">
+            <div class="load-header">
+                <h3 class="sub-title" style="border: none; margin: 0; padding: 0;">Load Consumption</h3>
+                <div class="load-tabs">
+                        <div class="tab-item" id="tab_all_year" onclick="setLoadMode('all_year')">
+                        All Year
+                    </div>
+
+                    <div class="tab-item" id="tab_year" onclick="setLoadMode('year')">
+                        Year:
+                        <select id="input_year" onchange="fetchLoadData()" onclick="event.stopPropagation()">
+                            <!-- Generated by JS -->
+                        </select>
+                    </div>
+
+                    <div class="tab-item" id="tab_month" onclick="setLoadMode('month')">
+                        Month:
+                        <input type="month" id="input_month" onchange="fetchLoadData()"
+                            onclick="event.stopPropagation()">
+                    </div>
+
+                        <div class="tab-item active" id="tab_day" onclick="setLoadMode('day')">
+                        Day:
+                        <input type="date" id="input_day" onchange="fetchLoadData()" onclick="event.stopPropagation()">
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="loadChart"></canvas>
+            </div>
+        </div>
+
+        <!-- DAILY BREAKDOWN DATA TABLE -->
+        <div class="card">
+            <h3 class="sub-title">Daily Log Breakdown</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Meter</th>
+                            <th>Start Reading (kWh)</th>
+                            <th>End Reading (kWh)</th>
+                            <th>Total Consumption (kWh)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                        <tr>
+                            <td colspan="5" class="loading-cell">Select a month and click "Load Report"</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts (To be created in the next step) -->
+    <script src="/static/js/js libraries/chart.js"></script>
+    <script src="/static/js/energy_trends.js"></script>
+</body>
+
+</html>

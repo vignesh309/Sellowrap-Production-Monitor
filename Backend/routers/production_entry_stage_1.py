@@ -199,6 +199,7 @@ def get_batch_logs(date: str, shift: str, machine_code: str):
         is_finalized = bool(cur.fetchone())
 
         setup = {
+            "batch_id": last_row[17],
             "internal_batch_number": last_row[11],
             "part_number": last_row[13],
             "mould_code": last_row[14],
