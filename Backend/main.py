@@ -15,7 +15,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from services.automated_email import send_morning_digest
 
 # Import our routers
-from routers import frontend, master, reports, auth, production_entry, production_entry_stage_1, fetchdata, erp_integration, email_notifier, energy_reports, compressor_readings, energy_trends
+from routers import frontend, master, reports, auth, production_entry, production_entry_stage_1, fetchdata, erp_integration, email_notifier, energy_reports, compressor_readings, energy_trends, bulk_no_plan, old_erp_invoice
 
 # =========================
 # Logging Configuration
@@ -85,7 +85,7 @@ scheduler = BackgroundScheduler()
 
 # 🚨 CHANGE THE TIME HERE
 
-scheduler.add_job(send_morning_digest, 'cron', hour=11, minute=00)  # Adjust the time as needed
+scheduler.add_job(send_morning_digest, 'cron', hour=13, minute=23)  # Adjust the time as needed
 
 # =========================
 # App Initialization
@@ -133,6 +133,8 @@ app.include_router(email_notifier.router)  # 🚨 NEW: Email Notifier Router
 app.include_router(energy_reports.router)
 app.include_router(compressor_readings.router)
 app.include_router(energy_trends.router)
+app.include_router(bulk_no_plan.router)
+app.include_router(old_erp_invoice.router)
 # =========================
 # Main Entry
 # =========================

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk No Plan Tool</title>
+    <link rel="stylesheet" href="/static/css/bulk_no_plan.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>BULK NO PLAN</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <!-- SELECTION PANEL -->
+        <div class="glass-panel">
+            <div class="section-header">
+                <h3>1. Select Date, Shift & Machines</h3>
+            </div>
+
+            <div class="selection-row">
+                <div class="input-group">
+                    <label for="bn_date">Date</label>
+                    <input type="date" id="bn_date">
+                </div>
+                <div class="input-group">
+                    <label for="bn_shift">Shift</label>
+                    <select id="bn_shift">
+                        <option value="A">Shift A (07:00 - 19:00)</option>
+                        <option value="B">Shift B (19:00 - 07:00)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="checklist-header">
+                <label>Machines</label>
+                <div class="select-toggle">
+                    <button type="button" class="btn-link" onclick="toggleAllMachines(true)">Select All</button>
+                    <span>|</span>
+                    <button type="button" class="btn-link" onclick="toggleAllMachines(false)">Select None</button>
+                </div>
+            </div>
+            <div class="checklist-grid" id="machine_checklist">
+                <div class="empty-msg">Loading machines...</div>
+            </div>
+
+            <div class="checklist-header" style="margin-top: 25px;">
+                <label>Hour Blocks</label>
+                <div class="select-toggle">
+                    <button type="button" class="btn-link" onclick="toggleAllHours(true)">Select All Hours</button>
+                    <span>|</span>
+                    <button type="button" class="btn-link" onclick="toggleAllHours(false)">Select None</button>
+                </div>
+            </div>
+            <div class="hour-grid" id="hour_checklist"></div>
+        </div>
+
+        <!-- REMARKS -->
+        <div class="glass-panel">
+            <div class="section-header">
+                <h3>2. Reason for No Plan</h3>
+            </div>
+            <textarea id="bn_remarks"
+                placeholder="Required: e.g. Planned maintenance, power outage, mould change, no orders..."
+                rows="3"></textarea>
+        </div>
+
+        <!-- PREVIEW -->
+        <div class="glass-panel preview-panel">
+            <div class="preview-text" id="preview_summary">Select machines and hours to see a preview.</div>
+            <button type="button" class="btn-primary" id="btn_apply" onclick="applyBulkNoPlan()" disabled>
+                Apply No Plan
+            </button>
+        </div>
+
+        <!-- RESULTS TABLE -->
+        <div class="glass-panel" id="results_section" style="display: none;">
+            <div class="section-header">
+                <h3>Submission Results</h3>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Machine</th>
+                            <th>Hour</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results_body"></tbody>
+                </table>
+            </div>
+            <div class="result-summary" id="result_summary_text"></div>
+        </div>
+
+        <!-- FINALIZE CANDIDATES -->
+        <div class="glass-panel" id="finalize_section" style="display: none;">
+            <div class="section-header">
+                <h3>Ready to Finalize</h3>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="badge">All 12 hours covered</span>
+                    <button type="button" class="btn-finalize-all" id="btn_finalize_all"
+                        onclick="finalizeAllMachines()">
+                        Finalize All
+                    </button>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Machine</th>
+                            <th>Shift</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="finalize_body"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/js/bulk_no_plan.js"></script>
+</body>
+
+</html>

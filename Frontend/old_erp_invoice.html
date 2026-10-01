@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Old ERP Invoice Data</title>
+    <link rel="stylesheet" href="/static/css/old_erp_invoice.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>OLD ERP INVOICE DATA</h2>
+        </div>
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z">
+                    </path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <!-- SUMMARY CARDS -->
+        <div class="summary-grid">
+            <div class="summary-card glass-panel">
+                <span class="summary-label">Matching Invoices</span>
+                <span class="summary-value" id="sum_invoice_count">--</span>
+            </div>
+            <div class="summary-card glass-panel">
+                <span class="summary-label">Total Quantity</span>
+                <span class="summary-value" id="sum_total_qty">--</span>
+            </div>
+            <div class="summary-card glass-panel">
+                <span class="summary-label">Total Basic Amount</span>
+                <span class="summary-value" id="sum_total_amount">--</span>
+            </div>
+            <div class="summary-card glass-panel">
+                <span class="summary-label">Total Records</span>
+                <span class="summary-value" id="sum_total_rows">--</span>
+            </div>
+        </div>
+
+        <!-- FILTER BAR -->
+        <div class="glass-panel">
+            <div class="section-header">
+                <h3>Filters</h3>
+                <button type="button" class="btn-link" onclick="clearFilters()">Clear All</button>
+            </div>
+
+            <div class="filter-grid">
+                <div class="input-group">
+                    <label for="f_inv_from">Invoice Date From</label>
+                    <input type="date" id="f_inv_from">
+                </div>
+                <div class="input-group">
+                    <label for="f_inv_to">Invoice Date To</label>
+                    <input type="date" id="f_inv_to">
+                </div>
+                <div class="input-group">
+                    <label for="f_inv_no">Invoice No</label>
+                    <input type="text" id="f_inv_no" placeholder="e.g. 24900730">
+                </div>
+                <div class="input-group">
+                    <label for="f_cust_code">Customer Code</label>
+                    <input type="text" id="f_cust_code" placeholder="e.g. M180">
+                </div>
+                <div class="input-group">
+                    <label for="f_cust_name">Customer Name</label>
+                    <input type="text" id="f_cust_name" placeholder="Search customer...">
+                </div>
+                <div class="input-group">
+                    <label for="f_cust_city">Customer City</label>
+                    <input type="text" id="f_cust_city" placeholder="e.g. PUNE">
+                </div>
+                <div class="input-group">
+                    <label for="f_prod_code">Product Code</label>
+                    <input type="text" id="f_prod_code" placeholder="e.g. 79909881">
+                </div>
+                <div class="input-group">
+                    <label for="f_prod_desc">Product Description</label>
+                    <input type="text" id="f_prod_desc" placeholder="Search description...">
+                </div>
+                <div class="input-group">
+                    <label for="f_prod_category">Product Category</label>
+                    <select id="f_prod_category">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="f_inv_type">Invoice Type</label>
+                    <select id="f_inv_type">
+                        <option value="">All Types</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="f_stock_type">Stock Type</label>
+                    <select id="f_stock_type">
+                        <option value="">All Stock Types</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="f_unit_code">Unit Code</label>
+                    <input type="text" id="f_unit_code" placeholder="e.g. 10009">
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button type="button" class="btn-primary" onclick="applyFilters()">Apply Filters</button>
+                <button type="button" class="btn-secondary" onclick="exportCurrentView()">Export Excel Sheet</button>
+            </div>
+        </div>
+
+        <!-- DATA TABLE -->
+        <div class="glass-panel">
+            <div class="section-header" style="justify-content: space-between;">
+                <h3>Invoice Records</h3>
+                <div class="page-size-control">
+                    <label for="page_size">Rows per page</label>
+                    <select id="page_size" onchange="changePageSize()">
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="200" selected>200</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Unit</th>
+                            <th>Inv No</th>
+                            <th>Inv Date</th>
+                            <th>Cust Code</th>
+                            <th>Customer Name</th>
+                            <th>City</th>
+                            <th>Category</th>
+                            <th>Prod Code</th>
+                            <th>Product Description</th>
+                            <th>Qty</th>
+                            <th>Basic Amount</th>
+                            <th>Inv Type</th>
+                            <th>Stock Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                        <tr>
+                            <td colspan="13" class="empty-row">Loading data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-bar">
+                <button type="button" class="btn-page" id="btn_prev" onclick="goToPage(currentPage - 1)">◀ Prev</button>
+
+                <div class="page-jump">
+                    <span>Page</span>
+                    <input type="number" id="page_jump_input" min="1" value="1" onkeydown="handlePageJumpKey(event)">
+                    <span id="page_total_label">of 1</span>
+                    <button type="button" class="btn-page-go" onclick="jumpToPage()">Go</button>
+                </div>
+
+                <button type="button" class="btn-page" id="btn_next" onclick="goToPage(currentPage + 1)">Next ▶</button>
+            </div>
+        </div>
+
+        <!-- REPORTS SECTION (placeholder for future expansion) -->
+        <div class="glass-panel reports-placeholder">
+            <div class="section-header">
+                <h3>Reports</h3>
+                <span class="badge">Will be updated</span>
+            </div>
+            <p class="placeholder-text">
+                Charts and summary reports (e.g. customer-wise sales, product-wise trends, monthly comparisons) will be
+                added here once requirements are finalized.
+            </p>
+        </div>
+
+    </div>
+      <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/old_erp_invoice.js"></script>
+</body>
+
+</html>

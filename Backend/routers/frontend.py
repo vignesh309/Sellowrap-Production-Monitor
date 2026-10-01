@@ -60,6 +60,10 @@ def moulding_stage_page():
 def moulding_stage_hourly_status_page():
     return FileResponse(get_html_path("moulding_stage_hourly_status.html"))
 
+@router.get("/bulk-no-plan", response_class=HTMLResponse)
+def bulk_no_plan_page():
+    return FileResponse(get_html_path("bulk_no_plan.html"))
+
 
 @router.get("/process-master", response_class=HTMLResponse)
 def process_master_page():
@@ -201,6 +205,6 @@ def compressor_monitor_page():
 def energy_trends_page():
     return FileResponse(get_html_path("energy_trends.html"))
 
-@router.get("/non-hazardous-waste-generation-report", response_class=HTMLResponse)
-def non_hazardous_waste_generation_report_page():
-    return FileResponse(get_html_path("Plant_kpi_performance/non_hazardous_waste_generation_report.html"))
+@router.get("/old-erp-invoice", response_class=HTMLResponse)
+def old_erp_invoice_page():
+    return FileResponse(get_html_path("old_erp_invoice.html"))
