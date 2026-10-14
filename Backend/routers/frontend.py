@@ -189,6 +189,10 @@ def process_daily_oee_page():
 def production_log_manager_page():
     return FileResponse(get_html_path("production_log_manager.html"))
 
+@router.get("/moulding-machines-parameters", response_class=HTMLResponse)
+def moulding_machines_parameters_page():
+    return FileResponse(get_html_path("moulding_machines_parameters.html"))
+
 @router.get("/energy-report", response_class=HTMLResponse)
 def energy_report_page():
     return FileResponse(get_html_path("energy_report.html"))

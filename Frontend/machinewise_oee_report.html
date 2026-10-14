@@ -91,9 +91,17 @@
                 </div>
 
                 <!-- 🚨 Bottom Row: Custom Tag-Based Machine Selection -->
-                <div class="filter-group" style="margin-bottom: 15px; width: 100%;">
-                    <label>Machine Selection: <small style="color: var(--text-muted); font-weight: normal;">(Matching
-                            machines are auto-selected. Click 'x' to exclude machines)</small></label>
+                <div class="filter-group machine-selection-group">
+                    
+                    <!-- NEW: Flex container to hold the label on the left and the Clear All button on the right -->
+                    <div class="machine-selection-header">
+                        <label class="machine-selection-label">Machine Selection: <small class="machine-selection-hint">(Matching machines are auto-selected. Click 'x' to exclude machines)</small></label>
+                        
+                        <!-- The Clear All Button -->
+                        <button type="button" class="clear-machines-button" onclick="clearAllMachines()">
+                            ✕ Clear All
+                        </button>
+                    </div>
 
                     <div class="custom-multiselect-container">
                         <div class="tags-input-box" id="tags_input_box" onclick="toggleMachineDropdown(event)">

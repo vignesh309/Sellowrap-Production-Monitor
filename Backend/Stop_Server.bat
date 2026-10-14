@@ -8,6 +8,7 @@ cd /d "%~dp0"
 wmic process where "name='python.exe' and commandline like '%%main.py%%'" call terminate >nul 2>&1
 wmic process where "name='python.exe' and commandline like '%%mqtt_listener.py%%'" call terminate >nul 2>&1
 wmic process where "name='python.exe' and commandline like '%%moulding_machines_data_monitor.py%%'" call terminate >nul 2>&1
+wmic process where "name='python.exe' and commandline like '%%energy_meter_data_monitor.py%%'" call terminate >nul 2>&1
 
 echo.
 echo All Production Monitor background services have been successfully stopped!

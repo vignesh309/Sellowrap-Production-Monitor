@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moulding Machines Parameter History</title>
+    <link rel="stylesheet" href="/static/css/moulding_machines_parameters.css">
+</head>
+
+<body>
+
+    <!-- ENTERPRISE NAVBAR -->
+    <div class="navbar">
+        <div class="brand">
+            <img src="/static/img/Company_logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h2>PARAMETER HISTORY</h2>
+        </div>
+
+        <div class="nav-utils">
+            <button class="hub-btn" onclick="window.location.href='/hub'" title="Return to Hub">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                Return to Hub
+            </button>
+
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <span id="user-display" class="user-name">Loading...</span>
+                    <span id="role-display" class="user-role">Role</span>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="logout()" title="Secure Logout">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"></path>
+                </svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+
+        <!-- FILTER BAR -->
+        <div class="glass-panel filter-panel">
+            <div class="input-group">
+                <label for="filter-month">Target Month</label>
+                <input type="month" id="filter-month">
+            </div>
+
+            <div class="input-group">
+                <label for="filter-machine">Machine</label>
+                <select id="filter-machine">
+                    <option value="IM01-850T">IM01-850T</option>
+                    <option value="IM02-350T-1">IM02-350T-1</option>
+                    <option value="IM03-280T-1">IM03-280T-1</option>
+                    <option value="IM04-130T">IM04-130T</option>
+                    <option value="IM05-100T-1">IM05-100T-1</option>
+                    <option value="IM06-80T-1">IM06-80T-1</option>
+                    <option value="IM07-550T">IM07-550T</option>
+                    <option value="IM08-80T-2">IM08-80T-2</option>
+                    <option value="IM09-80T-3">IM09-80T-3</option>
+                    <option value="IM10-180T-1">IM10-180T-1</option>
+                    <option value="IM11-100T-2">IM11-100T-2</option>
+                    <option value="IM12-350T-2">IM12-350T-2</option>
+                    <option value="IM13-280T-2">IM13-280T-2</option>
+                    <option value="IM14-180T-2">IM14-180T-2</option>
+                    <option value="IM15-50T">IM15-50T</option>
+                    <option value="IM16-280T-3">IM16-280T-3</option>
+                    <option value="IM19-350T-5">IM19-350T-5</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn-primary" onclick="loadParameterData(1)">Load Data</button>
+            </div>
+        </div>
+
+        <!-- HISTORICAL LOGS -->
+        <div class="glass-panel">
+            <div class="section-header">
+                <div class="header-left">
+                    <h3>Historical Logs</h3>
+                    <span class="badge" id="context-badge">No data loaded</span>
+                </div>
+                <div class="header-right">
+                    <span class="row-count" id="total-rows-display">Total Rows: 0</span>
+                    <button class="btn-success" onclick="exportToExcel()">
+                        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor; margin-right: 6px;">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM17 20H7v-2h10v2zm0-4H7v-2h10v2zm-3-4H7v-2h7v2z"></path>
+                        </svg>
+                        Export XLSX
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="parameter-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Part No</th>
+                            <th>Mold No</th>
+                            <th class="num">Z1 (°C)</th>
+                            <th class="num">Z2 (°C)</th>
+                            <th class="num">Z3 (°C)</th>
+                            <th class="num">Z4 (°C)</th>
+                            <th class="num">Z5 (°C)</th>
+                            <th class="num">Max Press (MPa)</th>
+                            <th class="num">Inj Speed (mm/s)</th>
+                            <th class="num">Inj Time (s)</th>
+                            <th class="num">Cushion (mm)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr><td colspan="12" class="empty-state">Select a month and machine, then click Load Data.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-bar" id="pagination-controls" style="display: none;">
+                <span class="range-info" id="range-info">Showing 0–0 of 0</span>
+
+                <div class="pagination-controls">
+                    <button class="btn-page" id="btn-prev" onclick="changePage(-1)">◀ Prev</button>
+                    <div class="page-indicator">
+                        Page
+                        <input type="number" id="page-input" value="1" min="1"
+                               onkeydown="if (event.key === 'Enter') jumpToPage()">
+                        of <span id="total-pages">1</span>
+                        <button class="btn-page-go" onclick="jumpToPage()">Go</button>
+                    </div>
+                    <button class="btn-page" id="btn-next" onclick="changePage(1)">Next ▶</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/js/js libraries/xlsx.full.min.js"></script>
+    <script src="/static/js/moulding_machines_parameters.js"></script>
+</body>
+
+</html>

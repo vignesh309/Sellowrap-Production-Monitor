@@ -95,10 +95,14 @@
                 </div>
 
                 <!-- Bottom Row: Dynamic Multi-Select Box -->
-                <div class="filter-group" style="margin-bottom: 15px; width: 100%;">
-                    <label id="selection_label">Line Selection: <small
-                            style="color: var(--text-muted); font-weight: normal;">(Remove tags to exclude. Leave blank
-                            for ALL)</small></label>
+                <div class="filter-group machine-selection-group">
+                    <div class="machine-selection-header">
+                        <label id="selection_label" class="machine-selection-label">Line Selection: <small
+                                class="machine-selection-hint">(Remove tags to exclude. Leave blank for ALL)</small></label>
+                        <button type="button" class="clear-machines-button" onclick="clearAllTags()">
+                            ✕ Clear All
+                        </button>
+                    </div>
                     <div class="custom-multiselect-container">
                         <div class="tags-input-box" id="tags_box" onclick="toggleDropdown(event)">
                             <div id="selected_tags_container" class="tags-container"></div>

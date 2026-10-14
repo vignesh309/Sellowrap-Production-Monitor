@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setMode("EXPLORE");
     refreshPartDropdown();
     loadProcessDropdown(); // 🚨 NEW: Trigger the process fetch on load
+    loadMasterDirectory();
 });
 
 // ==========================================
@@ -221,6 +222,7 @@ async function savePart() {
         setMode("EXPLORE");
 
         refreshPartDropdown();
+        loadMasterDirectory();
         document.getElementById("search_part_id").value = payload.part_no;
 
     } catch (error) {
@@ -248,6 +250,7 @@ async function deletePart() {
         clearForm();
         setMode("EXPLORE");
         refreshPartDropdown();
+        loadMasterDirectory();
 
     } catch (error) {
         alert(error.message);
@@ -350,6 +353,60 @@ function checkProcessType(inputElement) {
         moldCav.disabled = true; moldCav.value = "";
         moldActCav.disabled = true; moldActCav.value = "";
     }
+}
+
+// ==========================================
+// 3. MASTER DIRECTORY FUNCTIONS
+// ==========================================
+
+async function loadMasterDirectory() {
+    try {
+        const response = await fetch('/api/part_master_all');
+        if (!response.ok) throw new Error("Failed to load directory");
+        
+        const data = await response.json();
+        const tbody = document.getElementById("directory_table_body");
+        tbody.innerHTML = "";
+
+        if (data.directory.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: gray;">No parts found in database.</td></tr>`;
+            return;
+        }
+
+        data.directory.forEach(row => {
+            // Apply a pointer cursor to indicate clickability
+            const tr = document.createElement("tr");
+            tr.style.cursor = "pointer"; 
+            tr.onclick = () => loadPartFromDirectory(row.part_no);
+            
+            // Highlight the part number in cyan for visibility
+            tr.innerHTML = `
+                <td style="font-weight: bold; color: var(--accent-cyan);">${row.part_no}</td>
+                <td style="font-weight: bold;">${row.part_name}</td>
+                <td style="color: var(--text-muted);">${row.customer_name}</td>
+                <td style="text-align: center;">${row.seq}</td>
+                <td>${row.process}</td>
+                <td>${row.mold}</td>
+                <td>${row.target}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+    } catch (error) {
+        console.error(error);
+        document.getElementById("directory_table_body").innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--status-red);">Error loading directory.</td></tr>`;
+    }
+}
+
+function loadPartFromDirectory(partNo) {
+    // Inject the part number into the search bar
+    document.getElementById("search_part_id").value = partNo;
+    
+    // Trigger the existing search function
+    searchPart();
+    
+    // Smoothly scroll the window back up to the top so the user can start editing
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function logout() {

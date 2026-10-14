@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import date
 from datetime import datetime
 from database import get_conn
-from services.telegram_notifier import generate_hourly_report
+from services.telegram_notifier import send_telegram_message
 import math
 
 router = APIRouter()
@@ -2007,12 +2007,11 @@ def get_historical_iot(
         
 @router.get("/api/test-telegram")
 def test_telegram_alert():
-    """Instantly triggers the hourly report for testing purposes."""
-    try:
-        generate_hourly_report()
-        return {"status": "success", "message": "Test report sent to Telegram!"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+    """Sends a test message to confirm Telegram delivery is configured."""
+    sent = send_telegram_message("Test alert from the Production Monitor.")
+    if not sent:
+        raise HTTPException(status_code=502, detail="Telegram test message could not be sent")
+    return {"status": "success", "message": "Test Telegram message sent."}
 
 @router.get("/api/get_oeeteep_process_summary")
 def get_oeeteep_process_summary(
@@ -2332,12 +2331,6 @@ def get_machinewise_oee_report(
     cur = conn.cursor()
     
     try:
-        cur.execute("SELECT DISTINCT category, oee_impact FROM shortfall_reason_master WHERE is_active = true")
-        impact_map = {row[0]: row[1] for row in cur.fetchall()}
-        
-        def get_impact(category_name):
-            return impact_map.get(category_name, 'Availability')
-            
         query = """
         WITH BaseLogs AS (
             SELECT 
@@ -2369,6 +2362,10 @@ def get_machinewise_oee_report(
                 CASE WHEN b.ct_mins > 0 THEN b.ct_mins 
                      WHEN b.target_qty > 0 THEN b.logged_mins / b.target_qty
                      ELSE 0 END as final_ct_mins,
+                -- THE FIX: Sum exact shortfall quantities based strictly on the oee_impact column
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.oee_impact = 'Availability'), 0) as raw_avail_loss_qty,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.oee_impact = 'Performance'), 0) as raw_perf_loss_qty,
+                -- UI Display Categories
                 COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Mould Changeover'), 0) as dt_mould,
                 COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Planning / Management'), 0) as dt_plan,
                 COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Machine Breakdown'), 0) as dt_machine,
@@ -2389,6 +2386,8 @@ def get_machinewise_oee_report(
             SUM(ng_qty),
             SUM(logged_mins),
             SUM(CASE WHEN is_no_plan = 1 THEN logged_mins ELSE 0 END),
+            SUM(raw_avail_loss_qty * active_cavities * final_ct_mins),
+            SUM(raw_perf_loss_qty * active_cavities * final_ct_mins),
             SUM(dt_mould * active_cavities * final_ct_mins),
             SUM(dt_plan * active_cavities * final_ct_mins),
             SUM(dt_machine * active_cavities * final_ct_mins),
@@ -2459,19 +2458,12 @@ def get_machinewise_oee_report(
             logged_mins = float(row[4])
             no_plan_mins = float(row[5])
             
-            dt_mould = float(row[6]); dt_plan = float(row[7]); dt_machine = float(row[8]); dt_tooling = float(row[9])
-            dt_material = float(row[10]); dt_utility = float(row[11]); dt_operator = float(row[12]); dt_manpower = float(row[13])
-            dt_process = float(row[14]); dt_maint = float(row[15]); dt_break = float(row[16])
+            avail_loss_mins = float(row[6])
+            perf_loss_mins = float(row[7]) # Calculated but NOT subtracted from operating time!
             
-            dt_dict = {
-                "Mould Changeover": dt_mould, "Planning / Management": dt_plan, "Machine Breakdown": dt_machine,
-                "Tooling Issue": dt_tooling, "Material Shortage": dt_material, "Utility Failure": dt_utility,
-                "Operator Efficiency": dt_operator, "Manpower Shortage": dt_manpower, "Process & Quality": dt_process,
-                "Planned Maintenance": dt_maint, "Break Time": dt_break
-            }
-            
-            avail_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Availability')
-            perf_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Performance')
+            dt_mould = float(row[8]); dt_plan = float(row[9]); dt_machine = float(row[10]); dt_tooling = float(row[11])
+            dt_material = float(row[12]); dt_utility = float(row[13]); dt_operator = float(row[14]); dt_manpower = float(row[15])
+            dt_process = float(row[16]); dt_maint = float(row[17]); dt_break = float(row[18])
 
             planned_prod_time = total_range_mins - no_plan_mins
             if planned_prod_time < 0: planned_prod_time = 0
@@ -2479,11 +2471,14 @@ def get_machinewise_oee_report(
             logged_prod_mins = logged_mins - no_plan_mins
             if logged_prod_mins < 0: logged_prod_mins = 0
                 
-            operating_time = logged_prod_mins - avail_loss_mins - perf_loss_mins
+            # OPERATING TIME is only reduced when the machine is stopped (Availability Loss)
+            operating_time = logged_prod_mins - avail_loss_mins
             if operating_time < 0: operating_time = 0
                 
             target_per_min = (tgt / logged_prod_mins) if logged_prod_mins > 0 else 0
-            adj_tgt = tgt - ((avail_loss_mins + perf_loss_mins) * target_per_min)
+            
+            # ADJUSTED TARGET is only forgiven when the machine is stopped (Availability Loss)
+            adj_tgt = tgt - (avail_loss_mins * target_per_min)
             if adj_tgt < 0: adj_tgt = 0
             
             tgt = adj_tgt
@@ -2526,7 +2521,6 @@ def get_machinewise_oee_report(
                 "break_time": format_dt(dt_break, total_range_mins)
             })
 
-        # 🚨 UPDATED: Removed the "machine == ALL" restriction so it always appends
         if len(records) > 0:
             overall_avail = (tot_op_time / tot_plan_prod * 100) if tot_plan_prod > 0 else 0.0
             overall_perf = (tot_act / tot_tgt * 100) if tot_tgt > 0 else 0.0
@@ -2580,12 +2574,6 @@ def get_lineprocesswise_oee_report(
     conn = get_conn()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT DISTINCT category, oee_impact FROM shortfall_reason_master WHERE is_active = true")
-        impact_map = {row[0]: row[1] for row in cur.fetchall()}
-        
-        def get_impact(category_name):
-            return impact_map.get(category_name, 'Availability')
-
         if view_mode == "line":
             group_col_sql = "COALESCE(p.production_line, 'Unknown Line')"
         else:
@@ -2625,6 +2613,10 @@ def get_lineprocesswise_oee_report(
                 CASE WHEN b.ct_mins > 0 THEN b.ct_mins
                      WHEN b.target_qty > 0 THEN b.logged_mins / b.target_qty
                      ELSE 0 END as final_ct_mins,
+                -- THE FIX: Sum exact shortfall quantities based strictly on the oee_impact column
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.oee_impact = 'Availability'), 0) as raw_avail_loss_qty,
+                COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.oee_impact = 'Performance'), 0) as raw_perf_loss_qty,
+                -- UI Display Categories
                 COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Mould Changeover'), 0) as dt_mould,
                 COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Planning / Management'), 0) as dt_plan,
                 COALESCE((SELECT SUM(s.quantity) FROM production_shortfalls s JOIN shortfall_reason_master srm ON s.reason_name = srm.reason_name WHERE s.log_id = b.log_id AND srm.category = 'Machine Breakdown'), 0) as dt_machine,
@@ -2645,6 +2637,8 @@ def get_lineprocesswise_oee_report(
             SUM(ng_qty),
             SUM(logged_mins),
             SUM(CASE WHEN is_no_plan = 1 THEN logged_mins ELSE 0 END),
+            SUM(raw_avail_loss_qty * active_cavities * final_ct_mins),
+            SUM(raw_perf_loss_qty * active_cavities * final_ct_mins),
             SUM(dt_mould * active_cavities * final_ct_mins),
             SUM(dt_plan * active_cavities * final_ct_mins),
             SUM(dt_machine * active_cavities * final_ct_mins),
@@ -2715,19 +2709,12 @@ def get_lineprocesswise_oee_report(
             logged_mins = float(row[4])
             no_plan_mins = float(row[5])
             
-            dt_mould = float(row[6]); dt_plan = float(row[7]); dt_machine = float(row[8]); dt_tooling = float(row[9])
-            dt_material = float(row[10]); dt_utility = float(row[11]); dt_operator = float(row[12]); dt_manpower = float(row[13])
-            dt_process = float(row[14]); dt_maint = float(row[15]); dt_break = float(row[16])
+            avail_loss_mins = float(row[6])
+            perf_loss_mins = float(row[7]) # Fetched, but excluded from operating time reduction
             
-            dt_dict = {
-                "Mould Changeover": dt_mould, "Planning / Management": dt_plan, "Machine Breakdown": dt_machine,
-                "Tooling Issue": dt_tooling, "Material Shortage": dt_material, "Utility Failure": dt_utility,
-                "Operator Efficiency": dt_operator, "Manpower Shortage": dt_manpower, "Process & Quality": dt_process,
-                "Planned Maintenance": dt_maint, "Break Time": dt_break
-            }
-            
-            avail_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Availability')
-            perf_loss_mins = sum(mins for cat, mins in dt_dict.items() if get_impact(cat) == 'Performance')
+            dt_mould = float(row[8]); dt_plan = float(row[9]); dt_machine = float(row[10]); dt_tooling = float(row[11])
+            dt_material = float(row[12]); dt_utility = float(row[13]); dt_operator = float(row[14]); dt_manpower = float(row[15])
+            dt_process = float(row[16]); dt_maint = float(row[17]); dt_break = float(row[18])
             
             planned_prod_time = total_range_mins - no_plan_mins
             if planned_prod_time < 0: planned_prod_time = 0
@@ -2735,15 +2722,16 @@ def get_lineprocesswise_oee_report(
             logged_prod_mins = logged_mins - no_plan_mins
             if logged_prod_mins < 0: logged_prod_mins = 0
                 
-            # 🚨 UPDATE: Operating time is now reduced by BOTH Availability and Performance Losses
-            operating_time = logged_prod_mins - avail_loss_mins - perf_loss_mins
+            # OPERATING TIME is only reduced when the machine is stopped (Availability Loss)
+            operating_time = logged_prod_mins - avail_loss_mins
             if operating_time < 0: operating_time = 0
                 
             target_per_min = (tgt / logged_prod_mins) if logged_prod_mins > 0 else 0
             
-            # 🚨 UPDATE: Target is reduced by BOTH Availability and Performance Downtime
-            adj_tgt = tgt - ((avail_loss_mins + perf_loss_mins) * target_per_min)
+            # ADJUSTED TARGET is only forgiven when the machine is stopped (Availability Loss)
+            adj_tgt = tgt - (avail_loss_mins * target_per_min)
             if adj_tgt < 0: adj_tgt = 0
+            
             tgt = adj_tgt
             
             pct_planned = round((planned_prod_time / total_range_mins * 100), 1) if total_range_mins > 0 else 0.0

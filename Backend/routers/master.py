@@ -386,6 +386,40 @@ def get_part_list_dropdown():
         cur.close()
         conn.close()
 
+@router.get("/api/part_master_all")
+def get_all_parts_directory():
+    """Fetches a combined flat list of all parts and their routing steps for the directory table."""
+    conn = get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT 
+                pm.part_no, pm.part_name, pm.customer_name,
+                pr.sequence_no, pr.process_name, pr.mold_no, pr.hourly_target
+            FROM part_master pm
+            LEFT JOIN part_routing pr ON pm.part_no = pr.part_no
+            ORDER BY pm.part_no ASC, pr.sequence_no ASC
+        """)
+        
+        results = []
+        for r in cur.fetchall():
+            results.append({
+                "part_no": r[0],
+                "part_name": r[1],
+                "customer_name": r[2] or "-",
+                "seq": r[3] or "-",
+                "process": r[4] or "No Routing",
+                "mold": r[5] or "-",
+                "target": r[6] or 0
+            })
+            
+        return {"directory": results}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
 # ==========================================
 # EMPLOYEE MASTER ROUTES
 # ==========================================

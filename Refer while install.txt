@@ -3,57 +3,65 @@ rm_master in order to make our new code work.
 
 Current Folder Structure
 Sellowrap Production Monitor Version 2
-├── .git/
+├── .git/ (Git metadata; contents omitted)
 ├── .gitignore
+├── .venv/ (local Python environment; contents omitted)
 ├── .vscode/
 │   └── settings.json
 ├── Backend/
 │   ├── .env
-│   ├── __pycache__/
+│   ├── __pycache__/ (generated Python cache; contents omitted)
 │   ├── config.py
 │   ├── database.py
 │   ├── fastapi_logs.txt
-│   ├── fastapi_logs.txt.2026-09-22_19
+│   ├── fastapi_logs.txt.2026-10-10_14
 │   ├── fastapi_logs1.txt
 │   ├── main.py
 │   ├── moulding_logs.txt
 │   ├── mqtt_logs.txt
 │   ├── Restart_Server.bat
-│   ├── schemas.py
-│   ├── Stop_Server.bat
 │   ├── Start_Server.bat
+│   ├── Stop_Server.bat
+│   ├── schemas.py
 │   ├── summary_worker.py
 │   ├── utils.py
 │   ├── routers/
 │   │   ├── __init__.py
-│   │   ├── __pycache__/
+│   │   ├── __pycache__/ (generated Python cache; contents omitted)
 │   │   ├── auth.py
+│   │   ├── bulk_no_plan.py
+│   │   ├── compressor_readings.py
 │   │   ├── email_notifier.py
 │   │   ├── energy_reports.py
+│   │   ├── energy_trends.py
 │   │   ├── erp_integration.py
 │   │   ├── fetchdata.py
 │   │   ├── frontend.py
 │   │   ├── master.py
+│   │   ├── moulding_machines_parameters.py
+│   │   ├── old_erp_invoice.py
 │   │   ├── production_entry.py
 │   │   ├── production_entry_stage_1.py
 │   │   └── reports.py
 │   └── services/
-│       ├── __pycache__/
-│       ├── automated_email.py
+│       ├── __pycache__/ (generated Python cache; contents omitted)
 │       ├── auto_worker.py
+│       ├── automated_email.py
 │       ├── moulding_machines_data_monitor.py
 │       ├── mqtt_listener.py
 │       ├── telegram_notifier.py
 │       └── test_erp_push.py
-│
 ├── Frontend/
 │   ├── batch_ledger.html
+│   ├── bulk_no_plan.html
+│   ├── compressor_monitor.html
 │   ├── cycle_time_analysis.html
 │   ├── detailed_rejections_report.html
 │   ├── detailed_shortfalls_report.html
 │   ├── employee_master.html
 │   ├── energy_live_view.html
 │   ├── energy_report.html
+│   ├── energy_trends.html
 │   ├── erp_integration_master.html
 │   ├── erp_staging_view.html
 │   ├── hub.html
@@ -67,10 +75,12 @@ Sellowrap Production Monitor Version 2
 │   ├── manifest.json
 │   ├── moulding_machines_alarms.html
 │   ├── moulding_machines_history.html
+│   ├── moulding_machines_parameters.html
 │   ├── moulding_stage.html
 │   ├── moulding_stage_hourly_status.html
-│   ├── oeeteep_dashboard.html
 │   ├── oee_summary.html
+│   ├── oeeteep_dashboard.html
+│   ├── old_erp_invoice.html
 │   ├── part_master.html
 │   ├── partwise_report.html
 │   ├── pending_batches.html
@@ -89,12 +99,15 @@ Sellowrap Production Monitor Version 2
 │   ├── teep_summary_idle_machines.html
 │   ├── css/
 │   │   ├── batch_ledger.css
+│   │   ├── bulk_no_plan.css
+│   │   ├── compressor_monitor.css
 │   │   ├── cycle_time_analysis.css
 │   │   ├── detailed_rejections_report.css
 │   │   ├── detailed_shortfalls_report.css
 │   │   ├── employee_master.css
 │   │   ├── energy_live_view.css
 │   │   ├── energy_report.css
+│   │   ├── energy_trends.css
 │   │   ├── erp_integration_master.css
 │   │   ├── erp_staging_view.css
 │   │   ├── iot_report.css
@@ -104,9 +117,11 @@ Sellowrap Production Monitor Version 2
 │   │   ├── machinewise_oee_report.css
 │   │   ├── moulding_machines_alarms.css
 │   │   ├── moulding_machines_history.css
+│   │   ├── moulding_machines_parameters.css
 │   │   ├── moulding_stage.css
 │   │   ├── moulding_stage_hourly_status.css
 │   │   ├── oee_summary.css
+│   │   ├── old_erp_invoice.css
 │   │   ├── part_master.css
 │   │   ├── partwise_report.css
 │   │   ├── pending_batches.css
@@ -130,12 +145,15 @@ Sellowrap Production Monitor Version 2
 │   │   └── Vendor_logo1.png
 │   └── js/
 │       ├── batch_ledger.js
+│       ├── bulk_no_plan.js
+│       ├── compressor_monitor.js
 │       ├── cycle_time_analysis.js
 │       ├── detailed_rejections_report.js
 │       ├── detailed_shortfalls_report.js
 │       ├── employee_master.js
 │       ├── energy_live_view.js
 │       ├── energy_report.js
+│       ├── energy_trends.js
 │       ├── erp_integration_master.js
 │       ├── erp_staging_view.js
 │       ├── iot_report.js
@@ -149,10 +167,12 @@ Sellowrap Production Monitor Version 2
 │       ├── machinewise_oee_report.js
 │       ├── moulding_machines_alarms.js
 │       ├── moulding_machines_history.js
+│       ├── moulding_machines_parameters.js
 │       ├── moulding_stage.js
 │       ├── moulding_stage_hourly_status.js
-│       ├── oeeteep_dashboard.js
 │       ├── oee_summary.js
+│       ├── oeeteep_dashboard.js
+│       ├── old_erp_invoice.js
 │       ├── part_master.js
 │       ├── partwise_report.js
 │       ├── pending_batches.js
@@ -169,8 +189,9 @@ Sellowrap Production Monitor Version 2
 │       ├── stage1.js
 │       ├── teep_summary.js
 │       └── teep_summary_idle_machines.js
-│
 └── Refer while install.txt
+
+Note: `.git/`, `.venv/`, and Python `__pycache__/` entries are shown as folders; their generated contents are omitted.
 
 Checklist for deploying in ADS System
 
@@ -186,9 +207,9 @@ host    all             all             0.0.0.0/0               scram-sha-256
 7. In the postgresql.conf file make sure this line is present "listen_addresses = '*'"
 under the #-Connection Settings - field so that any device can communicate with database.
 8. Download mosquito broker service from the internet and install it.
-9. After installation of mosquito broker get to the location "C:\Program Files\Mosquitto" 
+9. After installation of mosquito broker get to the location "C:\Program Files\Mosquitto"
 and open the mosquitto.conf file inside that paste the lines just below this "#include_dir"
-line. 
+line.
 listener 1883 0.0.0.0
 allow_anonymous true
 persistence true
@@ -202,7 +223,7 @@ PyTelegramBotAPI Pillow qrcode[pil] python-multipart
 Testing scenarios
 
 unpluging the lan cable and giving two to three triggers then shutting down raspberry pi then after
-that powering on pi device after some seconds no data is coming from pi device to the mqtt_listener 
+that powering on pi device after some seconds no data is coming from pi device to the mqtt_listener
 service, so i have a doubt turning off the raspberry pi is deleting data in machine.db
 
 ** To find the Schema of table **
@@ -212,14 +233,15 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE table_name = 'production_shortfalls';
 
 ** To find repetitive rows **
+
 SELECT id, machine_code, production_date, start_time, end_time, created_at
 FROM (
-    SELECT id, machine_code, production_date, start_time, end_time, created_at,
-           ROW_NUMBER() OVER(
-               PARTITION BY machine_code, production_date, start_time, end_time 
-               ORDER BY created_at ASC, id ASC
-           ) as row_num
-    FROM production_hourly_log
+	 SELECT id, machine_code, production_date, start_time, end_time, created_at,
+		   ROW_NUMBER() OVER(
+			   PARTITION BY machine_code, production_date, start_time, end_time 
+			   ORDER BY created_at ASC, id ASC
+		   ) as row_num
+	 FROM production_hourly_log
 ) as ranked_logs
 WHERE row_num > 1;
 
@@ -240,7 +262,7 @@ git add .gitignore
 git commit -m "Security Update: Remove and ignore .env file"
 git push origin main
 
-To force pull the code from repository:
+To force pull the code from github:
 
 git fetch --all
 git reset --hard origin/main

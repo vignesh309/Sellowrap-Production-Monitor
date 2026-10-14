@@ -9,6 +9,7 @@ echo Stopping current services...
 wmic process where "name='python.exe' and commandline like '%%main.py%%'" call terminate >nul 2>&1
 wmic process where "name='python.exe' and commandline like '%%mqtt_listener.py%%'" call terminate >nul 2>&1
 wmic process where "name='python.exe' and commandline like '%%moulding_machines_data_monitor.py%%'" call terminate >nul 2>&1
+wmic process where "name='python.exe' and commandline like '%%energy_meter_data_monitor.py%%'" call terminate >nul 2>&1
 
 :: 3. Wait 3 seconds to let Windows release the network ports
 echo Waiting for ports to close...

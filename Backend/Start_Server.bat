@@ -13,11 +13,14 @@ if %errorlevel% == 0 (
 
     :: 4. Start the Moulding Data Monitor in the background and route output to its own log
     start "Moulding Monitor" cmd /c "python services/moulding_machines_data_monitor.py"
+
+    :: 5. Start the Energy Meter Monitor in the background
+    start "Energy Meter Monitor" cmd /c "python services/energy_meter_data_monitor.py"
 ) else (
-    echo Non-production IP detected. Skipping MQTT Listener and Moulding Monitor...
+    echo Non-production IP detected. Skipping MQTT Listener, Moulding Monitor and Energy Meter Monitor...
 )
 
-:: 5. Start the FastAPI Web Server and route output to its own log
+:: 6. Start the FastAPI Web Server and route output to its own log
 echo Starting FastAPI Web Server...
 set PYTHONIOENCODING=utf-8
 python main.py

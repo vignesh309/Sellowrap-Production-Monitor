@@ -128,6 +128,21 @@ function removeTag(val) {
     filterList();
 }
 
+// NEW: Instantly wipes all selected Line/Process tags from the box
+function clearAllTags() {
+    // 1. Empty the array
+    selectedTagsArray = [];
+    
+    // 2. Clear any typing in the search box
+    document.getElementById("tag_search").value = "";
+    
+    // 3. Re-render the UI (this will remove all visual tags)
+    renderTags();
+    
+    // 4. Reset the dropdown list so all items appear as selectable options again
+    filterList(); 
+}
+
 function renderTags() {
     const container = document.getElementById("selected_tags_container");
     container.innerHTML = "";

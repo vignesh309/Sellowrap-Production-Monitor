@@ -17,17 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const displayRole = document.getElementById("role-display");
     const displayAvatar = document.getElementById("user-avatar");
 
-    if (displayUser) {
-        displayUser.innerText = fullName; 
-    }
-    
-    if (displayRole) {
-        displayRole.innerText = role.toUpperCase(); 
-    }
-    
-    if (displayAvatar) {
-        displayAvatar.innerText = fullName.charAt(0).toUpperCase(); 
-    }
+    if (displayUser) displayUser.innerText = fullName; 
+    if (displayRole) displayRole.innerText = role.toUpperCase(); 
+    if (displayAvatar) displayAvatar.innerText = fullName.charAt(0).toUpperCase(); 
 
     // 3. Apply Role-Based Security Hiding
     if (role === "Operator") {
@@ -36,6 +28,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (role === "Supervisor") {
         document.querySelectorAll(".restrict-supervisor").forEach(el => el.style.display = "none");
     }
+
+    // 4. 🚨 Set Default Dates to Today
+    const today = new Date().toISOString().split('T')[0];
+    if (document.getElementById("startDate")) document.getElementById("startDate").value = today;
+    if (document.getElementById("endDate")) document.getElementById("endDate").value = today;
+
+    // 5. 🚨 FIX: Actually call the function to fetch the machines!
+    fetchMachineList();
+
+    // 6. Optional: Automatically load the report for today when the page opens
+    loadReport();
 });
 
 // Global Logout Function

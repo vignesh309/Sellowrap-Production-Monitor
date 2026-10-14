@@ -192,6 +192,21 @@ function renderTags() {
     });
 }
 
+// NEW: Instantly wipes all selected machines from the tags box
+function clearAllMachines() {
+    // 1. Empty the array
+    selectedMachinesArray = [];
+    
+    // 2. Clear any typing in the search box
+    document.getElementById("machine_search").value = "";
+    
+    // 3. Re-render the UI (this will remove all visual tags)
+    renderTags();
+    
+    // 4. Reset the dropdown list so all machines appear as selectable options again
+    filterMachineList(); 
+}
+
 // Close dropdown if user clicks outside of it
 document.addEventListener("click", function(event) {
     const container = document.querySelector(".custom-multiselect-container");
