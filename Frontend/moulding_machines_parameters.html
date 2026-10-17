@@ -47,35 +47,33 @@
 
         <!-- FILTER BAR -->
         <div class="glass-panel filter-panel">
-            <div class="input-group">
+            <div class="input-group" style="flex: 0 0 auto; min-width: 150px;">
                 <label for="filter-month">Target Month</label>
                 <input type="month" id="filter-month">
             </div>
 
-            <div class="input-group">
-                <label for="filter-machine">Machine</label>
-                <select id="filter-machine">
-                    <option value="IM01-850T">IM01-850T</option>
-                    <option value="IM02-350T-1">IM02-350T-1</option>
-                    <option value="IM03-280T-1">IM03-280T-1</option>
-                    <option value="IM04-130T">IM04-130T</option>
-                    <option value="IM05-100T-1">IM05-100T-1</option>
-                    <option value="IM06-80T-1">IM06-80T-1</option>
-                    <option value="IM07-550T">IM07-550T</option>
-                    <option value="IM08-80T-2">IM08-80T-2</option>
-                    <option value="IM09-80T-3">IM09-80T-3</option>
-                    <option value="IM10-180T-1">IM10-180T-1</option>
-                    <option value="IM11-100T-2">IM11-100T-2</option>
-                    <option value="IM12-350T-2">IM12-350T-2</option>
-                    <option value="IM13-280T-2">IM13-280T-2</option>
-                    <option value="IM14-180T-2">IM14-180T-2</option>
-                    <option value="IM15-50T">IM15-50T</option>
-                    <option value="IM16-280T-3">IM16-280T-3</option>
-                    <option value="IM19-350T-5">IM19-350T-5</option>
-                </select>
+            <!-- 🚨 Custom Tag-Based Machine Selection -->
+            <div class="machine-selection-group">
+                <div class="machine-selection-header">
+                    <label class="machine-selection-label">Machine Selection: <small class="machine-selection-hint">(Click 'x' to exclude machines)</small></label>
+                    <button type="button" class="clear-machines-button" onclick="clearAllMachines()">✕ Clear All</button>
+                </div>
+
+                <div class="custom-multiselect-container">
+                    <div class="tags-input-box" id="tags_input_box" onclick="toggleMachineDropdown(event)">
+                        <div id="selected_machines_container" class="tags-container">
+                            <!-- Selected machine tags will appear here dynamically -->
+                        </div>
+                        <input type="text" id="machine_search" placeholder="Select machines..." onkeyup="filterMachineList()" autocomplete="off">
+                    </div>
+
+                    <div class="custom-dropdown-list" id="machine_dropdown_list">
+                        <!-- Dropdown options injected via JS -->
+                    </div>
+                </div>
             </div>
 
-            <div class="filter-actions">
+            <div class="filter-actions" style="align-self: flex-end; margin-bottom: 2px;">
                 <button class="btn-primary" onclick="loadParameterData(1)">Load Data</button>
             </div>
         </div>
@@ -103,6 +101,7 @@
                     <thead>
                         <tr>
                             <th>Timestamp</th>
+                            <th>Machine</th> <!-- 🚨 NEW COLUMN -->
                             <th>Part No</th>
                             <th>Mold No</th>
                             <th class="num">Z1 (°C)</th>
@@ -117,7 +116,8 @@
                         </tr>
                     </thead>
                     <tbody id="table-body">
-                        <tr><td colspan="12" class="empty-state">Select a month and machine, then click Load Data.</td></tr>
+                        <!-- 🚨 COLSPAN UPDATED TO 13 -->
+                        <tr><td colspan="13" class="empty-state">Select a month and machines, then click Load Data.</td></tr>
                     </tbody>
                 </table>
             </div>

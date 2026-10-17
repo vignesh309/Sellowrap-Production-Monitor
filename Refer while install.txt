@@ -14,7 +14,7 @@ Sellowrap Production Monitor Version 2
 │   ├── config.py
 │   ├── database.py
 │   ├── fastapi_logs.txt
-│   ├── fastapi_logs.txt.2026-10-10_14
+│   ├── fastapi_logs.txt.2026-10-14_11
 │   ├── fastapi_logs1.txt
 │   ├── main.py
 │   ├── moulding_logs.txt
@@ -47,6 +47,7 @@ Sellowrap Production Monitor Version 2
 │       ├── __pycache__/ (generated Python cache; contents omitted)
 │       ├── auto_worker.py
 │       ├── automated_email.py
+│   │   ├── energy_meter_data_monitor.py
 │       ├── moulding_machines_data_monitor.py
 │       ├── mqtt_listener.py
 │       ├── telegram_notifier.py
