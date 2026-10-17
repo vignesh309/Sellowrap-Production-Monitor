@@ -1,8 +1,8 @@
 @echo off
 echo Stopping Production Monitor services...
 
-:: 1. Navigate to current directory
-cd /d "%~dp0"
+:: 1. Navigate to the parent directory (Backend)
+cd /d "%~dp0.."
 
 :: 2. Hunt down and terminate specific background Python scripts
 wmic process where "name='python.exe' and commandline like '%%main.py%%'" call terminate >nul 2>&1

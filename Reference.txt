@@ -13,16 +13,17 @@ Sellowrap Production Monitor Version 2
 │   ├── __pycache__/ (generated Python cache; contents omitted)
 │   ├── config.py
 │   ├── database.py
-│   ├── fastapi_logs.txt
-│   ├── fastapi_logs.txt.2026-10-14_11
-│   ├── fastapi_logs1.txt
+│   ├── logs/
+│   │   ├── energy_meter.log
+│   │   ├── fastapi.log
+│   │   ├── moulding.log
+│   │   └── mqtt.log
 │   ├── main.py
-│   ├── moulding_logs.txt
-│   ├── mqtt_logs.txt
-│   ├── Restart_Server.bat
-│   ├── Start_Server.bat
-│   ├── Stop_Server.bat
 │   ├── schemas.py
+│   ├── Server_Controls/
+│   │   ├── Restart_Server.bat
+│   │   ├── Start_Server.bat
+│   │   └── Stop_Server.bat
 │   ├── summary_worker.py
 │   ├── utils.py
 │   ├── routers/
@@ -47,7 +48,8 @@ Sellowrap Production Monitor Version 2
 │       ├── __pycache__/ (generated Python cache; contents omitted)
 │       ├── auto_worker.py
 │       ├── automated_email.py
-│   │   ├── energy_meter_data_monitor.py
+│       ├── energy_meter_data_monitor.py
+│       ├── logging_setup.py
 │       ├── moulding_machines_data_monitor.py
 │       ├── mqtt_listener.py
 │       ├── telegram_notifier.py
@@ -114,8 +116,8 @@ Sellowrap Production Monitor Version 2
 │   │   ├── iot_report.css
 │   │   ├── iot_summary.css
 │   │   ├── lineprocesswise_oee_report.css
-│   │   ├── machine_master.css
 │   │   ├── machinewise_oee_report.css
+│   │   ├── machine_master.css
 │   │   ├── moulding_machines_alarms.css
 │   │   ├── moulding_machines_history.css
 │   │   ├── moulding_machines_parameters.css
@@ -128,10 +130,10 @@ Sellowrap Production Monitor Version 2
 │   │   ├── pending_batches.css
 │   │   ├── process_daily_oee.css
 │   │   ├── process_master.css
+│   │   ├── productionstatus.css
 │   │   ├── production_hourly_report.css
 │   │   ├── production_hourly_status.css
 │   │   ├── production_log_manager.css
-│   │   ├── productionstatus.css
 │   │   ├── rejection_reason_master.css
 │   │   ├── shift_summary.css
 │   │   ├── shift_summary_tvscreen.css
@@ -164,25 +166,25 @@ Sellowrap Production Monitor Version 2
 │       │   └── xlsx.full.min.js
 │       ├── lineprocesswise_oee_report.js
 │       ├── loss_analysis.js
-│       ├── machine_master.js
 │       ├── machinewise_oee_report.js
+│       ├── machine_master.js
 │       ├── moulding_machines_alarms.js
 │       ├── moulding_machines_history.js
 │       ├── moulding_machines_parameters.js
 │       ├── moulding_stage.js
 │       ├── moulding_stage_hourly_status.js
-│       ├── oee_summary.js
 │       ├── oeeteep_dashboard.js
+│       ├── oee_summary.js
 │       ├── old_erp_invoice.js
 │       ├── part_master.js
 │       ├── partwise_report.js
 │       ├── pending_batches.js
 │       ├── process_daily_oee.js
 │       ├── process_master.js
+│       ├── productionstatus.js
 │       ├── production_hourly_report.js
 │       ├── production_hourly_status.js
 │       ├── production_log_manager.js
-│       ├── productionstatus.js
 │       ├── rejection_reason_master.js
 │       ├── shift_summary.js
 │       ├── shift_summary_tvscreen.js

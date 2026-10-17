@@ -1,14 +1,19 @@
 import os
 import sys
 from datetime import datetime
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+
+from services.logging_setup import configure_service_logging
+
+configure_service_logging("mqtt")
+
 import json
 import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
 import psycopg2
 from typing import Optional
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-sys.path.append(parent_dir)
 
 from config import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER, MQTT_BROKER_HOST, MQTT_BROKER_PORT, MQTT_TOPIC
 

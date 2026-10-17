@@ -20,15 +20,16 @@ from routers import frontend, master, reports, auth, production_entry, productio
 # =========================
 # Logging Configuration
 # =========================
-# 1. Create a Handler that rotates the log every 4 hours
-# backupCount=1 means it keeps the current 4-hour file and ONE previous 4-hour file. 
-# Anything older than 8 hours is automatically deleted!
+# 1. Rotate the log every 4 hours and retain seven days of backups.
+LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+os.makedirs(LOG_DIR, exist_ok=True)
+
 log_handler = TimedRotatingFileHandler(
-    "fastapi_logs.txt", 
-    when="H",          # H = Hours
-    interval=4,        # Every 4 hours
-    backupCount=1,     # Keep only 1 backup file
-    encoding="utf-8"   # This also permanently fixes your Emoji crash bug!
+    os.path.join(LOG_DIR, "fastapi.log"),
+    when="H",
+    interval=4,
+    backupCount=42,
+    encoding="utf-8",
 )
 
 # 2. Configure the root logger

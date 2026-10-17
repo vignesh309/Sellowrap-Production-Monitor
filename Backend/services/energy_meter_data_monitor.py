@@ -13,9 +13,6 @@ import math
 import struct
 from datetime import datetime
 
-import psycopg2
-from pymodbus.client import ModbusTcpClient
-
 # =========================================================
 # PATH FIX: allow importing config / services from Backend
 # =========================================================
@@ -24,6 +21,12 @@ parent_dir = os.path.dirname(current_dir)
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
+from services.logging_setup import configure_service_logging
+
+configure_service_logging("energy_meter")
+
+import psycopg2
+from pymodbus.client import ModbusTcpClient
 from config import DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, CHAT_ID
 from services.telegram_notifier import send_telegram_message
 

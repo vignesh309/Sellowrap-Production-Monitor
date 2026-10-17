@@ -1,0 +1,193 @@
+[2026-10-17 15:09:33] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:09:33] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:09:33] INFO: ⚙️ Full-Day Sync Worker Started in Background...
+[2026-10-17 15:09:33] INFO: Added job "send_morning_digest" to job store "default"
+[2026-10-17 15:09:33] INFO: Scheduler started
+[2026-10-17 15:10:08] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:10:08] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:10:08] INFO: ⚙️ Full-Day Sync Worker Started in Background...
+[2026-10-17 15:10:08] INFO: Added job "send_morning_digest" to job store "default"
+[2026-10-17 15:10:08] INFO: Scheduler started
+[2026-10-17 15:21:46] INFO: INFO:     192.168.3.21:52566 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=TW-20 HTTP/1.1" 200 OK
+[2026-10-17 15:21:48] INFO: INFO:     192.168.3.21:52566 - "POST /api/login HTTP/1.1" 200 OK
+[2026-10-17 15:21:50] INFO: INFO:     192.168.3.21:52566 - "GET /static/js/stage1.js HTTP/1.1" 304 Not Modified
+[2026-10-17 15:21:50] INFO: INFO:     192.168.3.21:52566 - "GET /init_stage1 HTTP/1.1" 200 OK
+[2026-10-17 15:21:54] INFO: INFO:     192.168.3.21:52590 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=TW-20 HTTP/1.1" 200 OK
+[2026-10-17 15:21:56] INFO: INFO:     192.168.3.21:52590 - "GET /api/get_batch_logs?date=2026-10-17&shift=A&machine_code=ASSY-01(B)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:22:05] INFO: INFO:     192.168.3.21:44014 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(B)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:22:09] INFO: INFO:     192.168.3.21:44014 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=TW-20 HTTP/1.1" 200 OK
+[2026-10-17 15:22:20] INFO: INFO:     192.168.3.21:47616 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(B)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:22:21] INFO: INFO:     192.168.3.21:47616 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:22:24] INFO: INFO:     192.168.3.21:47616 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=TW-20 HTTP/1.1" 200 OK
+[2026-10-17 15:22:26] INFO: INFO:     192.168.3.21:47616 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:22:35] INFO: INFO:     192.168.3.21:55318 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(B)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:22:39] INFO: INFO:     192.168.3.21:55318 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:22:39] INFO: INFO:     192.168.3.21:55324 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=TW-20 HTTP/1.1" 200 OK
+[2026-10-17 15:22:50] INFO: INFO:     192.168.3.21:46080 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(B)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:23:05] INFO: INFO:     192.168.3.21:46084 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(B)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:23:10] INFO: INFO:     192.168.3.21:46084 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:23:16] INFO: INFO:     192.168.3.21:57206 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:23:20] INFO: INFO:     192.168.3.21:57206 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(B)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:23:24] INFO: INFO:     192.168.3.21:57206 - "GET /api/get_batch_logs?date=2026-10-17&shift=A&machine_code=ASSY-01(A)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:23:37] INFO: INFO:     192.168.3.21:50630 - "GET /api/get_batch_logs?date=2026-10-17&shift=A&machine_code=ASSY-01(A)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:23:50] INFO: INFO:     192.168.3.21:37960 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(A)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:24:05] INFO: INFO:     192.168.3.21:37976 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(A)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:24:10] INFO: INFO:     192.168.3.21:37976 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:24:15] INFO: INFO:     192.168.3.21:46574 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:24:20] INFO: INFO:     192.168.3.21:46574 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(A)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:24:20] INFO: INFO:     200.200.210.96:52580 - "GET /api/init_moulding_stage HTTP/1.1" 200 OK
+[2026-10-17 15:24:27] INFO: INFO:     192.168.3.21:36146 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:24:34] INFO: INFO:     192.168.3.21:36160 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:24:35] INFO: INFO:     192.168.3.21:36160 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(A)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:24:38] INFO: INFO:     200.200.210.96:52581 - "GET /api/get_batch_logs?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:24:38] INFO: INFO:     200.200.210.96:52587 - "GET /api/get_live_moulding_data?machine_code=IM09-80T-3&date=2026-10-16&shift=A HTTP/1.1" 200 OK
+[2026-10-17 15:24:39] INFO: INFO:     192.168.3.21:36160 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:24:50] INFO: INFO:     200.200.210.96:52589 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:24:50] INFO: INFO:     192.168.3.21:38682 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(A)-%20OV64 HTTP/1.1" 200 OK
+[2026-10-17 15:25:00] INFO: INFO:     192.168.3.21:38686 - "GET /api/get_batch_logs?date=2026-10-17&shift=A&machine_code=ASSY-01(B) HTTP/1.1" 200 OK
+[2026-10-17 15:25:05] INFO: INFO:     200.200.210.96:52590 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:25:05] INFO: INFO:     200.200.210.96:52590 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:25:05] INFO: INFO:     192.168.3.21:38686 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(B) HTTP/1.1" 200 OK
+[2026-10-17 15:25:12] INFO: INFO:     192.168.3.21:35018 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:25:15] INFO: INFO:     200.200.210.96:52592 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:26:56] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:26:56] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:26:56] INFO: ⚙️ Full-Day Sync Worker Started in Background...
+[2026-10-17 15:26:56] INFO: Added job "send_morning_digest" to job store "default"
+[2026-10-17 15:26:56] INFO: Scheduler started
+[2026-10-17 15:27:05] INFO: INFO:     200.200.210.96:52632 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:27:09] INFO: INFO:     200.200.210.96:52632 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:27:13] INFO: INFO:     200.200.210.96:52632 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:27:15] INFO: INFO:     200.200.210.96:52632 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:27:20] INFO: INFO:     200.200.210.96:52633 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:27:26] INFO: INFO:     200.200.210.96:52634 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:27:35] INFO: INFO:     200.200.210.96:52636 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:27:38] INFO: INFO:     200.200.210.96:52636 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:27:42] INFO: INFO:     192.168.3.21:56834 - "GET /init_stage1 HTTP/1.1" 200 OK
+[2026-10-17 15:27:50] INFO: INFO:     200.200.210.96:52639 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:27:52] INFO: INFO:     192.168.3.21:46318 - "GET /api/get_batch_logs?date=2026-10-17&shift=A&machine_code=ASSY-01(B) HTTP/1.1" 200 OK
+[2026-10-17 15:27:57] INFO: INFO:     192.168.3.21:55882 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(B) HTTP/1.1" 200 OK
+[2026-10-17 15:28:02] INFO: INFO:     200.200.210.96:52642 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:28:05] INFO: INFO:     200.200.210.96:52642 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:28:11] INFO: INFO:     200.200.210.96:52643 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:28:12] INFO: INFO:     192.168.3.21:58986 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=ASSY-01(B) HTTP/1.1" 200 OK
+[2026-10-17 15:28:14] INFO: INFO:     200.200.210.96:52643 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:28:20] INFO: INFO:     200.200.210.96:52644 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:28:27] INFO: INFO:     200.200.210.96:52646 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:28:31] INFO: INFO:     200.200.210.96:52646 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:28:33] INFO: INFO:     192.168.3.21:33528 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=TW-20 HTTP/1.1" 200 OK
+[2026-10-17 15:28:33] INFO: INFO:     200.200.210.96:52646 - "POST /api/finalize_batch HTTP/1.1" 200 OK
+[2026-10-17 15:28:35] INFO: INFO:     200.200.210.96:52646 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:28:51] INFO: INFO:     200.200.210.96:52648 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:29:06] INFO: INFO:     200.200.210.96:52651 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:29:21] INFO: INFO:     200.200.210.96:52653 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:29:36] INFO: INFO:     200.200.210.96:52655 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:30:24] INFO: INFO:     200.200.210.96:52662 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:31:22] INFO: INFO:     200.200.210.96:52666 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM09-80T-3 HTTP/1.1" 200 OK
+[2026-10-17 15:31:25] INFO: INFO:     200.200.210.96:52666 - "GET /moulding-stage HTTP/1.1" 200 OK
+[2026-10-17 15:31:25] INFO: INFO:     200.200.210.96:52666 - "GET /api/init_moulding_stage HTTP/1.1" 200 OK
+[2026-10-17 15:31:35] INFO: INFO:     200.200.210.96:52667 - "GET /api/get_batch_logs?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:31:35] INFO: INFO:     200.200.210.96:52669 - "GET /api/get_live_moulding_data?machine_code=IM05-100T-1&date=2026-10-16&shift=A HTTP/1.1" 200 OK
+[2026-10-17 15:31:40] INFO: INFO:     200.200.210.96:52669 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:31:55] INFO: INFO:     200.200.210.96:52673 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:32:10] INFO: INFO:     200.200.210.96:52678 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:32:25] INFO: INFO:     200.200.210.96:52679 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:32:40] INFO: INFO:     200.200.210.96:52681 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:32:55] INFO: INFO:     200.200.210.96:52682 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:32:59] INFO: INFO:     200.200.210.96:52682 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:33:07] INFO: INFO:     200.200.210.96:52684 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:33:10] INFO: INFO:     200.200.210.96:52684 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:33:25] INFO: INFO:     200.200.210.96:52685 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:33:27] INFO: INFO:     200.200.210.96:52685 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:33:33] INFO: INFO:     200.200.210.96:52687 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:33:40] INFO: INFO:     200.200.210.96:52688 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:33:40] INFO: INFO:     200.200.210.96:52689 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:33:46] INFO: INFO:     200.200.210.96:52692 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:33:52] INFO: INFO:     200.200.210.96:52693 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:33:55] INFO: INFO:     200.200.210.96:52693 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:34:10] INFO: INFO:     200.200.210.96:52696 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:34:25] INFO: INFO:     200.200.210.96:52698 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:34:30] INFO: INFO:     200.200.210.96:52698 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:34:38] INFO: INFO:     200.200.210.96:52699 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:34:40] INFO: INFO:     200.200.210.96:52699 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:34:42] INFO: INFO:     200.200.210.96:52699 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:34:45] INFO: INFO:     200.200.210.96:52699 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:34:47] INFO: INFO:     200.200.210.96:52699 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:34:55] INFO: INFO:     200.200.210.96:52701 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:35:01] INFO: INFO:     200.200.210.96:52703 - "POST /api/finalize_batch HTTP/1.1" 200 OK
+[2026-10-17 15:35:02] INFO: INFO:     200.200.210.96:52703 - "GET /moulding-stage HTTP/1.1" 200 OK
+[2026-10-17 15:35:02] INFO: INFO:     200.200.210.96:52703 - "GET /api/init_moulding_stage HTTP/1.1" 200 OK
+[2026-10-17 15:35:15] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:35:15] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:35:15] INFO: ⚙️ Full-Day Sync Worker Started in Background...
+[2026-10-17 15:35:15] INFO: Added job "send_morning_digest" to job store "default"
+[2026-10-17 15:35:15] INFO: Scheduler started
+[2026-10-17 15:35:15] INFO: INFO:     200.200.210.96:52707 - "GET /api/get_batch_logs?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:35:15] INFO: INFO:     200.200.210.96:52707 - "GET /api/get_live_moulding_data?machine_code=IM05-100T-1&date=2026-10-16&shift=A HTTP/1.1" 200 OK
+[2026-10-17 15:35:17] INFO: INFO:     200.200.210.96:52707 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:35:32] INFO: INFO:     200.200.210.96:52706 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:35:46] INFO: INFO:     200.200.210.96:52711 - "GET /moulding-stage HTTP/1.1" 200 OK
+[2026-10-17 15:35:46] INFO: INFO:     200.200.210.96:52711 - "GET /api/init_moulding_stage HTTP/1.1" 200 OK
+[2026-10-17 15:35:51] INFO: INFO:     200.200.210.96:52712 - "GET /api/get_batch_logs?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:35:52] INFO: INFO:     200.200.210.96:52714 - "GET /api/get_live_moulding_data?machine_code=IM11-100T-2&date=2026-10-16&shift=A HTTP/1.1" 200 OK
+[2026-10-17 15:36:01] INFO: INFO:     200.200.210.96:52715 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:36:16] INFO: INFO:     200.200.210.96:52716 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:36:31] INFO: INFO:     200.200.210.96:52718 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:36:33] INFO: INFO:     200.200.210.96:52718 - "GET /api/init_moulding_stage HTTP/1.1" 200 OK
+[2026-10-17 15:36:41] INFO: INFO:     200.200.210.96:52719 - "GET /api/part_list HTTP/1.1" 200 OK
+[2026-10-17 15:36:41] INFO: INFO:     200.200.210.96:52720 - "GET /api/get_processes HTTP/1.1" 200 OK
+[2026-10-17 15:36:41] INFO: INFO:     200.200.210.96:52721 - "GET /api/part_master_all HTTP/1.1" 200 OK
+[2026-10-17 15:36:46] INFO: INFO:     200.200.210.96:52720 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:36:52] INFO: INFO:     200.200.210.96:52723 - "GET /api/part/Z0A0029226 HTTP/1.1" 200 OK
+[2026-10-17 15:37:01] INFO: INFO:     200.200.210.96:52724 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:37:16] INFO: INFO:     200.200.210.96:52728 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:37:31] INFO: INFO:     200.200.210.96:52729 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:38:24] INFO: INFO:     200.200.210.96:52736 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:39:24] INFO: INFO:     200.200.210.96:52740 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:39:58] INFO: INFO:     200.200.210.96:52745 - "GET /api/init_moulding_stage HTTP/1.1" 200 OK
+[2026-10-17 15:40:03] INFO: INFO:     200.200.210.96:52746 - "GET /api/get_batch_logs?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:40:03] INFO: INFO:     200.200.210.96:52753 - "GET /api/get_live_moulding_data?machine_code=IM05-100T-1&date=2026-10-17&shift=A HTTP/1.1" 200 OK
+[2026-10-17 15:40:24] INFO: INFO:     200.200.210.96:52758 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:41:24] INFO: INFO:     200.200.210.96:52763 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:41:31] INFO: INFO:     200.200.210.96:52765 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:41:35] INFO: INFO:     200.200.210.96:52765 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:41:43] INFO: INFO:     200.200.210.96:52766 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:41:46] INFO: INFO:     200.200.210.96:52766 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:41:57] INFO: INFO:     200.200.210.96:52770 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:41:58] INFO: INFO:     200.200.210.96:52770 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:42:01] INFO: INFO:     200.200.210.96:52770 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:42:13] INFO: INFO:     200.200.210.96:52771 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:42:16] INFO: INFO:     200.200.210.96:52771 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:42:17] INFO: INFO:     200.200.210.96:52771 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:42:27] INFO: INFO:     200.200.210.96:52776 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:42:28] INFO: INFO:     200.200.210.96:52776 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:42:31] INFO: INFO:     200.200.210.96:52776 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:42:31] INFO: INFO:     89.248.171.24:48608 - "GET /aaa9 HTTP/1.1" 404 Not Found
+[2026-10-17 15:42:32] INFO: INFO:     89.248.171.24:48624 - "GET /aab9 HTTP/1.1" 404 Not Found
+[2026-10-17 15:42:33] INFO: INFO:     200.200.210.96:52776 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:42:43] INFO: INFO:     200.200.210.96:52778 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:42:44] INFO: INFO:     200.200.210.96:52778 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:42:46] INFO: INFO:     200.200.210.96:52778 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:42:58] INFO: INFO:     200.200.210.96:52779 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:43:01] INFO: INFO:     200.200.210.96:52779 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:43:16] INFO: INFO:     200.200.210.96:52781 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:43:24] INFO: INFO:     200.200.210.96:52782 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:43:24] INFO: INFO:     200.200.210.96:52782 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:43:31] INFO: INFO:     200.200.210.96:52783 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:43:46] INFO: INFO:     200.200.210.96:52787 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:43:47] INFO: INFO:     200.200.210.96:52787 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:44:01] INFO: INFO:     200.200.210.96:52790 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:44:09] INFO: INFO:     200.200.210.96:52792 - "POST /api/submit_stage1_block HTTP/1.1" 200 OK
+[2026-10-17 15:44:16] INFO: INFO:     200.200.210.96:52794 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:44:24] INFO: INFO:     200.200.210.96:52796 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:44:31] INFO: INFO:     200.200.210.96:52797 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:44:46] INFO: INFO:     200.200.210.96:52800 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:45:01] INFO: INFO:     200.200.210.96:52801 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:45:24] INFO: INFO:     200.200.210.96:52804 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:45:24] INFO: INFO:     200.200.210.96:52805 - "GET /api/get_live_iot_count?date=2026-10-17&shift=A&machine_code=IM05-100T-1 HTTP/1.1" 200 OK
+[2026-10-17 15:45:48] INFO: INFO:     200.200.210.96:52809 - "GET /api/get_live_iot_count?date=2026-10-16&shift=A&machine_code=IM11-100T-2 HTTP/1.1" 200 OK
+[2026-10-17 15:55:48] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:55:48] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+[2026-10-17 15:55:48] INFO: ⚙️ Full-Day Sync Worker Started in Background...
+[2026-10-17 15:55:48] INFO: Added job "send_morning_digest" to job store "default"
+[2026-10-17 15:55:48] INFO: Scheduler started
